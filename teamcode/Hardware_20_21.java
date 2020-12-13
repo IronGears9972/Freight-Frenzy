@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -44,9 +43,6 @@ public class Hardware_20_21 {
     public Servo kicker = null;
     public Servo forks = null;
     //NEW
-
-
-    DcMotor verticalLeft, verticalRight, horizontal;
 
 
     final double COUNTS_PER_INCH = 8192.0/(3.14*2);
@@ -93,10 +89,6 @@ public class Hardware_20_21 {
         hwMap = ahwMap;
         opMode = aopMode;
 
-
-        globalPositionUpdate = new OdometryGlobalCoordinatePosition(verticalLeft, verticalRight, horizontal, COUNTS_PER_INCH, 75);
-        Thread positionThread = new Thread(globalPositionUpdate);
-        positionThread.start();
 
         
         // Define and Initialize Motors
@@ -195,7 +187,15 @@ public class Hardware_20_21 {
         intakemotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
+
+        globalPositionUpdate = new OdometryGlobalCoordinatePosition(frontRightMotor, rearLeftMotor, rearRightMotor, COUNTS_PER_INCH, 75);
+        Thread positionThread = new Thread(globalPositionUpdate);
+        positionThread.start();
+
+
     }
+
+
 
     public void gotoposition (double targetXPosition, double targetYposition, double robotPower, double desiredrobotOrientaion){
 
@@ -433,4 +433,3 @@ public class Hardware_20_21 {
      */
 
 }
-

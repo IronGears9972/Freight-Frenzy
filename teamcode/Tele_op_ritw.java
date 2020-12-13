@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
 import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 
 
@@ -33,6 +34,7 @@ public class Tele_op_ritw extends LinearOpMode {
         waitForStart();
         runtime.reset();
         robot.init(hardwareMap, this);
+
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -256,13 +258,11 @@ public class Tele_op_ritw extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)");
-            telemetry.addData("Front_left", " %d", robot.frontRightMotor.getCurrentPosition());
-            telemetry.addData("Front_right", " %d", robot.frontLeftMotor.getCurrentPosition());
-            telemetry.addData("Back_left", " %d", robot.rearRightMotor.getCurrentPosition());
-            telemetry.addData("Back_Right", " %d", robot.rearLeftMotor.getCurrentPosition());
+            telemetry.addData("Vertical left encoder position", robot.frontRightMotor.getCurrentPosition());
+            telemetry.addData("Vertical right encoder position", robot.rearLeftMotor.getCurrentPosition());
+            telemetry.addData("horizontal encoder position", robot.rearRightMotor.getCurrentPosition());
             telemetry.addData("intake", " %d", robot.intakemotor.getCurrentPosition());
-            telemetry.addData("launcher", " %.0f", robot.launcher.getVelocity()/28*60);
+            telemetry.addData("launcher", " %.0f",robot.launcher.getVelocity()/28*60);
             telemetry.update();
 
 

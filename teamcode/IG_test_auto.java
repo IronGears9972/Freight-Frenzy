@@ -41,6 +41,8 @@ public class IG_test_auto extends LinearOpMode {
         Thread positionThread = new Thread(globalPositionUpdate);
         positionThread.start();
 
+        robot.init(hardwareMap, this);
+
         gotoposition(0,95,0.4,0);
 
         robot.wobble.setPosition(0.25);

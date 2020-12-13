@@ -78,13 +78,28 @@ public class another_test_auto extends LinearOpMode {
          */
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
-        telemetry.update();
+
+
+        robot.init(hardwareMap, this);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+
+
         robot.gotoposition(0,95,0.4,0);
+
+
+
+
+
+        telemetry.addData("Vertical left encoder position", robot.frontRightMotor.getCurrentPosition());
+        telemetry.addData("Vertical right encoder position", robot.rearLeftMotor.getCurrentPosition());
+        telemetry.addData("horizontal encoder position", robot.rearRightMotor.getCurrentPosition());
+        telemetry.addData("intake", " %d", robot.intakemotor.getCurrentPosition());
+        telemetry.addData("launcher", " %.0f",robot.launcher.getVelocity()/28*60);
+        telemetry.addData("Status", "Ready to run");    //
+        telemetry.update();
 
     }
 }
