@@ -30,12 +30,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -58,8 +55,8 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="another auto", group="Pushbot")
-public class another_test_auto extends LinearOpMode {
+@Autonomous(name="Autonomous0stuf", group="Pushbot")
+public class Autonomous0stuf extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware_20_21 robot = new Hardware_20_21(); // use the class created to define a robot's hardware
@@ -92,10 +89,10 @@ public class another_test_auto extends LinearOpMode {
         robot.launcher1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.launcher2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.rearLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.rearRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rearLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rearRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.intakemotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -103,50 +100,11 @@ public class another_test_auto extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        //  going strat is - and turning is counterclockwise
+        //------------------------------------------------------------------------------------------
+        //STEP 1
 
-        robot.launcher1.setPower(1);
-        robot.launcher2.setPower(1);
-
-        robot.gotoposition(0,-12,0.34,0);
-
-        robot.gotopositionstrafe(95,0,0.4,0);
-
-        robot.conveyor.setPower(1);
-
-        robot.gotopositionstrafe(15,-12,0.34,0);
-
-        robot.forks.setPosition(0.25);
-        sleep(750);
-
-        robot.kicker.setPosition(0.6);
-        sleep(1250);
-
-        robot.kicker.setPosition(1);
-        sleep(50);
-
-        robot.gotopositionstrafe(22.5,-12,0.34,0);
-
-        robot.conveyor.setPower(1);
-        sleep(750);
-
-        robot.forks.setPosition(.3);
-        sleep(350);
-
-        robot.kicker.setPosition(0.6);
-        sleep(50);
-
-        robot.conveyor.setPower(1);
-        sleep(950);
-
-
-
-
-
-
-
-
-
-
+        robot.drivestrafe(20,0.3);
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());

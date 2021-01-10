@@ -29,13 +29,17 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -58,8 +62,8 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="another auto", group="Pushbot")
-public class another_test_auto extends LinearOpMode {
+@Autonomous(name="Autonomous1", group="Pushbot")
+public class Autonomous1 extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware_20_21 robot = new Hardware_20_21(); // use the class created to define a robot's hardware
@@ -81,7 +85,6 @@ public class another_test_auto extends LinearOpMode {
         // Send telemetry message to signify robot waiting;
 
 
-
         robot.init(hardwareMap, this);
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -100,63 +103,149 @@ public class another_test_auto extends LinearOpMode {
         robot.launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
+        while (!opModeIsActive()) {
 
 
-        robot.launcher1.setPower(1);
-        robot.launcher2.setPower(1);
 
-        robot.gotoposition(0,-12,0.34,0);
 
-        robot.gotopositionstrafe(95,0,0.4,0);
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Vertical left encoder position", robot.frontRightMotor.getCurrentPosition());
+            telemetry.addData("Vertical right encoder position", robot.rearLeftMotor.getCurrentPosition());
+            telemetry.addData("horizontal encoder position", robot.rearRightMotor.getCurrentPosition());
+            telemetry.addData("intake", " %d", robot.intakemotor.getCurrentPosition());
+            telemetry.addData("launcher1", " %.0f", robot.launcher1.getVelocity() / 28 * 60);
+            telemetry.addData("launcher2", "%.0f", robot.launcher2.getVelocity() / 28 * 60);
+            telemetry.addData("DSRearLeft", String.format("%.01f in", robot.DSRearLeft.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("DSLeftBack", String.format("%.01f in", robot.DSLeftBack.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("DSLeftFront", String.format("%.01f in", robot.DSLeftFront.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("DSRearRight", String.format("%.01f in", robot.DSRearRight.getDistance(DistanceUnit.INCH)));
+            Orientation angels = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            telemetry.addData("imu , first/second/third","%.1f %.1f %.1f",angels.firstAngle , angels.secondAngle , angels.thirdAngle);
+            telemetry.update();
+
+
+
+        }
+
+        //STEP 1
+        // Drive to the ring and shot
+
+        robot.wobblehand.setPosition(0.35);
+        robot.drivestraightsonicsensor(-30,0.3,22);
+
+        robot.launcher1.setPower(0.70);
+        robot.launcher2.setPower(0.9);
+        sleep(1100);
+
+        robot.launcher1.setPower(0.70);
+        robot.launcher2.setPower(0.9);
 
         robot.conveyor.setPower(1);
 
-        robot.gotopositionstrafe(15,-12,0.34,0);
-
-        robot.forks.setPosition(0.25);
-        sleep(750);
+        robot.forks.setPosition(0.22);
+        sleep(250);
 
         robot.kicker.setPosition(0.6);
-        sleep(1250);
+        sleep(250);
 
         robot.kicker.setPosition(1);
         sleep(50);
 
-        robot.gotopositionstrafe(22.5,-12,0.34,0);
-
         robot.conveyor.setPower(1);
         sleep(750);
 
-        robot.forks.setPosition(.3);
+        robot.forks.setPosition(0.27);
         sleep(350);
 
         robot.kicker.setPosition(0.6);
         sleep(50);
 
         robot.conveyor.setPower(1);
-        sleep(950);
+        sleep(1300);
 
 
+        robot.launcher1.setPower(0);
+        robot.launcher2.setPower(0);
+        robot.conveyor.setPower(0);
 
+        robot.forks.setPosition(0.05);
+        sleep(350);
 
+        robot.kicker.setPosition(0.0);
+        sleep(100);
 
+        //------------------------------------------------------------------------------------------
+        //STEP 2
+        // Drive turn and drop the wobble
+        robot.intakemotor.setPower(-0.5);
+        robot.intakeservo.setPower(0.5);
 
+        robot.drivestraightsonicsensor(-8,0.3,22);
 
+        robot.robotsleep(0);
+        sleep(1000);
 
+        robot.intakemotor.setPower(0);
+        robot.intakeservo.setPower(0);
 
+        robot.launcher1.setPower(0.70);
+        robot.launcher2.setPower(0.9);
+        sleep(1000);
 
+        robot.launcher1.setPower(0.70);
+        robot.launcher2.setPower(0.9);
 
+        robot.conveyor.setPower(1);
 
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Vertical left encoder position", robot.frontRightMotor.getCurrentPosition());
-        telemetry.addData("Vertical right encoder position", robot.rearLeftMotor.getCurrentPosition());
-        telemetry.addData("horizontal encoder position", robot.rearRightMotor.getCurrentPosition());
-        telemetry.addData("intake", " %d", robot.intakemotor.getCurrentPosition());
-        telemetry.addData("launcher1", " %.0f",robot.launcher1.getVelocity()/28*60);
-        telemetry.addData("launcher2", "%.0f",robot.launcher2.getVelocity()/28*60);
-        telemetry.update();
+        robot.forks.setPosition(0.27);
+        sleep(250);
+
+        robot.kicker.setPosition(0.6);
+        sleep(250);
+
+        robot.robotsleep(0);
+        sleep(1000);
+
+        robot.drivestraightsonicsensor(-75,0.3,22);
+
+        robot.launcher1.setPower(0);
+        robot.launcher2.setPower(0);
+        robot.conveyor.setPower(0);
+
+        robot.wobble.setPosition(0.25);
+        sleep(1500);
+
+        robot.wobblehand.setPosition(1);
+        sleep(1000);
+
+        robot.wobble.setPosition(1);
+        sleep(1250);
+
+        //------------------------------------------------
+        //STEP 3
+        // Get next wobble
+
+        robot.drivestraightsonicsensor(90,0.3,22);
+
+        //----------------------------------------------------------------
+        //STEP 4
+        //Drive turn and drop the wobble
+
+        robot.wobble.setPosition(0.25);
+        sleep(1250);
+
+        robot.wobblehand.setPosition(1);
+        sleep(500);
+
+        robot.wobble.setPosition(1);
+
+        robot.drivestraightsonicsensor(-90,0.3,22);
+
+        //------------------------------------------------------------------------------------------
+        //STEP 5
+        // Park
+        robot.drivestraight(18,0.6);
+
 
     }
 }

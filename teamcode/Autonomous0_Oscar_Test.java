@@ -29,13 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -58,8 +56,8 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="another auto", group="Pushbot")
-public class another_test_auto extends LinearOpMode {
+@Autonomous(name="Autonomous0_Oscar_Test", group="Pushbot")
+public class Autonomous0_Oscar_Test extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware_20_21 robot = new Hardware_20_21(); // use the class created to define a robot's hardware
@@ -92,10 +90,10 @@ public class another_test_auto extends LinearOpMode {
         robot.launcher1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.launcher2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.rearLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.rearRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rearLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rearRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.intakemotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -103,50 +101,102 @@ public class another_test_auto extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        //  going strat is - and turning is counterclockwise
+        //------------------------------------------------------------------------------------------
+        //STEP 1
+        // Drive to the ring and shot
 
-        robot.launcher1.setPower(1);
-        robot.launcher2.setPower(1);
+        robot.wobblehand.setPosition(0.35);
+        robot.drivestraight(-55,0.3);
 
-        robot.gotoposition(0,-12,0.34,0);
+        robot.launcher1.setPower(0.70);
+        robot.launcher2.setPower(0.9);
+        sleep(1100);
 
-        robot.gotopositionstrafe(95,0,0.4,0);
+        robot.launcher1.setPower(0.70);
+        robot.launcher2.setPower(0.9);
 
         robot.conveyor.setPower(1);
 
-        robot.gotopositionstrafe(15,-12,0.34,0);
-
-        robot.forks.setPosition(0.25);
-        sleep(750);
+        robot.forks.setPosition(0.22);
+        sleep(250);
 
         robot.kicker.setPosition(0.6);
-        sleep(1250);
+        sleep(250);
 
         robot.kicker.setPosition(1);
         sleep(50);
 
-        robot.gotopositionstrafe(22.5,-12,0.34,0);
-
         robot.conveyor.setPower(1);
         sleep(750);
 
-        robot.forks.setPosition(.3);
+        robot.forks.setPosition(0.27);
         sleep(350);
 
         robot.kicker.setPosition(0.6);
         sleep(50);
 
         robot.conveyor.setPower(1);
-        sleep(950);
+        sleep(1300);
 
 
+        robot.launcher1.setPower(0);
+        robot.launcher2.setPower(0);
+        robot.conveyor.setPower(0);
+        //------------------------------------------------------------------------------------------
+        //STEP 2
+        // Drive turn and drop the wobble
+        //robot.drivestraight(-70,0.4);
+        robot.drivestraight(-42,0.3);
 
+        robot.trunangel(86,0.3);
 
+        robot.drivestraight(21,0.3);
 
+        robot.robotsleep(0);
+        sleep(100);
+        robot.wobble.setPosition(0.3);
+        sleep(1500);
 
+        robot.wobblehand.setPosition(1);
+        //------------------------------------------------
+        //STEP 3
+        // Get next wobble
+        robot.drivestraight(-27,0.3);
 
+        robot.trunangel(-82,0.3);
 
+        robot.drivestraight(102,0.4);
 
+        robot.wobblehand.setPosition(0.35);
+        sleep(500);
 
+        robot.wobble.setPosition(1);
+        sleep(1250);
+        //------------------------------------------------------------------------------------------
+        //STEP 4
+        //Drive turn and drop the wobble
+        robot.drivestraight(-94,0.4);
+
+        robot.trunangel(85,0.3);
+
+        robot.drivestraight(15,0.6);
+
+        robot.wobble.setPosition(0.3);
+        sleep(1250);
+
+        robot.wobblehand.setPosition(1);
+        sleep(500);
+
+        robot.wobble.setPosition(1);
+        //------------------------------------------------------------------------------------------
+        //STEP 5
+        // Park
+        robot.drivestraight(-20,0.6);
+
+        robot.trunangel(-84,0.3);
+
+        robot.drivestraight(18,0.6);
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());

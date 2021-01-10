@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 
 
@@ -41,14 +42,16 @@ public class Tele_op_ritw extends LinearOpMode {
         robot.rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.intakemotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.launcher1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.launcher2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.rearLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.rearRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.intakemotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
 
@@ -83,12 +86,21 @@ public class Tele_op_ritw extends LinearOpMode {
 
             if (gamepad2.y) {
 
-                robot.launcher.setPower(1);
+                robot.launcher1.setPower(0.75);
 
             } else if (gamepad2.b) {
 
-                robot.launcher.setPower(0);
+                robot.launcher1.setPower(0);
             }
+
+
+
+            if (gamepad2.right_stick_button) {
+                robot.launcher1.setPower(0.8);
+            } else if (gamepad2.left_stick_button) {
+                robot.launcher1.setPower(0.6);
+            }
+
 
 
 
@@ -96,11 +108,11 @@ public class Tele_op_ritw extends LinearOpMode {
 
 
             if (gamepad1.dpad_right) {
-                robot.wobblehand.setPosition(-0.3);
+                robot.wobblehand.setPosition(0.35);
 
 
             } else if (gamepad1.dpad_left) {
-                robot.wobblehand.setPosition(0.5);
+                robot.wobblehand.setPosition(1);
 
             }
 
@@ -111,6 +123,26 @@ public class Tele_op_ritw extends LinearOpMode {
 
             } else if (gamepad1.dpad_up) {
                 robot.wobble.setPosition(1);
+
+            }
+//--------------------------------------------------------------------------------------
+
+            if (gamepad1.dpad_right) {
+                robot.wobblehand2.setPosition(0.35);
+
+
+            } else if (gamepad1.dpad_left) {
+                robot.wobblehand2.setPosition(1);
+
+            }
+
+
+            if (gamepad1.dpad_down) {
+                robot.wobble2.setPosition(0.15);
+
+
+            } else if (gamepad1.dpad_up) {
+                robot.wobble2.setPosition(1);
 
             }
 
@@ -125,7 +157,7 @@ public class Tele_op_ritw extends LinearOpMode {
                 robot.frontRightMotor.setPower(0);
                 robot.frontLeftMotor.setPower(0);
 
-                robot.forks.setPosition(0.25);
+                robot.forks.setPosition(0.22);
                 sleep(250);
 
                 robot.kicker.setPosition(0.6);
@@ -134,22 +166,24 @@ public class Tele_op_ritw extends LinearOpMode {
                 robot.kicker.setPosition(1);
                 sleep(50);
 
-                robot.conveyor.setPower(0.95);
+                robot.conveyor.setPower(1);
                 sleep(750);
 
-                robot.forks.setPosition(.3);
+                robot.forks.setPosition(0.26);
                 sleep(350);
 
                 robot.kicker.setPosition(0.6);
                 sleep(50);
 
-                robot.conveyor.setPower(0.95);
+                robot.conveyor.setPower(1);
                 sleep(1250);
 
             } else {
                 robot.forks.setPosition(0.05);
 
                 robot.kicker.setPosition(1);
+
+                robot.conveyor.setPower(0);
 
             }
 
@@ -162,19 +196,21 @@ public class Tele_op_ritw extends LinearOpMode {
                 robot.frontRightMotor.setPower(0);
                 robot.frontLeftMotor.setPower(0);
 
-                robot.forks.setPosition(0.3);
+                robot.forks.setPosition(0.27);
                 sleep(250);
 
                 robot.kicker.setPosition(0.6);
                 sleep(250);
 
-                robot.conveyor.setPower(0.95);
-                sleep(650);
+                robot.conveyor.setPower(1);
+                sleep(700);
 
             } else {
                 robot.kicker.setPosition(1);
 
                 robot.forks.setPosition(0.05);
+
+                robot.conveyor.setPower(0);
 
             }
 
@@ -193,58 +229,45 @@ public class Tele_op_ritw extends LinearOpMode {
 
 //------------------------------------------------------------------------------------
 
-            /*
 
-            if (gamepad1.dpad_down) {
-                robot.hookF.setPosition(1);
-                robot.hookR.setPosition(0.1);
+          /*
+            if (gamepad2.dpad_right) {
+                robot.forks.setPosition(0.27);
+
+            } else {
+                robot.forks.setPosition(0.05);
+
             }
-            else if(gamepad1.dpad_up) {
-                robot.hookF.setPosition(0);
-                robot.hookR.setPosition(1);
-            }
 
-
-                */
-
-
-//------------------------------------------------------------------------------------
-
-
-
-           /*
-           if (gamepad2.dpad_right) {
-               robot.ssgbottom.setPosition(1);
-               sleep(1000);
-               robot.ssgtop.setPosition(0);
-               //OUT & OPEN
-           }
-
-           else if(gamepad2.dpad_left) {
-               robot.ssgtop.setPosition(0.85);
-               sleep(1000);
-               robot.ssgbottom.setPosition(.3);
-               //IN & CLOSED
-           }
            */
 
 
 //------------------------------------------------------------------------------------
 
+            if (robot.digitalTouch.getState() == true) {
+                telemetry.addData("Digital Touch", "Is Not Pressed");
+            } else {
+                telemetry.addData("Digital Touch", "Is Pressed");
+                robot.robotsleep(0);
+                sleep(10000);
+            }
 
-            double power = 1;
+//------------------------------------------------------------------------------------
+
+
+            double powermotor = 1;
 
             if (gamepad1.right_bumper) {
-                power = 0.75;
+                powermotor = 0.75;
             } else if (gamepad1.left_bumper) {
-                power = 0.35;
+                powermotor = 0.35;
             }
 
 
-            double frontleft = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x) * power;
-            double rearleft = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x) * power;
-            double rearright = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x) * power;
-            double frontright = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x) * power;
+            double frontleft = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor;
+            double rearleft = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor;
+            double rearright = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor;
+            double frontright = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor;
 
 
             robot.frontLeftMotor.setPower(frontleft);
@@ -262,7 +285,12 @@ public class Tele_op_ritw extends LinearOpMode {
             telemetry.addData("Vertical right encoder position", robot.rearLeftMotor.getCurrentPosition());
             telemetry.addData("horizontal encoder position", robot.rearRightMotor.getCurrentPosition());
             telemetry.addData("intake", " %d", robot.intakemotor.getCurrentPosition());
-            telemetry.addData("launcher", " %.0f",robot.launcher.getVelocity()/28*60);
+            telemetry.addData("launcher1", " %.0f",robot.launcher1.getVelocity()/28*60);
+            telemetry.addData("launcher2", "%.0f",robot.launcher2.getVelocity()/28*60);
+            telemetry.addData("DSRearLeft", String.format("%.01f in", robot.DSRearLeft.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("DSLeftBack", String.format("%.01f in", robot.DSLeftBack.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("DSLeftFront", String.format("%.01f in", robot.DSLeftFront.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("DSRearRight", String.format("%.01f in", robot.DSRearRight.getDistance(DistanceUnit.INCH)));
             telemetry.update();
 
 
