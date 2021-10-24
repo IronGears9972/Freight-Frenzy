@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="0 Rings", group="Pushbot")
-public class Autonomous0OtherTest extends LinearOpMode {
+@Autonomous(name="wow", group="Pushbot")
+public class wow extends LinearOpMode {
 
     Hardware_20_21 robot = new Hardware_20_21();
     private ElapsedTime     runtime = new ElapsedTime();
@@ -25,64 +25,31 @@ public class Autonomous0OtherTest extends LinearOpMode {
 
         waitForStart();
 
-        robot.wobblehand2.setPosition(0.35);
-        robot.lightsaber.setPosition(0.96);
-        robot.drivestraight(-65,0.3);
+        robot.drivestraight(-115,0.65);
+        robot.robotsleep(100);
 
-        robot.launcher1.setPower(0.90);
-        robot.drivestrafe(-10,-0.3);
+        robot.drivestrafe(30,0.95);
+        robot.robotsleep(100);
 
-        OpRunShooterZero();
+        robot.drivestraight(30,0.95);
+        robot.robotsleep(100);
 
-        robot.drivestraight(-22,0.3);
-        robot.launcher1.setPower(0);
+        robot.drivestrafe(-30,0.95);
+        robot.robotsleep(100);
 
-        new OpRunDropWobble2AndPutDoneWobble1Zero().invoke();
+        robot.drivestraight(-30,0.95);
+        robot.robotsleep(100);
 
-        robot.drivestrafe(-60,0.3);
+        robot.drivestrafe(30,0.95);
+        robot.robotsleep(100);
 
-        robot.robotsleep(0);
-        sleep(200);
+        robot.drivestraight(30,0.95);
+        robot.robotsleep(100);
 
-        robot.wobblekeep.setPosition(1);
+        robot.drivestrafe(-30,0.95);
+        robot.robotsleep(100);
 
-        robot.drivestraight(84,0.3);
-
-        robot.robotsleep(0);
-        sleep(200);
-
-        robot.drivestrafe2(20,0.12);
-
-        robot.wobblehand2.setPosition(0.35);
-        sleep(650);
-
-        robot.wobble2.setPosition(0.20);
-        robot.robotsleep(0);
-        sleep(200);
-
-        robot.drivestraight(-90,0.3);
-
-        robot.robotsleep(0);
-        sleep(200);
-
-        robot.drivestrafe(50,0.35);
-
-        robot.robotsleep(0);
-        sleep(200);
-
-        robot.wobblehand2.setPosition(1);
-        robot.wobblekeep.setPosition(0.4);
-        sleep(1000);
-
-        robot.wobble2.setPosition(1);
-
-        robot.drivestrafe(-20,0.6);
-
-        robot.drivestraight(12,0.5);
-
-
-        OpRunTelemetryZero();
-
+        robot.drivestraight(115,0.95);
     }
 
     private void OpRunENCODERZero() {
