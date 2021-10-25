@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -31,37 +31,23 @@ public class Hardware_20_21 {
     public DcMotor rearLeftMotor = null;
     public DcMotor rearRightMotor = null;
     public DcMotor intakemotor = null;
-    public DcMotorEx launcher1 = null;
-    public DcMotor conveyor = null;
+    public DcMotorEx lifter = null;
+    public DcMotor duckextend = null;
 
     //Give names to our Servos for our Programs
-    public Servo wobblehand = null;
-    public Servo wobble = null;
-    public Servo wobblehand2 = null;
-    public Servo wobble2 = null;
-    public Servo wobblekeep = null;
-    public CRServo intakeservo = null;
-    public Servo kicker = null;
-    public Servo forks = null;
-    public Servo lightsaber = null;
-
-    //Give names to our Distance Sensors for our Programs
-    public DistanceSensor DSLeftFront = null;
-    public DistanceSensor DSLeftBack = null;
-    public ModernRoboticsI2cRangeSensor DSRearLeft = null;
-    public DistanceSensor DSRearRight = null;
-    public DistanceSensor sensorDistance = null;
-
-    //Give names to our Color Sensors for our Programs
-    public ColorSensor sensorColor = null;
-    public ColorSensor sensorColorL = null;
-    public ColorSensor sensorColorR = null;
+    public CRServo barcodeR = null;
+    public CRServo barcodeL = null;
+    public Servo elementarm = null;
+    public Servo ligtsaber = null;
+    public Servo elementclamp = null;
+    public CRServo duckspin = null;
 
     //Give names to our IMU for our Programs
     public BNO055IMU imu = null;
 
     //Give names our Touch Sensors for our Programs
-    public DigitalChannel digitalTouch;
+    public DigitalChannel BarcodeLeft;
+    public DigitalChannel BarcodeRight;
 
     //Create a variable that we need for Odometry
     final double COUNTS_PER_INCH = 8192.0/(3.14*2);

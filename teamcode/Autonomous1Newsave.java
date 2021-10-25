@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
