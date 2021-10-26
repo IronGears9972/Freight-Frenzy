@@ -36,7 +36,7 @@ import org.firstinspires.ftc.teamcode.Hardware_20_21;
 public class Autonomous4 extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Hardware_20_21 robot = new Hardware_20_21(); // use the class created to define a robot's hardware
+    Hardware_21_22 robot = new Hardware_21_22(); // use the class created to define a robot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
 
