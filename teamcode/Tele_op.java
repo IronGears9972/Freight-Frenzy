@@ -22,11 +22,7 @@ public class Tele_op extends LinearOpMode {
 
 
 
-    private ShootPSSM shootPSSM=new ShootPSSM();
-
-    private Shoot3SM shoot3SM=new Shoot3SM();
-
-    private Shoot1SM shoot1SM=new Shoot1SM();
+    //private ShootPSSM shootPSSM=new ShootPSSM();
 
 
     public void runOpMode() {
@@ -64,181 +60,61 @@ public class Tele_op extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-
-            if (gamepad1.y) {
-                robot.launcher1.setPower(0.5);
-                sleep(1000);
-
-                robot.robotsleep(0);
-                sleep(200);
-
-                robot.conveyor.setPower(-0.95);
-
-                robot.robotsleep(0);
-                sleep(200);
-
-                robot.drivestrafe(-8,0.2);
-                robot.robotsleep(0);
-                sleep(200);
-
-                robot.forks.setPosition(0.24);
-                sleep(200);
-
-                robot.conveyor.setPower(-0.95);
-                sleep(550);
-
-                robot.drivestrafe(-8,0.2);
-                robot.robotsleep(0);
-                sleep(400);
-
-                robot.forks.setPosition(0.28);
-                robot.kicker.setPosition(0.7);
-                sleep(400);
-
-                robot.launcher1.setPower(0);
-
-            }
-
-
-
 //------------------------------------------------------------------------------------
 
 
-            if (gamepad2.dpad_up) {
-                robot.intakemotor.setPower(0.95);
-                robot.intakeservo.setPower(0.8);
-            } else if (gamepad2.dpad_down) {
-                robot.intakemotor.setPower(-0.95);
-                robot.intakeservo.setPower(-0.8);
+            if(gamepad2.right_bumper) {
+                robot.intakemotor.setPower(.8);
+            } else if(gamepad2.left_bumper) {
+                robot.intakemotor.setPower(-.8);
             } else {
                 robot.intakemotor.setPower(0);
-                robot.intakeservo.setPower(0);
             }
 
 
 //------------------------------------------------------------------------------------
 
-
-            if (gamepad2.y) {
-
-                robot.launcher1.setPower(0.90);
-
-            } else if (gamepad2.b) {
-
-                robot.launcher1.setPower(0);
-            }else if (gamepad2.right_stick_button) {
-
-                robot.launcher1.setPower(0.69);
-            }else if (gamepad2.left_stick_button) {
-
-                robot.launcher1.setPower(0.50);
+            if(gamepad2.y) {
+                robot.lifter.setPower(.95);
+            } else if(gamepad2.b) {
+                robot.lifter.setPower(-.95);
+            } else {
+                robot.lifter.setPower(0);
             }
-
 
 //------------------------------------------------------------------------------------
 
-
-            if (gamepad1.dpad_right) {
-                robot.wobblehand.setPosition(0);
-
-
-            } else if (gamepad1.dpad_left) {
-                robot.wobblehand.setPosition(1);
-
+            if(gamepad2.x) {
+                robot.lightsaber.setPosition(0);
+            } else if(gamepad2.a) {
+                robot.lightsaber.setPosition(.95);
             }
-
-
-            if (gamepad1.dpad_down) {
-                robot.wobble.setPosition(1);
-
-
-
-            } else if (gamepad1.dpad_up) {
-                robot.wobble.setPosition(0);
-
-
-            }
-
-
-            if (gamepad1.dpad_right) {
-                robot.wobblehand2.setPosition(0.35);
-
-
-            } else if (gamepad1.dpad_left) {
-                robot.wobblehand2.setPosition(1);
-
-            }
-
-
-            if (gamepad1.dpad_down) {
-                robot.wobble2.setPosition(0.15);
-
-
-            } else if (gamepad1.dpad_up) {
-                robot.wobble2.setPosition(1);
-
-            }
-
 
 //------------------------------------------------------------------------------------
 
-
-            if (gamepad1.a) {
-                robot.wobblehand2.setPosition(0.35);
-                sleep(500);
-                robot.wobble2.setPosition(1);
+            if(gamepad2.dpad_down) {
+                robot.elementarm.setPosition(0);
+            } else if(gamepad2.dpad_up) {
+                robot.elementarm.setPosition(.95);
             }
-
 
 //------------------------------------------------------------------------------------
 
-
-
-            if (gamepad1.left_stick_button) {
-                robot.lightsaber.setPosition(0.32);
-            }else if (gamepad1.right_stick_button) {
-                robot.lightsaber.setPosition(0.96);
-
+            if(gamepad2.dpad_left) {
+                robot.elementclamp.setPosition(.95);
+            } else if(gamepad2.dpad_right) {
+                robot.elementclamp.setPosition(0);
             }
-
 
 //------------------------------------------------------------------------------------
 
-
-
-
-            if (gamepad2.x) {
-
-                shoot3SM.Start();
-
+            if(gamepad2.right_stick_button) {
+                robot.duckspin.setPower(.95);
+            } else if(gamepad2.left_stick_button) {
+                robot.duckspin.setPower(0);
             }
-
-            shoot3SM.update();
-
-
-            if (gamepad2.a) {
-
-                shoot1SM.Starta();
-
-            }
-
-            shoot1SM.update();
-
 
 //------------------------------------------------------------------------------------
-
-
-            if (gamepad2.right_bumper) {
-                robot.conveyor.setPower(-0.95);
-            } else if (gamepad2.left_bumper) {
-                robot.conveyor.setPower(0.25);
-            } else if (shoot3SM.state==Shoot3.Idle&&shoot1SM.statea==Shoot1.Idlea){
-                robot.conveyor.setPower(0);
-            }
-
-
-//------------------------------------------------------------------------------------
-
 
             double powermotor = 0.95;
 
@@ -266,24 +142,12 @@ public class Tele_op extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("SM",shoot3SM.state.toString());
-            telemetry.addData("SM",shoot1SM.statea.toString());
-            telemetry.addData("Forks",robot.forks.getPosition());
-
-            telemetry.addData("Alpha", robot.sensorColorL.alpha());
-            telemetry.addData("Red  ", robot.sensorColorL.red());
-            telemetry.addData("Green", robot.sensorColorL.green());
-            telemetry.addData("Blue ", robot.sensorColorL.blue());
-
-            telemetry.addData("Alpha", robot.sensorColor.alpha());
-            telemetry.addData("Red  ", robot.sensorColor.red());
-            telemetry.addData("Green", robot.sensorColor.green());
-            telemetry.addData("Blue ", robot.sensorColor.blue());
+            //telemetry.addData("SM",shoot3SM.state.toString());
+            //telemetry.addData("SM",shoot1SM.statea.toString());
             telemetry.addData("frontRightMotor", robot.frontRightMotor.getCurrentPosition());
             telemetry.addData("rearLeftMotor", robot.rearLeftMotor.getCurrentPosition());
             telemetry.addData("rearRightMotor", robot.rearRightMotor.getCurrentPosition());
             telemetry.addData("frontLeftMotor", robot.frontLeftMotor.getCurrentPosition());
-            telemetry.addData("launcher1", " %.0f",robot.launcher1.getVelocity()/28*60);
             telemetry.update();
 
 
@@ -294,7 +158,7 @@ public class Tele_op extends LinearOpMode {
 
     }
 
-    class ShootPSSM {
+  /*  class ShootPSSM {
 
         private ShootPS state=ShootPS.IdlePS;
 
@@ -369,188 +233,7 @@ public class Tele_op extends LinearOpMode {
 
         }
 
-        public void StartPS(){
+        */
 
-            if (state!=ShootPS.IdlePS){
-                return;
-            }
-
-            state=ShootPS.Fork1PS;
-            robot.forks.setPosition(0.24);
-            timer.reset();
-
-        }
-
-    }
-
-
-        class Shoot1SM{
-
-        private Shoot1 statea=Shoot1.Idlea;
-
-        private ElapsedTime timer=new ElapsedTime();
-
-        public void update(){
-
-        switch(statea){
-
-            case Idlea:
-                break;
-
-
-            case Forka1:
-                if (timer.milliseconds()>200){
-
-                    statea=Shoot1.Conveyona;
-                    robot.forks.setPosition(0.28);
-                    timer.reset();
-
-                }
-
-                break;
-
-            case Conveyona:
-                if (timer.milliseconds()>150){
-
-                    statea=Shoot1.Kicka;
-                    robot.conveyor.setPower(-0.65);
-                    robot.kicker.setPosition(0.5);
-                    timer.reset();
-
-                }
-
-                break;
-
-            case Kicka:
-                if (timer.milliseconds()>150){
-
-                    statea=Shoot1.Conveydonea;
-                    robot.conveyor.setPower(-0.65);
-                    timer.reset();
-
-                }
-
-                break;
-            case Conveydonea:
-                if (timer.milliseconds()>50){
-
-                    statea=Shoot1.Idlea;
-                    robot.forks.setPosition(0.05);
-                    robot.kicker.setPosition(1);
-                    robot.conveyor.setPower(0);
-                    timer.reset();
-
-                }
-
-                break;
-
-
-        }
-
-    }
-
-        public void Starta(){
-
-        if (statea!=Shoot1.Idlea){
-            return;
-        }
-
-        statea=Shoot1.Forka1;
-        robot.forks.setPosition(0.28);
-        timer.reset();
-
-    }
-
-    }
-
-
-    class Shoot3SM {
-
-        private Shoot3 state=Shoot3.Idle;
-
-        private ElapsedTime timer=new ElapsedTime();
-
-        public void update(){
-
-            switch(state){
-
-                case Idle:
-                    break;
-
-                case Fork1:
-                    if (timer.milliseconds()>450){
-
-                        state=Shoot3.Conveyon;
-                        robot.conveyor.setPower(-0.95);
-                        timer.reset();
-
-                    }
-
-                    break;
-
-                case Conveyon:
-                    if (timer.milliseconds()>150){
-
-                        state=Shoot3.Fork2;
-                        robot.forks.setPosition(0.28);//0.3
-                        timer.reset();
-
-                    }
-
-                    break;
-
-                case Fork2:
-                    if (timer.milliseconds()>450){
-
-                        state=Shoot3.Kick;
-                        robot.kicker.setPosition(0.7);
-                        timer.reset();
-
-                    }
-
-                    break;
-
-                case Kick:
-                    if (timer.milliseconds()>250){
-
-                        state=Shoot3.Conveydone;
-                        robot.conveyor.setPower(-0.95);
-                        robot.kicker.setPosition(0.5);
-                        timer.reset();
-
-                    }
-
-                    break;
-                case Conveydone:
-                    if (timer.milliseconds()>1150){
-
-                        state=Shoot3.Idle;
-                        robot.forks.setPosition(0.05);
-                        robot.kicker.setPosition(1);
-                        robot.conveyor.setPower(0);
-                        timer.reset();
-
-                    }
-
-                    break;
-
-
-            }
-
-        }
-
-        public void Start(){
-
-            if (state!=Shoot3.Idle){
-                return;
-            }
-
-            state=Shoot3.Fork1;
-            robot.forks.setPosition(0.24);
-            timer.reset();
-
-        }
-
-    }
 
 }
