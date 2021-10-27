@@ -63,9 +63,9 @@ public class Tele_op extends LinearOpMode {
 //------------------------------------------------------------------------------------
 
 
-            if(gamepad2.right_bumper) {
+            if(gamepad2.left_bumper) {
                 robot.intakemotor.setPower(.8);
-            } else if(gamepad2.left_bumper) {
+            } else if(gamepad2.right_bumper) {
                 robot.intakemotor.setPower(-.8);
             } else {
                 robot.intakemotor.setPower(0);
@@ -74,9 +74,9 @@ public class Tele_op extends LinearOpMode {
 
 //------------------------------------------------------------------------------------
 
-            if(gamepad2.y) {
+            if(gamepad2.b) {
                 robot.lifter.setPower(.95);
-            } else if(gamepad2.b) {
+            } else if(gamepad2.y) {
                 robot.lifter.setPower(-.95);
             } else {
                 robot.lifter.setPower(0);
@@ -116,12 +116,12 @@ public class Tele_op extends LinearOpMode {
 
 //------------------------------------------------------------------------------------
 
-            double powermotor = 0.95;
+            double powermotor = 0.55;
 
             if (gamepad1.right_bumper) {
-                powermotor = 0.30;
+                powermotor = 0.90;
             } else if (gamepad1.left_bumper) {
-                powermotor = 0.50;
+                powermotor = 0.15;
             }
 
 
