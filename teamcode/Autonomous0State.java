@@ -63,7 +63,7 @@ public class Autonomous0State extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
 
 
-
+    int layer;
     static final double     FORWARD_SPEED = 0.6;
     static final double     TURN_SPEED    = 0.5;
 
@@ -79,63 +79,92 @@ public class Autonomous0State extends LinearOpMode {
 
         robot.init(hardwareMap, this);
 
-        /*
-
         OpRunENCODERZero();
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        //-------------------------------------------------------------------------------------
+        //extends extendable arms
 
-        //  going strait is - and turning is counterclockwise
-        robot.wobblehand2.setPosition(0.35);
-        robot.drivestraight(-55,0.3);
+        robot.drivestraight(1,0.6);
+        robot.robotsleep(0);
+        sleep(50);
 
-        robot.launcher1.setPower(0.80);
+        robot.barcodeL.setPower(0.9);
+        robot.barcodeR.setPower(-0.9);
+        robot.duckextend.setPower(0.9);
+        sleep(2000);
 
-        robot.drivestrafe(8,-0.3);
+        robot.barcodeL.setPower(0);
+        robot.barcodeR.setPower(0);
+        robot.duckextend.setPower(0);
+        sleep(50);
 
+        //-------------------------------------------------------------------------------------
+        // spins ducks and reads
+        robot.duckspin.setPower(1.0);
+        sleep(4000);
+        robot.duckspin.setPower(0);
+        boolean L = robot.BarcodeLeft.getState();
+        boolean R = robot.BarcodeRight.getState();
+        if (L == true){
+            layer = 2;
+        } else if (R == true){
+            layer = 3;
+        } else
+            layer = 1;
+        sleep(50);
+        telemetry.addData("layer", layer);
 
-        robot.launcher1.setPower(0.80);
-
-
-
-
-        robot.forks.setPosition(0.24);
-        sleep(250);
-
-        robot.conveyor.setPower(0.95);
-
-
-
-        robot.kicker.setPosition(0.6);
-        sleep(275);
-
-        robot.conveyor.setPower(0);
-
-        robot.drivestrafe(-2,0.2);
-
-        robot.kicker.setPosition(1);
-        sleep(600);
-
-        robot.forks.setPosition(0.30);
-        sleep(300);
-
-        robot.kicker.setPosition(0.6);
-        sleep(150);
-
-        robot.conveyor.setPower(0.95);
-        sleep(1350);
-
-        robot.forks.setPosition(0.05);
-
-        robot.kicker.setPosition(1);
-
-        robot.launcher1.setPower(0);
-        robot.conveyor.setPower(0);
+        //-------------------------------------------------------------------------------------
+                //retracts extendable arms
 
 
+        robot.barcodeL.setPower(-0.9);
+        robot.barcodeR.setPower(0.9);
+        robot.duckextend.setPower(-0.9);
+        sleep(2000);
 
+        robot.barcodeL.setPower(0);
+        robot.barcodeR.setPower(0);
+        robot.duckextend.setPower(0);
+        sleep(50);
+
+        //-------------------------------------------------------------------------------------
+
+        robot.drivestrafe(30,0.6);
+        robot.robotsleep(0);
+        sleep(500);
+        robot.drivestraight(30,0.6);
+        robot.robotsleep(0);
+        sleep(50);
+
+        //-------------------------------------------------------------------------------------
+
+        robot.lifter.setPower(0.8);
+        sleep(1000);
+        robot.lifter.setPower(0);
+        robot.lightsaber.setPosition(0.3);
+        sleep(100);
+        robot.lightsaber.setPosition(0.95);
+        robot.lifter.setPower(-0.8);
+        sleep(1000);
+        robot.lifter.setPower(0);
+
+        //-------------------------------------------------------------------------------------
+        // 1st big diversion begins here
+        robot.trunangel(90,0.4);
+        robot.drivestrafe(30,0.6);
+        robot.drivestraight(50, 0.6);
+        //if it ends here, then the robot stops as soon as it gets into the warehouse
+
+        //-------------------------------------------------------------------------------------
+        //optional step that parks the robot deeper in the warehouse, closer to the shared shipping hub
+        robot.drivestrafe(-30,0.5);
+        robot.drivestraight(20, 0.6);
+
+        //-------------------------------------------------------------------------------------
 
         OpRunTelemetryZero();
 
@@ -147,14 +176,14 @@ public class Autonomous0State extends LinearOpMode {
         robot.rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.intakemotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.launcher1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rearLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rearRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.intakemotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     //              ^ Starts all Encoders
 
@@ -164,14 +193,14 @@ public class Autonomous0State extends LinearOpMode {
         telemetry.addData("Vertical right encoder position", robot.rearLeftMotor.getCurrentPosition());
         telemetry.addData("horizontal encoder position", robot.rearRightMotor.getCurrentPosition());
         telemetry.addData("intake", " %d", robot.intakemotor.getCurrentPosition());
-        telemetry.addData("launcher1", " %.0f",robot.launcher1.getVelocity()/28*60);
+        telemetry.addData("lifter", " %.0f",robot.lifter.getCurrentPosition());
         telemetry.update();
     }
     //              ^ Outputs text so we can read data
 
 
-         */
+
 
     }
 
-}
+
