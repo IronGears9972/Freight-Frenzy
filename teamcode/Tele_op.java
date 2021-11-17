@@ -1,11 +1,13 @@
-package org.firstinspires.ftc.teamcode.teamcode;
+package org.firstinspires.ftc.teamcode.teamcode.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 
 @TeleOp(name = "GearsTeleOp", group = "Linear Opmode")
 public class Tele_op extends LinearOpMode {
@@ -28,14 +30,15 @@ public class Tele_op extends LinearOpMode {
 
     public void runOpMode() {
 
+
         telemetry.addData("Say", "Hello Iron Gears");
         telemetry.update();
 
         while (!(opModeIsActive())){
-            //
+
             if(gamepad1.right_stick_button) {
-                driver = true;
-            }
+                    driver = true;
+                }
             else if (gamepad1.left_stick_button) {
                 driver = false;
             }
@@ -120,6 +123,15 @@ public class Tele_op extends LinearOpMode {
 
 //------------------------------------------------------------------------------------
 
+            if (gamepad1.right_trigger == 1 && gamepad1.left_trigger == 1 && gamepad1.a) {
+                driver = false;
+            }
+            else if (gamepad1.right_trigger == 1 && gamepad1.left_trigger == 1 && gamepad1.b) {
+                driver = true;
+            }
+
+//------------------------------------------------------------------------------------
+
             if (gamepad2.dpad_left) {
                 robot.duckextend.setPower(.9);
             } else if (gamepad2.dpad_right) {
@@ -138,8 +150,40 @@ public class Tele_op extends LinearOpMode {
                 else if (robot.blocksensor.argb() < -1500000000 && robot.blocksensor.argb() > -2100000000) {
                     robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
                 }
-                else if(robot.blocksensor.argb() < 500000000 && robot.blocksensor.argb() > 600000000) {
+                else if(robot.blocksensor.argb() > 500000000 && robot.blocksensor.argb() < 600000000) {
                     robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+                }
+                else if(runtime.seconds() > 80 && runtime.seconds() < 85) {
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_MEDIUM);
+                }
+                else if(runtime.seconds() >= 85 && runtime.seconds() < 90) {
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
+                }
+                else if(runtime.seconds() >= 90 && runtime.seconds() < 110) {
+                    if (robot.blocksensor.argb() > 1400000000 && robot.blocksensor.argb() < 1800000000) {
+                        robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+                    }
+                    else if (robot.blocksensor.argb() > 410000000 && robot.blocksensor.argb() < 490000000) {
+                        robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+                    }
+                    else if (robot.blocksensor.argb() < -1500000000 && robot.blocksensor.argb() > -2100000000) {
+                        robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+                    }
+                    else if(robot.blocksensor.argb() < 500000000 && robot.blocksensor.argb() > 600000000) {
+                        robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+                    }
+                    else if(robot.blocksensor.argb() > 500000000 && robot.blocksensor.argb() < 560000000) {
+                        robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+                    }
+                    else {
+                        robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+                    }
+                }
+                else if(runtime.seconds() >= 110 && runtime.seconds() < 115) {
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_MEDIUM);
+                }
+                else if(runtime.seconds() >= 115 && runtime.seconds() < 120) {
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
                 }
                 else {
                     robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
@@ -174,6 +218,7 @@ public class Tele_op extends LinearOpMode {
                 else {
                     robot.lifter.setPower(0);
                 }
+
 //------------------------------------------------------------------------------------
 
                 double powermotor = 0.3;
@@ -186,7 +231,7 @@ public class Tele_op extends LinearOpMode {
 
 //------------------------------------------------------------------------------------
 
-                if(driver = true) {
+                if (driver == true) {
                     frontleft = (gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * powermotor;
                     rearleft = (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * powermotor;
                     rearright = (gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * powermotor;
@@ -259,7 +304,21 @@ public class Tele_op extends LinearOpMode {
                 telemetry.addData("lifterTP", robot.lifter.getTargetPosition());
                 telemetry.addData("Lift Power", robot.lifter.getPower());
                 telemetry.update();
+
+
+//------------------------------------------------------------------------------------
+
             }
+
+
         }
+
+
+
+
+
+
+
     }
 }
+
