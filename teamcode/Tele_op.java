@@ -83,9 +83,9 @@ public class Tele_op extends LinearOpMode {
 
             if (robot.lifter.getCurrentPosition() < 50) {
                 if (gamepad2.right_trigger == 1) {
-                    robot.intakemotor.setPower(-.8);
+                    robot.intakemotor.setPower(-.95);
                 } else if (gamepad2.left_trigger == 1) {
-                    robot.intakemotor.setPower(.8);
+                    robot.intakemotor.setPower(.95);
                 } else {
                     robot.intakemotor.setPower(0);
                 }
@@ -104,10 +104,6 @@ public class Tele_op extends LinearOpMode {
                 robot.duckspin.setPower(-.2);
                 robot.duckspinblue.setPower(-.2);
             }
-            else if (gamepad2.y && gamepad2.left_bumper) {
-                robot.duckspin.setPower(-.2);
-                robot.duckspinblue.setPower(-.2);
-            }
             else {
                 robot.duckspin.setPower(0);
                 robot.duckspinblue.setPower(0);
@@ -115,10 +111,10 @@ public class Tele_op extends LinearOpMode {
 
 //------------------------------------------------------------------------------------
 
-            if (gamepad2.x) {
+            if (gamepad2.x && !gamepad2.left_bumper) {
                 robot.lightsaber.setPosition(0.5);
             } else {
-                robot.lightsaber.setPosition(0.05);
+                robot.lightsaber.setPosition(0);
             }
 
 //------------------------------------------------------------------------------------
@@ -153,11 +149,22 @@ public class Tele_op extends LinearOpMode {
                 else if(robot.blocksensor.argb() > 500000000 && robot.blocksensor.argb() < 600000000) {
                     robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
                 }
+                else if(robot.blocksensor.argb() > 100000000 && robot.blocksensor.argb() < 130000000) {
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+                }
+                else if(robot.blocksensor.argb() > 290000000 && robot.blocksensor.argb() < 330000000) {
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+                }
                 else if(runtime.seconds() > 80 && runtime.seconds() < 85) {
-                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_MEDIUM);
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_SLOW);
                 }
                 else if(runtime.seconds() >= 85 && runtime.seconds() < 90) {
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                     robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
+                }
+                else if(robot.blocksensor.argb() > 650000000 && robot.blocksensor.argb() < 690000000) {
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
                 }
                 else if(runtime.seconds() >= 90 && runtime.seconds() < 110) {
                     if (robot.blocksensor.argb() > 1400000000 && robot.blocksensor.argb() < 1800000000) {
@@ -175,14 +182,19 @@ public class Tele_op extends LinearOpMode {
                     else if(robot.blocksensor.argb() > 500000000 && robot.blocksensor.argb() < 560000000) {
                         robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
                     }
+                    else if(robot.blocksensor.argb() > 650000000 && robot.blocksensor.argb() < 690000000) {
+                        robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
+                    }
                     else {
                         robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     }
                 }
                 else if(runtime.seconds() >= 110 && runtime.seconds() < 115) {
-                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_MEDIUM);
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_SLOW);
                 }
                 else if(runtime.seconds() >= 115 && runtime.seconds() < 120) {
+                    robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                     robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
                 }
                 else {
@@ -212,7 +224,7 @@ public class Tele_op extends LinearOpMode {
                     robot.lifter.setTargetPosition(robot.lifter.getTargetPosition()-10);
                 }
 
-                if (robot.lifter.getCurrentPosition() <= (robot.lifter.getTargetPosition()-30) || robot.lifter.getCurrentPosition() >= (robot.lifter.getTargetPosition()+30)){
+                if (robot.lifter.getCurrentPosition() <= (robot.lifter.getTargetPosition()-15) || robot.lifter.getCurrentPosition() >= (robot.lifter.getTargetPosition()+15)){
                     robot.lifter.setPower(0.9);
                 }
                 else {
@@ -224,7 +236,7 @@ public class Tele_op extends LinearOpMode {
                 double powermotor = 0.3;
 
                 if (gamepad1.right_bumper) {
-                    powermotor = .95;
+                    powermotor = .8;
                 } else if (gamepad1.left_bumper) {
                     powermotor = 0.2;
                 }
@@ -232,10 +244,10 @@ public class Tele_op extends LinearOpMode {
 //------------------------------------------------------------------------------------
 
                 if (driver == true) {
-                    frontleft = (gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * powermotor;
-                    rearleft = (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * powermotor;
-                    rearright = (gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * powermotor;
-                    frontright = (gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * powermotor;
+                    rearleft = (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * powermotor;
+                    frontleft = (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * powermotor;
+                    frontright = (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * powermotor;
+                    rearright = (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * powermotor;
 
                     robot.frontLeftMotor.setPower(frontleft);
                     robot.rearLeftMotor.setPower(rearleft);
@@ -244,18 +256,25 @@ public class Tele_op extends LinearOpMode {
 
                     if (gamepad2.left_bumper && gamepad2.dpad_up) {
                         robot.elementclamp.setPosition(.5);
-                    } else if (gamepad2.left_bumper && gamepad2.dpad_down) {
+                    } else if (gamepad2.left_bumper && gamepad2.dpad_down && !gamepad2.right_bumper) {
                         robot.elementclamp.setPosition(0);
                     }
 
-                    if (!gamepad2.left_bumper && gamepad2.dpad_down) {
-                        robot.elementarm.setPosition(0);
-                    } else if (!gamepad2.left_bumper && gamepad2.dpad_up) {
-                        robot.elementarm.setPosition(0.25);
-                    } else if (!gamepad2.right_bumper && gamepad2.dpad_up) {
-                        robot.elementarm.setPosition(0.5);
+                    if (!gamepad2.left_bumper && gamepad2.dpad_up && !gamepad1.right_bumper) {
+                            robot.elementclamp.setPosition(.5);
+                        } else if (!gamepad2.left_bumper && gamepad2.dpad_down) {
+                            robot.elementclamp.setPosition(0);
+                        }
+
+                        if (gamepad2.left_bumper && gamepad2.dpad_down) {
+                            robot.elementarm.setPosition(0);
+                        } else if (gamepad2.left_bumper && gamepad2.dpad_up) {
+                            robot.elementarm.setPosition(0.15);
+                        } else if (gamepad2.right_bumper && gamepad2.dpad_up) {
+                            robot.elementarm.setPosition(0.45);
+                        }
                     }
-                } else {
+                else {
 
                     frontleft = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor;
                     rearleft = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor;
@@ -267,18 +286,22 @@ public class Tele_op extends LinearOpMode {
                     robot.rearRightMotor.setPower(rearright);
                     robot.frontRightMotor.setPower(frontright);
 
-                    if (!gamepad2.left_bumper && gamepad2.dpad_up) {
+                    if (gamepad2.left_bumper && gamepad2.dpad_up) {
                         robot.elementclamp.setPosition(.5);
-                    } else if (!gamepad2.left_bumper && gamepad2.dpad_down) {
+                    } else if (gamepad2.left_bumper && gamepad2.dpad_down && !gamepad2.right_bumper) {
                         robot.elementclamp.setPosition(0);
                     }
 
-                    if (gamepad2.left_bumper && gamepad2.dpad_down) {
+                    if (!gamepad2.left_bumper && gamepad2.dpad_down) {
                         robot.elementarm.setPosition(0);
-                    } else if (gamepad2.left_bumper && gamepad2.dpad_up) {
-                        robot.elementarm.setPosition(0.25);
+                    } else if (!gamepad2.left_bumper && gamepad2.dpad_up && !gamepad2.right_bumper) {
+                        robot.elementarm.setPosition(0.15);
                     } else if (gamepad2.right_bumper && gamepad2.dpad_up) {
                         robot.elementarm.setPosition(0.5);
+                    } else if (gamepad1.dpad_down) {
+                        robot.elementarm.setPosition(0);
+                    } else if(gamepad1.dpad_up) {
+                        robot.elementclamp.setPosition(.45);
                     }
                 }
 
