@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode;
+package org.firstinspires.ftc.teamcode.teamcode.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -112,7 +112,7 @@ public class Tele_op extends LinearOpMode {
 //------------------------------------------------------------------------------------
 
             if (gamepad2.x && !gamepad2.left_bumper) {
-                robot.lightsaber.setPosition(0.5);
+                robot.lightsaber.setPosition(0.4);
             } else {
                 robot.lightsaber.setPosition(0);
             }
@@ -246,7 +246,7 @@ public class Tele_op extends LinearOpMode {
                 double powermotor = 0.3;
 
                 if (gamepad1.right_bumper) {
-                    powermotor = .8;
+                    powermotor = 1;
                 } else if (gamepad1.left_bumper) {
                     powermotor = 0.2;
                 }

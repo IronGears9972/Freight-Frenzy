@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode;
+package org.firstinspires.ftc.teamcode.teamcode.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -146,7 +146,7 @@ public class Hardware_21_22 {
 
         //Set Init Position to all servos
         elementclamp.setPosition(0);
-        elementarm.setPosition(0.45);
+        elementarm.setPosition(0.4);
         lightsaber.setPosition(0.05);
 
         //Set all motors that are using Servos to RUN_USING_ENCODER
@@ -163,10 +163,10 @@ public class Hardware_21_22 {
     }
 
     // Setting height layers ONCE
-    public int TipTop = 880;
-    public int layer3 = 700;
-    public int layer2 = 400;
-    public int bottom = 115;
+    public int TipTop = 4900;
+    public int layer3 = 3650;
+    public int layer2 = 1925;
+    public int bottom = 400;
 
     public double getangel(){
         Orientation angels = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
