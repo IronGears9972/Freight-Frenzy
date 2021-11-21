@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode;
+package org.firstinspires.ftc.teamcode.teamcode.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -166,7 +166,7 @@ public class Hardware_21_22 {
     public int TipTop = 4900;
     public int layer3 = 3650;
     public int layer2 = 1925;
-    public int bottom = 550;
+    public int bottom = 400;
 
     public double getangel(){
         Orientation angels = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -239,30 +239,30 @@ public class Hardware_21_22 {
         rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         int position = (int) (inches * (820 / 49.0));
-
-
-        rearLeftMotor.setTargetPosition(-position);
-        rearRightMotor.setTargetPosition(position);
+        double position2 = (position*1.05);
+        if (choice.equals("S1")){
+        rearLeftMotor.setTargetPosition((int) -position2);
+        rearRightMotor.setTargetPosition((int) position2);
         frontLeftMotor.setTargetPosition(position);
         frontRightMotor.setTargetPosition(-position);
+        }
+        else {
+            rearLeftMotor.setTargetPosition(-position);
+            rearRightMotor.setTargetPosition(position);
+            frontLeftMotor.setTargetPosition(position);
+            frontRightMotor.setTargetPosition(-position);
+        }
 
 
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rearLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rearRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         if (choice.equals("S1")) {
-            rearLeftMotor.setPower(1.05*power);
-            rearRightMotor.setPower(1.05*power);
+            rearLeftMotor.setPower(power*1.05);
+            rearRightMotor.setPower(power*1.05);
             frontLeftMotor.setPower(power);
             frontRightMotor.setPower(power);
-        }
-        else if (choice.equals("S2")){
-            rearLeftMotor.setPower(power);
-            rearRightMotor.setPower(power);
-            frontLeftMotor.setPower(1.05*power);
-            frontRightMotor.setPower(1.05*power);
         }
         else {
             rearLeftMotor.setPower(power);
@@ -270,7 +270,6 @@ public class Hardware_21_22 {
             frontLeftMotor.setPower(power);
             frontRightMotor.setPower(power);
         }
-
 
         while (rearLeftMotor.isBusy() && rearRightMotor.isBusy() && frontLeftMotor.isBusy() && frontRightMotor.isBusy() && opMode.opModeIsActive()) {
             opMode.telemetry.addData("Target  ", "%4d %4d %4d %4d", rearLeftMotor.getTargetPosition(), rearRightMotor.getTargetPosition(), frontLeftMotor.getTargetPosition(), frontRightMotor.getTargetPosition());

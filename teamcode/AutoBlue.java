@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode;
+package org.firstinspires.ftc.teamcode.teamcode.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -134,7 +134,7 @@ public class AutoBlue extends LinearOpMode {
             robot.duckextend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.duckextend.setPower(0.8);
             sleep(1000);
-            robot.elementarm.setPosition(0.01);
+            robot.elementarm.setPosition(0.04);
             robot.elementclamp.setPosition(0.5);
 
             sleep(500);
@@ -201,7 +201,7 @@ public class AutoBlue extends LinearOpMode {
             robot.lifter.setTargetPosition(0);
             robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lifter.setPower(-0.95);
-            robot.drivestraight(-29.5, 0.3);
+            robot.drivestraight(-29.5, 0.2);
             robot.lightsaber.setPosition(0);
             robot.robotsleep(0);
             sleep(500);
