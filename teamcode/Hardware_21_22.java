@@ -1,29 +1,17 @@
-package org.firstinspires.ftc.teamcode.teamcode;
+package org.firstinspires.ftc.teamcode.teamcode.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import android.graphics.Color;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 
 public class Hardware_21_22 {
@@ -40,9 +28,12 @@ public class Hardware_21_22 {
     //Give names to our Servos for our Programs
     public Servo elementarm = null;
     public Servo lightsaber = null;
-    public Servo elementclamp = null;
+    public Servo elementclamp1 = null;
+    public Servo elementclamp2 = null;
     public CRServo duckspin = null;
     public CRServo duckspinblue = null;
+    public Servo distancearmservoR = null;
+    public Servo distancearmservoL = null;
 
     //Give names to our IMU for our Programs
     public BNO055IMU imu = null;
@@ -51,16 +42,13 @@ public class Hardware_21_22 {
     public DistanceSensor distanceR;
     public DistanceSensor distanceL;
 
-    public ColorSensor ballsensor;
     public ColorSensor blocksensor;
+    public ColorSensor ballsensor;
 
     public boolean driver = false;
 
     public RevBlinkinLedDriver cargolights;
     RevBlinkinLedDriver.BlinkinPattern pattern;
-
-    //Create a variable that we need for Odometry
-    final double COUNTS_PER_INCH = 8192.0/(3.14*2);
 
     //Create names for our Hardware Maps
     HardwareMap hwMap = null;
@@ -83,50 +71,44 @@ public class Hardware_21_22 {
         rearLeftMotor = hwMap.get(DcMotorEx.class, "back_left");
         rearRightMotor = hwMap.get(DcMotorEx.class, "back_right");
         intakemotor = hwMap.get(DcMotor.class, "intakemotor");
-        lifter = hwMap.get(DcMotorEx.class, "lifter");
+        lifter = hwMap.get(DcMotor.class, "lifter");
         duckextend = hwMap.get(DcMotor.class, "duckextend");
 
         //Name Servos for Config
         elementarm = hwMap.get(Servo.class, "elementarm");
         lightsaber = hwMap.get(Servo.class, "lightsaber");
-        elementclamp = hwMap.get(Servo.class, "elementclamp");
+        elementclamp1 = hwMap.get(Servo.class, "elementclamp1");
+        elementclamp2 = hwMap.get(Servo.class, "elementclamp2");
         duckspin = hwMap.get(CRServo.class, "duckspin");
         duckspinblue = hwMap.get(CRServo.class, "duckspinblue");
+        distancearmservoR = hwMap.get(Servo.class, "distancearmservoR");
+        distancearmservoL = hwMap.get(Servo.class, "distancearmservoL");
 
         cargolights = hwMap.get(RevBlinkinLedDriver.class, "cargolights");
 
         //Sensors
         distanceR = hwMap.get(DistanceSensor.class,"distanceR");
         distanceL = hwMap.get(DistanceSensor.class, "distanceL");
-        blocksensor = hwMap.get(ColorSensor.class, "blockyboy");
-        ballsensor = hwMap.get(ColorSensor.class, "ballyman");
-
-        //IMU setup
-        imu = hwMap.get(BNO055IMU.class,"imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu.initialize(parameters);
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        //blocksensor = hwMap.get(ColorSensor.class, "blockyboy");
+        //ballsensor = hwMap.get(ColorSensor.class, "ballyman");
 
         //Set Direction the Motors will turn
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        rearLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        rearRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        rearLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        rearRightMotor.setDirection(DcMotorEx.Direction.FORWARD);
         intakemotor.setDirection(DcMotor.Direction.FORWARD);
 
         //Set Direction the Servos will turn
-        elementarm.setDirection(Servo.Direction.REVERSE);
+        elementarm.setDirection(Servo.Direction.FORWARD);
         lightsaber.setDirection(Servo.Direction.FORWARD);
-        elementclamp.setDirection(Servo.Direction.FORWARD);
+        elementclamp2.setDirection(Servo.Direction.FORWARD);
+        elementclamp1.setDirection(Servo.Direction.REVERSE);
         duckspin.setDirection(CRServo.Direction.FORWARD);
         duckspinblue.setDirection(CRServo.Direction.REVERSE);
         duckextend.setDirection(CRServo.Direction.REVERSE);
+        distancearmservoL.setDirection(Servo.Direction.REVERSE);
+        distancearmservoR.setDirection(Servo.Direction.FORWARD);
 
         //Set Init Power to Motors and apply Automatic Breaking
         frontLeftMotor.setPower(0);
@@ -148,9 +130,13 @@ public class Hardware_21_22 {
         duckspin.setPower(0);
 
         //Set Init Position to all servos
-        elementclamp.setPosition(0);
-        elementarm.setPosition(0.35);
-        lightsaber.setPosition(0.05);
+        distancearmservoL.setPosition(.02);
+        distancearmservoR.setPosition(0);
+        elementclamp1.setPosition(0);
+        elementclamp2.setPosition(0);
+        lifter.setTargetPosition(0);
+        lightsaber.setPosition(0);
+        elementarm.setPosition(0);
 
         //Set all motors that are using Servos to RUN_USING_ENCODER
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -171,237 +157,26 @@ public class Hardware_21_22 {
     public int layer2 = 1100;
     public int bottom = 400;
 
-    public double getangel(){
-        Orientation angels = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        return -angels.firstAngle;
+    /*public void teleInit() {
 
+        distancearmservoL.setPosition(.02);
+        distancearmservoR.setPosition(0);
+        elementclamp1.setPosition(0);
+        elementclamp2.setPosition(0);
+        lifter.setTargetPosition(0);
+        lightsaber.setPosition(0);
+        elementarm.setPosition(0);
     }
 
-    public void drivestraight(double inches, double power) {
-        //int tol = 35;
+    public void autoInit() {
 
-        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        /*
-        frontRightMotor.setTargetPositionTolerance(tol);
-        frontLeftMotor.setTargetPositionTolerance(tol);
-        rearLeftMotor.setTargetPositionTolerance(tol);
-        rearRightMotor.setTargetPositionTolerance(tol);
-        */
-
-        int position = (int) (inches * (1240 / 81.0));
-
-        rearLeftMotor.setTargetPosition(position);
-        rearRightMotor.setTargetPosition(position);
-        frontLeftMotor.setTargetPosition(position);
-        frontRightMotor.setTargetPosition(position);
-
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rearLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rearRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        rearLeftMotor.setPower(power);
-        rearRightMotor.setPower(power);
-        frontLeftMotor.setPower(power);
-        frontRightMotor.setPower(power);
-
-        while (rearLeftMotor.isBusy() && rearRightMotor.isBusy() && frontLeftMotor.isBusy() && frontRightMotor.isBusy() && opMode.opModeIsActive()) {
-            opMode.telemetry.addData("Target  ", "%4d %4d %4d %4d", rearLeftMotor.getTargetPosition(), rearRightMotor.getTargetPosition(), frontLeftMotor.getTargetPosition(), frontRightMotor.getTargetPosition());
-            opMode.telemetry.addData("Current ", "%4d %4d %4d %4d", rearLeftMotor.getCurrentPosition(), rearRightMotor.getCurrentPosition(), frontLeftMotor.getCurrentPosition(), frontRightMotor.getCurrentPosition());
-            opMode.telemetry.update();
-
-            if ((Math.abs(rearLeftMotor.getTargetPosition() - rearLeftMotor.getCurrentPosition()) < (20.25*(1240 / 81)))&(Math.abs(frontRightMotor.getTargetPosition() - frontRightMotor.getCurrentPosition()) < (20.25*(1240 / 81)))&(Math.abs(frontLeftMotor.getTargetPosition() - frontLeftMotor.getCurrentPosition()) < (20.25*(1240 / 81)))&(Math.abs(rearRightMotor.getTargetPosition() - rearRightMotor.getCurrentPosition()) < (20.25*(1240 / 81)))) {
-
-                rearLeftMotor.setPower(power / 4);
-                rearRightMotor.setPower(power / 4);
-                frontLeftMotor.setPower(power / 4);
-                frontRightMotor.setPower(power / 4);
-
-            }
-
-            opMode.idle();
-
-        }
-
-        rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        rearLeftMotor.setPower(0);
-        rearRightMotor.setPower(0);
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-
-
-    }
-
-    public void drivestrafe(double inches, double power, String choice) {
-
-        int tol = 5;
-        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        frontRightMotor.setTargetPositionTolerance(tol);
-        frontLeftMotor.setTargetPositionTolerance(tol);
-        rearLeftMotor.setTargetPositionTolerance(tol);
-        rearRightMotor.setTargetPositionTolerance(tol);
-
-        int position = (int) (inches * (820 / 49.0));
-        double position2 = (position*1.05);
-        //double position3 = (position*2);
-        if (choice.equals("S1")){
-        rearLeftMotor.setTargetPosition((int) -position2);
-        rearRightMotor.setTargetPosition((int) position2);
-        frontLeftMotor.setTargetPosition(position);
-        frontRightMotor.setTargetPosition(-position);
-        }
-        /*
-        else if (inches > 0){
-            rearLeftMotor.setTargetPosition(-position);
-            rearRightMotor.setTargetPosition(position);
-            frontLeftMotor.setTargetPosition((int) position3);
-            frontRightMotor.setTargetPosition(-position);
-        }
-         */
-        else {
-            rearLeftMotor.setTargetPosition(-position);
-            rearRightMotor.setTargetPosition(position);
-            frontLeftMotor.setTargetPosition(position);
-            frontRightMotor.setTargetPosition(-position);
-        }
-
-
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rearLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rearRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        if (choice.equals("S1")) {
-            rearLeftMotor.setPower(power*1.05);
-            rearRightMotor.setPower(power*1.05);
-            frontLeftMotor.setPower(power);
-            frontRightMotor.setPower(power);
-        }
-        /*
-        else if (inches > 0){
-            rearLeftMotor.setPower(power);
-            rearRightMotor.setPower(power);
-            frontLeftMotor.setPower(power*1.3);
-            frontRightMotor.setPower(power);
-        }
-         */
-        else {
-            rearLeftMotor.setPower(power);
-            rearRightMotor.setPower(power);
-            frontLeftMotor.setPower(power);
-            frontRightMotor.setPower(power);
-        }
-
-        while (rearLeftMotor.isBusy() && rearRightMotor.isBusy() && frontRightMotor.isBusy() || frontLeftMotor.isBusy() && opMode.opModeIsActive()) {
-            opMode.telemetry.addData("Target  ", "%4d %4d %4d %4d", rearLeftMotor.getTargetPosition(), rearRightMotor.getTargetPosition(), frontLeftMotor.getTargetPosition(), frontRightMotor.getTargetPosition());
-            opMode.telemetry.addData("Current ", "%4d %4d %4d %4d", rearLeftMotor.getCurrentPosition(), rearRightMotor.getCurrentPosition(), frontLeftMotor.getCurrentPosition(), frontRightMotor.getCurrentPosition());
-            opMode.telemetry.update();
-
-        }
-
-        rearLeftMotor.setPower(0);
-        rearRightMotor.setPower(0);
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-
-        rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-    }
-
-    public void trunangel (double angel, double power) {
-
-        double startangel = getangel();
-
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rearLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rearRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        if (angel>0){
-
-            rearLeftMotor.setPower(-power);
-            rearRightMotor.setPower(power);
-            frontLeftMotor.setPower(-power);
-            frontRightMotor.setPower(power);
-
-        }
-        else {
-            rearLeftMotor.setPower(power );
-            rearRightMotor.setPower(-power);
-            frontLeftMotor.setPower(power);
-            frontRightMotor.setPower(-power);
-        }
-
-        double targetangel = startangel + angel;
-        double curentangel = getangel();
-        double diff = targetangel - curentangel;
-
-        while (Math.abs(diff)>2){
-
-            targetangel = startangel + angel;
-            curentangel = getangel();
-            diff = targetangel - curentangel;
-
-            opMode.telemetry.addData("target","%.2f",targetangel);
-            opMode.telemetry.addData("curent","%.2f",curentangel);
-            opMode.telemetry.addData("diff","%.2f",diff);
-
-
-        }
-
-        rearLeftMotor.setPower(0);
-        rearRightMotor.setPower(0);
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-
-        rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-    }
-
-    public void robotsleep(double power) {
-
-        frontLeftMotor.setPower(power);
-        frontRightMotor.setPower(power);
-        rearLeftMotor.setPower(power);
-        rearRightMotor.setPower(power);
-
-        rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-    }
-
-    public void timeStop() {
-        for (int i = 0; i <= 9999; i++ )
-        {
-            double x = Math.random() * Math.random() * Math.random() * Math.random() * 10 * Math.random();
-        }
-
-    }
+        distancearmservoL.setPosition(.7);
+        distancearmservoR.setPosition(.68);
+        elementclamp1.setPosition(.5);
+        elementclamp2.setPosition(.5);
+        lifter.setTargetPosition(0);
+        lightsaber.setPosition(0);
+        elementarm.setPosition(0);
+    }*/
 
 }
