@@ -103,13 +103,13 @@ public class Tele_op extends LinearOpMode {
                 if (gamepad2.y && !gamepad2.left_bumper) {
                     while (gamepad2.y) {
                         robot.duckspin.setPower(0.8);
-                        robot.duckspinblue.setPower(0.8);
+                        robot.duckspin.setPower(0.8);
                     }
                     robot.duckspin.setPower(-.2);
-                    robot.duckspinblue.setPower(-.2);
+                    robot.duckspin.setPower(-.2);
                 } else {
                     robot.duckspin.setPower(0);
-                    robot.duckspinblue.setPower(0);
+                    robot.duckspin.setPower(0);
                 }
 
 //------------------------------------------------------------------------------------
@@ -338,13 +338,13 @@ public class Tele_op extends LinearOpMode {
                 if (gamepad1.y && !gamepad1.left_bumper) {
                     while (gamepad1.y) {
                         robot.duckspin.setPower(0.8);
-                        robot.duckspinblue.setPower(0.8);
+                        robot.duckspin.setPower(0.8);
                     }
                     robot.duckspin.setPower(-.2);
-                    robot.duckspinblue.setPower(-.2);
+                    robot.duckspin.setPower(-.2);
                 } else {
                     robot.duckspin.setPower(0);
-                    robot.duckspinblue.setPower(0);
+                    robot.duckspin.setPower(0);
                 }
 
 //------------------------------------------------------------------------------------
@@ -469,8 +469,8 @@ public class Tele_op extends LinearOpMode {
             telemetry.addData("rightWheel", robot.rearLeftMotor.getCurrentPosition());
             telemetry.addData("middleWheel", robot.frontLeftMotor.getCurrentPosition());
             telemetry.addData("duckExtend", robot.duckextend.getCurrentPosition());
-            telemetry.addData("DR", robot.distanceR.getDistance(DistanceUnit.INCH));
-            telemetry.addData("DL", robot.distanceL.getDistance(DistanceUnit.INCH));
+            telemetry.addData("DR", robot.distance1.getDistance(DistanceUnit.INCH));
+            telemetry.addData("DL", robot.distance2.getDistance(DistanceUnit.INCH));
                     /*telemetry.addData("BS-R", robot.blocksensor.red());
                     telemetry.addData("BS-G", robot.blocksensor.green());
                     telemetry.addData("BS-B", robot.blocksensor.blue());

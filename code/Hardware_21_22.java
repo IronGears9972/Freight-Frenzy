@@ -4,14 +4,14 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
+import android.graphics.Color;
 
 
 public class Hardware_21_22 {
@@ -24,26 +24,27 @@ public class Hardware_21_22 {
     public DcMotor intakemotor = null;
     public DcMotor lifter = null;
     public DcMotor duckextend = null;
+    public DcMotor duckspin = null;
 
     //Give names to our Servos for our Programs
     public Servo elementarm = null;
     public Servo lightsaber = null;
     public Servo elementclamp1 = null;
     public Servo elementclamp2 = null;
-    public CRServo duckspin = null;
-    public CRServo duckspinblue = null;
-    public Servo distancearmservoR = null;
-    public Servo distancearmservoL = null;
+    public Servo distancearmservo2 = null;
+    public Servo distancearmservo1 = null;
 
     //Give names to our IMU for our Programs
     public BNO055IMU imu = null;
 
     //Give names our Sensors for our Programs
-    public DistanceSensor distanceR;
-    public DistanceSensor distanceL;
+    public DistanceSensor distance1;
+    public DistanceSensor distance2;
+    public DistanceSensor distance3;
+    public DistanceSensor blocksensor_distance;
+    //public DistanceSensor elevatorSensor;
 
-    //public ColorSensor blocksensor;
-    //public ColorSensor ballsensor;
+    public ColorSensor blocksensor;
 
     public boolean driver = false;
 
@@ -72,6 +73,8 @@ public class Hardware_21_22 {
         rearRightMotor = hwMap.get(DcMotorEx.class, "back_right");
         intakemotor = hwMap.get(DcMotor.class, "intakemotor");
         lifter = hwMap.get(DcMotor.class, "lifter");
+        duckspin = hwMap.get(DcMotor.class, "duckspin");
+
         duckextend = hwMap.get(DcMotor.class, "duckextend");
 
         //Name Servos for Config
@@ -79,24 +82,24 @@ public class Hardware_21_22 {
         lightsaber = hwMap.get(Servo.class, "lightsaber");
         elementclamp1 = hwMap.get(Servo.class, "elementclamp1");
         elementclamp2 = hwMap.get(Servo.class, "elementclamp2");
-        duckspin = hwMap.get(CRServo.class, "duckspin");
-        duckspinblue = hwMap.get(CRServo.class, "duckspinblue");
-        distancearmservoR = hwMap.get(Servo.class, "distancearmservoR");
-        distancearmservoL = hwMap.get(Servo.class, "distancearmservoL");
+        distancearmservo2 = hwMap.get(Servo.class, "distancearmservoR");
+        distancearmservo1 = hwMap.get(Servo.class, "distancearmservoL");
 
         cargolights = hwMap.get(RevBlinkinLedDriver.class, "cargolights");
 
         //Sensors
-        distanceR = hwMap.get(DistanceSensor.class,"distanceR");
-        distanceL = hwMap.get(DistanceSensor.class, "distanceL");
-        //blocksensor = hwMap.get(ColorSensor.class, "blockyboy");
+        distance1 = hwMap.get(DistanceSensor.class,"distance1");
+        distance2 = hwMap.get(DistanceSensor.class, "distance2");
+        distance3 = hwMap.get(DistanceSensor.class, "distance3");
+        blocksensor_distance = hwMap.get(DistanceSensor.class, "blockyboy");
+        blocksensor = hwMap.get(ColorSensor.class, "blockyboy");
         //ballsensor = hwMap.get(ColorSensor.class, "ballyman");
 
         //Set Direction the Motors will turn
-        frontLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotorEx.Direction.FORWARD);
-        rearLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        rearRightMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        rearLeftMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        rearRightMotor.setDirection(DcMotorEx.Direction.REVERSE);
         intakemotor.setDirection(DcMotor.Direction.FORWARD);
 
         //Set Direction the Servos will turn
@@ -104,11 +107,9 @@ public class Hardware_21_22 {
         lightsaber.setDirection(Servo.Direction.FORWARD);
         elementclamp2.setDirection(Servo.Direction.FORWARD);
         elementclamp1.setDirection(Servo.Direction.REVERSE);
-        duckspin.setDirection(CRServo.Direction.FORWARD);
-        duckspinblue.setDirection(CRServo.Direction.REVERSE);
         duckextend.setDirection(CRServo.Direction.REVERSE);
-        distancearmservoL.setDirection(Servo.Direction.REVERSE);
-        distancearmservoR.setDirection(Servo.Direction.FORWARD);
+        distancearmservo1.setDirection(Servo.Direction.REVERSE);
+        distancearmservo2.setDirection(Servo.Direction.FORWARD);
 
         //Set Init Power to Motors and apply Automatic Breaking
         frontLeftMotor.setPower(0);
@@ -130,8 +131,8 @@ public class Hardware_21_22 {
         duckspin.setPower(0);
 
         //Set Init Position to all servos
-        distancearmservoL.setPosition(.01);
-        distancearmservoR.setPosition(0);
+        //distancearmservoL.setPosition(.1);
+        //distancearmservoR.setPosition(.1);
         elementclamp1.setPosition(0);
         elementclamp2.setPosition(0);
         lifter.setTargetPosition(0);
@@ -142,7 +143,8 @@ public class Hardware_21_22 {
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //L
         rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //R
         frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //M
-        intakemotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakemotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Set motors to run without Encoder
@@ -156,10 +158,21 @@ public class Hardware_21_22 {
 
 
     // Setting height layers ONCE
-    public int TipTop = 3100;
-    public int layer3 = 1900;
-    public int layer2 = 640;
-    public int bottom = 300;
+    public int TipTop = 3500;
+    public int layer3 = 3290;
+    public int layer2 = 2815;
+    public int bottom = 1175;
+
+    public int layer1A = 700;
+    public int layer2A = 1600;
+    public int layer3A = 2725;
+
+    public double down = 0.3232;
+    public double up = 0;
+    public double closed = 0;
+    public double open = 0.5;
+    public double reading = 0.02;
+    public double retreating = 0.6;
 
     /*public void teleInit() {
         distancearmservoL.setPosition(.02);
