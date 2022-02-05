@@ -27,9 +27,7 @@ public class TestingTeleOp extends LinearOpMode {
 	double frontright = 0;
 
 	boolean Dillon = false;
-	boolean newX;
-	boolean oldX;
-	boolean armDown;
+	boolean Red = false;
 
 	boolean failSafe = false;
 
@@ -45,11 +43,20 @@ public class TestingTeleOp extends LinearOpMode {
 
 			if (gamepad1.a) {
 				Dillon = true;
-			} else if (gamepad1.b) {
+			}
+			else if (gamepad1.b) {
 				Dillon = false;
 			}
 
+			if (gamepad2.y) {
+				Red = true;
+			}
+			else if (gamepad2.x) {
+				Red = false;
+			}
+
 			telemetry.addData("Dillon", Dillon);
+			telemetry.addData("RedSide", Red);
 			telemetry.update();
 
 			if(isStopRequested()){
@@ -109,7 +116,7 @@ public class TestingTeleOp extends LinearOpMode {
 					}
 				}
 
-				if (gamepad2.dpad_up) {
+				if (gamepad2.dpad_up && gamepad2.left_bumper) {
 					robot.elementclamp1.setPosition(.5);
 					robot.elementclamp2.setPosition(.5);
 				}
@@ -118,21 +125,37 @@ public class TestingTeleOp extends LinearOpMode {
 					robot.elementclamp2.setPosition(0);
 				}
 
-				if (gamepad2.y && !gamepad2.left_bumper) {
-					ducktime.reset();
-					while (gamepad2.y) {
-						if (ducktime.seconds() < .5) {
-							robot.duckspin.setPower(0.75);
-						} else if (ducktime.seconds() < 1) {
-							robot.duckspin.setPower(0.825);
-						} else if (ducktime.seconds() < 1.5) {
-							robot.duckspin.setPower(0.9);
+				if (Red = false) {
+					if (gamepad2.y && !gamepad2.left_bumper) {
+						ducktime.reset();
+						while (gamepad2.y) {
+							if (ducktime.seconds() < .5) {
+								robot.duckspin.setPower(0.75);
+							} else if (ducktime.seconds() < 1) {
+								robot.duckspin.setPower(0.9);
+							} //else if (ducktime.seconds() < 1.5) {
+							//robot.duckspin.setPower(0.9);
+							//}
 						}
-
+						robot.duckspin.setPower(-.2);
+					} else {
+						robot.duckspin.setPower(0);
 					}
-					robot.duckspin.setPower(-.2);
-				} else {
-					robot.duckspin.setPower(0);
+				}
+				else {
+					if (gamepad2.y && !gamepad2.left_bumper) {
+						ducktime.reset();
+						while (gamepad2.y) {
+							if (ducktime.seconds() < .5) {
+								robot.duckspin.setPower(-.75);
+							} else {
+								robot.duckspin.setPower(-.9);
+							}
+						}
+						robot.duckspin.setPower(.2);
+					} else {
+						robot.duckspin.setPower(0);
+					}
 				}
 
 				if (gamepad2.dpad_left) {
@@ -145,39 +168,10 @@ public class TestingTeleOp extends LinearOpMode {
 					robot.duckextend.setPower(0);
 				}
 
-            /*newX = gamepad2.dpad_down;
-            if (newX && !oldX) {
-            	if (!armDown) {
-					robot.elementarm.setPosition(.3);
-					armDown = true;
-				}
-            	else {
-					robot.elementarm.setPosition(0);
-					armDown = false;
-				}
-            	oldX = newX;
-			}*/
-
-				//dpad down to set element arm down and open clam
-				//dpad up to bring element arm up and close clam
-
-			/*if (gamepad2.dpad_down && time.seconds() > .25) {
-				armDown = !armDown;
-				time.reset();
-			}
-			if (armDown) {
-				robot.elementarm.setPosition(.3);
-				robot.elementclamp.setPosition(0);
-			}
-			else {
-				robot.elementarm.setPosition(0);
-				robot.elementclamp.setPosition(.5);
-			}*/
-
-				if (!gamepad2.left_bumper && gamepad2.dpad_down) {
+				if (!gamepad2.left_bumper && gamepad2.dpad_down && !gamepad2.right_bumper) {
 					robot.elementarm.setPosition(.295);
 				}
-				else if (!gamepad2.left_bumper && gamepad2.dpad_up && !gamepad2.right_bumper) {
+				else if (gamepad2.left_bumper && gamepad2.dpad_down && !gamepad2.right_bumper) {
 					robot.elementarm.setPosition(0.3232);
 				}
 				else if (gamepad2.right_bumper && gamepad2.dpad_up) {
@@ -194,19 +188,19 @@ public class TestingTeleOp extends LinearOpMode {
 				}
 
 				if (!gamepad2.left_bumper && gamepad2.a) {
-					robot.lifter.setTargetPosition(robot.bottom);
+					robot.lifter.setTargetPosition(1175);
 					robot.lifter.setPower(.9);
 				}
 				else if (!gamepad2.left_bumper && gamepad2.b) {
-					robot.lifter.setTargetPosition(robot.layer2);
+					robot.lifter.setTargetPosition(2815);
 					robot.lifter.setPower(.9);
 				}
 				else if (gamepad2.left_bumper && gamepad2.a) {
-					robot.lifter.setTargetPosition(robot.layer3);
+					robot.lifter.setTargetPosition(3290);
 					robot.lifter.setPower(.9);
 				}
 				else if (gamepad2.left_bumper && gamepad2.b) {
-					robot.lifter.setTargetPosition(robot.TipTop);
+					robot.lifter.setTargetPosition(3500);
 					robot.lifter.setPower(.9);
 				}
 				else if (gamepad2.left_bumper && gamepad2.right_bumper) {
@@ -273,26 +267,40 @@ public class TestingTeleOp extends LinearOpMode {
 					robot.lightsaber.setPosition(1);
 				}
 
-				if (gamepad2.y && !gamepad2.left_bumper) {
-					ducktime.reset();
-					while (gamepad2.y) {
-						if (ducktime.seconds() < .5) {
-							robot.duckspin.setPower(0.75);
+				if (Red = false) {
+					if (gamepad2.y && !gamepad2.left_bumper) {
+						ducktime.reset();
+						while (gamepad2.y) {
+							if (ducktime.seconds() < .5) {
+								robot.duckspin.setPower(0.75);
+							} else if (ducktime.seconds() < 1) {
+								robot.duckspin.setPower(0.9);
+							} //else if (ducktime.seconds() < 1.5) {
+							//robot.duckspin.setPower(0.9);
+							//}
 						}
-						else if (ducktime.seconds() < 1) {
-							robot.duckspin.setPower(0.825);
-						}
-						else if (ducktime.seconds() < 1.5) {
-							robot.duckspin.setPower(0.9);
-						}
-
+						robot.duckspin.setPower(-.2);
+					} else {
+						robot.duckspin.setPower(0);
 					}
-					robot.duckspin.setPower(-.2);
-				} else {
-					robot.duckspin.setPower(0);
+				}
+				else {
+					if (gamepad2.y && !gamepad2.left_bumper) {
+						ducktime.reset();
+						while (gamepad2.y) {
+							if (ducktime.seconds() < .5) {
+								robot.duckspin.setPower(-.75);
+							} else {
+								robot.duckspin.setPower(-.9);
+							}
+						}
+						robot.duckspin.setPower(.2);
+					} else {
+						robot.duckspin.setPower(0);
+					}
 				}
 
-				if (gamepad2.dpad_up) {
+				if (gamepad2.dpad_up && gamepad2.left_bumper) {
 					robot.elementclamp1.setPosition(.5);
 					robot.elementclamp2.setPosition(.5);
 				}
