@@ -87,7 +87,8 @@ public class TestingTeleOp extends LinearOpMode {
 
 		while (opModeIsActive()) {
 
-			if (failSafe = false) {
+			if (failSafe == false) {
+				robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 				driver(Dillon);
 
@@ -225,6 +226,7 @@ public class TestingTeleOp extends LinearOpMode {
 
 			}
 			else {
+				robot.lifter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 				driver(Dillon);
 
