@@ -11,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name = "Red Hypothesis", group = "Linear Opmode")
-public class Cycle extends LinearOpMode {
+@Autonomous(name = "2 Red - 2 Hypothesis", group = "Linear Opmode")
+public class Cycle2 extends LinearOpMode {
 
 	Hardware_21_22 robot = new Hardware_21_22();
 
@@ -33,10 +33,6 @@ public class Cycle extends LinearOpMode {
 			}
 			telemetry.addData("Parking Position", posToWord(parking));
 			telemetry.update();
-
-			if(isStopRequested()){
-				break;
-			}
 		}
 
 		waitForStart();
@@ -73,6 +69,7 @@ public class Cycle extends LinearOpMode {
 		int layer = 0;
 		int targetL = 0;
 		int duckTarget = 300;
+		int testSleep = 0;
 
 		while (opModeIsActive()) {
 
@@ -81,6 +78,8 @@ public class Cycle extends LinearOpMode {
 			Trajectory moveFromWall = drive.trajectoryBuilder(starty)
 					.lineToLinearHeading(redGoalAlliance)
 					.build();
+
+
 
 			Trajectory from45GoalToEntrance = drive.trajectoryBuilder(redGoalAlliance45)
 					.lineToLinearHeading(redWarehouseOut)
@@ -108,7 +107,6 @@ public class Cycle extends LinearOpMode {
 					.lineToLinearHeading(redGoalAlliance45)
 					.build();
 
-			int testSleep = 0;
 
 			//--------------------------------------------------------------------------------------
 
@@ -137,35 +135,36 @@ public class Cycle extends LinearOpMode {
 			robot.distancearmservo2.setPosition(robot.retreating);
 			sleep(testSleep);
 			robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-			robot.lifter.setPower(0.95);
+			robot.lifter.setPower(0.85);
 
 			drive.followTrajectory(moveFromWall);
 			sleep(testSleep);
 
 			robot.lightsaber.setPosition(robot.open);
-			//sleep(300);
-			//dropIt();
+
+			sleep(testSleep);
+
+			Trajectory unalign2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+					.strafeTo(new Vector2d(0,-48))
+					.build();
+
+			drive.followTrajectory(unalign2);
+			dropIt();
+			sleep(testSleep);
 
 			int collectionIncrement = 6;
-
-			Trajectory fromStartGoalToEntrance = drive.trajectoryBuilder(moveFromWall.end())
+			robot.lightsaber.setPosition(1);
+			Trajectory fromStartGoalToEntrance = drive.trajectoryBuilder(unalign2.end())
 					.lineToLinearHeading(redWarehouseOut)
 					.build();
 
 			drive.followTrajectory(fromStartGoalToEntrance);
 			sleep(testSleep);
-			dropIt();
-			robot.lightsaber.setPosition(1);
 
-			for (int i = 0; i < 5; i++){
+
 				drive.followTrajectory(EnterWarehouse);
 				sleep(testSleep);
-				if(i >= 1){
-					Trajectory changeUp = drive.trajectoryBuilder(EnterWarehouse.end())
-							.strafeLeft(18)
-							.build();
-					drive.followTrajectory(changeUp);
-				}
+
 
 				collectionIncrement = collect(collectionIncrement,drive);
 
@@ -186,8 +185,6 @@ public class Cycle extends LinearOpMode {
 				drive.followTrajectory(leave2);
 
 				sleep(testSleep);
-				liftIt((i%3) +1);
-
 
 				if(layer == robot.layer1A){
 					drive.followTrajectory(align);
@@ -201,9 +198,16 @@ public class Cycle extends LinearOpMode {
 				}
 
 				robot.lightsaber.setPosition(robot.open);
-				//sleep(100);
+				sleep(100);
 
+				Trajectory unalign = drive.trajectoryBuilder(drive.getPoseEstimate())
+						.lineToLinearHeading(away)
+						.build();
 
+				drive.followTrajectory(unalign);
+				robot.lightsaber.setPosition(1);
+
+				dropIt();
 				sleep(testSleep);
 
 				Trajectory fromGoalToEntrance = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -213,13 +217,47 @@ public class Cycle extends LinearOpMode {
 				drive.followTrajectory(fromGoalToEntrance);
 				sleep(testSleep);
 
-				robot.lightsaber.setPosition(1);
+				drive.followTrajectory(EnterWarehouse);
+				sleep(testSleep);
 
-				dropIt();
+				Trajectory changeUp = drive.trajectoryBuilder(EnterWarehouse.end())
+						.strafeLeft(18)
+						.build();
 
-			}
+				drive.followTrajectory(changeUp);
+
+				collect(collectionIncrement,drive);
+
+				park(parking,drive,redParking1,redParking2,redParking3);
+
+
 
 			break;
+		}
+	}
+
+	private void park(int parking, SampleMecanumDrive drive,Pose2d fart,Pose2d crap,Pose2d poop) {
+		Trajectory park2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+				.lineToLinearHeading(crap)
+				.build();
+		Trajectory park1 = drive.trajectoryBuilder(park2.end())
+				.lineToLinearHeading(fart)
+				.build();
+		Trajectory park3 = drive.trajectoryBuilder(park2.end())
+				.lineToLinearHeading(poop)
+				.build();
+		if(parking == 1){
+			drive.followTrajectory(park2);
+			sleep(250);
+			drive.followTrajectory(park1);
+		}
+		if(parking == 2){
+			drive.followTrajectory(park2);
+		}
+		if(parking == 3){
+			drive.followTrajectory(park2);
+			sleep(250);
+			drive.followTrajectory(park3);
 		}
 	}
 
@@ -276,7 +314,6 @@ public class Cycle extends LinearOpMode {
 		return constant;
 	}
 
-
 	private void liftIt() {
 		robot.lifter.setTargetPosition(robot.layer1A);
 		robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -303,8 +340,8 @@ public class Cycle extends LinearOpMode {
 	private void errorCorrection(SampleMecanumDrive drive) {
 		Trajectory errorCorrection = drive.trajectoryBuilder(drive.getPoseEstimate())
 				.lineToLinearHeading(new Pose2d(
-						drive.getPoseEstimate().getX()-drive.getLastError().getX(),
-						drive.getPoseEstimate().getY()-drive.getLastError().getY()),
+								drive.getPoseEstimate().getX()-drive.getLastError().getX(),
+								drive.getPoseEstimate().getY()-drive.getLastError().getY()),
 						SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 						SampleMecanumDrive.getAccelerationConstraint(5))
 				.build();

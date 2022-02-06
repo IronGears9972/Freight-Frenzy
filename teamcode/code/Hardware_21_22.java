@@ -161,16 +161,16 @@ public class Hardware_21_22 {
     public int layer2 = 2815;
     public int bottom = 1175;
 
-    public int layer1A = 700;
+    public int layer1A = 1050;
     public int layer2A = 1600;
     public int layer3A = 2725;
 
-    public double down = 0.3322;
+    public double down = 0.355;
     public double up = 0;
     public double closed = 0;
-    public double open = 0.5;
-    public double reading = 0.02;
-    public double retreating = 0.6;
+    public double open = 0.3;
+    public double reading = 0.985;
+    public double retreating = 0.3;
 
     /*public void teleInit() {
         distancearmservoL.setPosition(.02);

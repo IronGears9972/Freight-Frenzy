@@ -24,9 +24,10 @@ public class CycleTest extends LinearOpMode {
 		double pi = Math.PI;
 		double tile = 24;
 		int parking = 0;
-		robot.distancearmservo1.setPosition(robot.reading);
-		robot.distancearmservo2.setPosition(robot.reading);
+		robot.distancearmservo1.setPosition(robot.retreating);
+		robot.distancearmservo2.setPosition(robot.retreating);
 		robot.lifter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		robot.elementarm.setPosition(0);
 		while(!opModeIsActive()){
 			if(gamepad1.a){
 
@@ -56,11 +57,11 @@ public class CycleTest extends LinearOpMode {
 		Pose2d redParking2 = new Pose2d(36, -36, Math.toRadians(315));
 		Pose2d redParking3 = new Pose2d(60, -36, Math.toRadians(270));
 		Pose2d redWarehouseOut = new Pose2d(12, -65, Math.toRadians(0));
-		Pose2d redWarehouseIn = new Pose2d(36, -65, Math.toRadians(0));
+		Pose2d redWarehouseIn = new Pose2d(40, -65, Math.toRadians(0));
 		Pose2d Reading = null;
 		Pose2d E_Ending = null;
 
-		drive.setPoseEstimate(redWarehouseOut);
+		drive.setPoseEstimate(redWarehouseIn);
 
 		double DR = 0;
 		double DL = 0;
@@ -109,8 +110,16 @@ public class CycleTest extends LinearOpMode {
 					.build();
 
 			//--------------------------------------------------------------------------------------
-			int constant = 15;
+			int constant = 1;
 			constant = collect(constant,drive);
+			robot.intakemotor.setPower(0.95);
+
+			Trajectory leave = drive.trajectoryBuilder(drive.getPoseEstimate())
+					.lineToLinearHeading(redWarehouseOut)
+					.build();
+
+			drive.followTrajectory(leave);
+			robot.intakemotor.setPower(0);
 
 			break;
 		}
@@ -127,9 +136,22 @@ public class CycleTest extends LinearOpMode {
 		boolean reading = false;
 		double ttb = 3;
 		int totalDisplacement = constant;
+
 		Trajectory eliminateconstant = drive.trajectoryBuilder(drive.getPoseEstimate())
 				.forward(constant)
 				.build();
+
+		robot.intakemotor.setPower(-0.95);
+
+		drive.followTrajectory(eliminateconstant);
+
+		if(robot.distance3.getDistance(DistanceUnit.INCH) < ttb || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3){
+			robot.intakemotor.setPower(0.95);
+			return constant;
+		}
+
+		while(robot.distance3.getDistance(DistanceUnit.INCH) > 3 && robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 3){
+			robot.intakemotor.setPower(-0.95);
 
 		Trajectory forwardByThree = drive.trajectoryBuilder(drive.getPoseEstimate())
 				.forward(3,
@@ -137,23 +159,16 @@ public class CycleTest extends LinearOpMode {
 						SampleMecanumDrive.getAccelerationConstraint(5))
 				.build();
 
-		drive.followTrajectory(eliminateconstant);
-
-		while(reading == false){
-			robot.intakemotor.setPower(-0.95);
 			drive.followTrajectory(forwardByThree);
 
-			if(robot.distance3.getDistance(DistanceUnit.INCH) > ttb || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 3){
-				robot.intakemotor.setPower(0.95);
-				reading = true;
-			}
 			constant+=3;
-			sleep(1000);
 
 			telemetry.addData("constant", constant);
 			telemetry.addData("reading", robot.distance3.getDistance(DistanceUnit.INCH));
 			telemetry.addData("reading lightsaber", robot.blocksensor_distance.getDistance(DistanceUnit.INCH));
 			telemetry.update();
+
+			sleep(1000);
 
 			if(isStopRequested()){
 				break;

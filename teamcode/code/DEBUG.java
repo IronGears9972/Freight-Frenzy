@@ -50,7 +50,7 @@ public class DEBUG extends LinearOpMode {
 					"\t"+ ins + "\tA - Duck Extender and Spinner\n" +
 					"\t"+ ins + "\tB - Elevator\n" +
 					"\t"+ ins + "\tY - Distances and Color Sensors\n" +
-					"\t"+ ins + "\tX - Wheels" +
+					"\t"+ ins + "\tX - Wheels\n" +
 					"\t"+ ins + "\tDPAD_UP - Element Arm");
 			telemetry.update();
 
@@ -63,16 +63,14 @@ public class DEBUG extends LinearOpMode {
 		waitForStart();
 		runtime.reset();
 		robot.init(hardwareMap, this);
+		int stored1 = 0;
+		int stored2 = 0;
+		int stored3 = 0;
+		int stored4 = 0;
 
 		while (opModeIsActive()) {
 
 			if(test.equals("Elevator")){
-
-				int stored1 = 0;
-				int stored2 = 0;
-				int stored3 = 0;
-				int stored4 = 0;
-
 
 				if (gamepad1.dpad_up)
 					robot.lifter.setPower(0.5);
@@ -149,13 +147,13 @@ public class DEBUG extends LinearOpMode {
 			if(test.equals("Distances + Color")){
 				ArrayList<Double>Readings = new ArrayList<>();
 
-				if (gamepad1.dpad_left){
-					robot.distancearmservo1.setPosition(.6);
-					robot.distancearmservo2.setPosition(.6);
+				if (gamepad1.dpad_up){
+					robot.distancearmservo1.setPosition(.3);
+					robot.distancearmservo2.setPosition(.31);
 				}
-				if (gamepad1.dpad_right){
-					robot.distancearmservo1.setPosition(0.02);
-					robot.distancearmservo2.setPosition(0.02);
+				if (gamepad1.dpad_down){
+					robot.distancearmservo1.setPosition(.98);
+					robot.distancearmservo2.setPosition(.99);
 				}
 
 				telemetry.addData("Reading 1", robot.distance1.getDistance(DistanceUnit.INCH));
@@ -196,7 +194,7 @@ public class DEBUG extends LinearOpMode {
 					robot.elementarm.setPosition(0.4);
 				}
 				if (gamepad1.dpad_right){
-					robot.elementarm.setPosition(0.3232);
+					robot.elementarm.setPosition(0.35);
 				}
 				if (gamepad1.a){
 					robot.elementclamp2.setPosition(robot.open);
