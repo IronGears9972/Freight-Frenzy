@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name = "Autonomous (BLUE)", group = "Linear Opmode")
+@Autonomous(name = "Blue Duckside", group = "Linear Opmode")
 public class BlueDuckside extends LinearOpMode {
 
 	Hardware_21_22 robot = new Hardware_21_22();

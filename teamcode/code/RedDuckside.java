@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name = "Autonomous (RED)", group = "Linear Opmode")
+@Autonomous(name = "Red Duckside", group = "Linear Opmode")
 public class RedDuckside extends LinearOpMode {
 
 	Hardware_21_22 robot = new Hardware_21_22();
@@ -26,7 +26,7 @@ public class RedDuckside extends LinearOpMode {
 		double tile = 24;
 		int parking = 0;
 		robot.distancearmservo1.setPosition(robot.reading);
-		robot.distancearmservo2.setPosition(robot.reading);
+		robot.distancearmservo2.setPosition(robot.reading+0.01);
 		while(!opModeIsActive()){
 			if(gamepad1.a){
 

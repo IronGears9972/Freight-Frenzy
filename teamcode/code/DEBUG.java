@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.code;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,12 +18,21 @@ public class DEBUG extends LinearOpMode {
 
 	private ElapsedTime runtime = new ElapsedTime();
 
-
 	String test = "";
-
 	char ins = '\u00B7';
 
 	public void runOpMode() {
+
+		ArrayList<Integer>BallReadingA = new ArrayList<>();
+		ArrayList<Integer>BallReadingR = new ArrayList<>();
+		ArrayList<Integer>BallReadingG = new ArrayList<>();
+		ArrayList<Integer>BallReadingB = new ArrayList<>();
+		ArrayList<Integer>BallReadingARGB = new ArrayList<>();
+		ArrayList<Integer>blockReadingA = new ArrayList<>();
+		ArrayList<Integer>blockReadingR = new ArrayList<>();
+		ArrayList<Integer>blockReadingG = new ArrayList<>();
+		ArrayList<Integer>blockReadingB = new ArrayList<>();
+		ArrayList<Integer>blockReadingARGB = new ArrayList<>();
 
 		while (!opModeIsActive()) {
 
@@ -67,8 +77,23 @@ public class DEBUG extends LinearOpMode {
 		int stored2 = 0;
 		int stored3 = 0;
 		int stored4 = 0;
+		int max = Integer.MIN_VALUE;
+		int min = Integer.MAX_VALUE;
+		int sumBaA = 0;
+		int sumBaR = 0;
+		int sumBaG = 0;
+		int sumBaB = 0;
+		int sumBaARGB = 0;
+		int sumBlA = 0;
+		int sumBlR = 0;
+		int sumBlG = 0;
+		int sumBlB = 0;
+		int sumBlARGB = 0;
+
 
 		while (opModeIsActive()) {
+			robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+			robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
 
 			if(test.equals("Elevator")){
 
@@ -145,7 +170,7 @@ public class DEBUG extends LinearOpMode {
 			}
 
 			if(test.equals("Distances + Color")){
-				ArrayList<Double>Readings = new ArrayList<>();
+
 
 				if (gamepad1.dpad_up){
 					robot.distancearmservo1.setPosition(.3);
@@ -154,6 +179,39 @@ public class DEBUG extends LinearOpMode {
 				if (gamepad1.dpad_down){
 					robot.distancearmservo1.setPosition(.98);
 					robot.distancearmservo2.setPosition(.99);
+				}
+
+				if(gamepad1.a){
+
+				}
+				if(gamepad1.b){
+
+					BallReadingA.add(robot.blocksensor.alpha());
+					BallReadingB.add(robot.blocksensor.blue());
+					BallReadingR.add(robot.blocksensor.red());
+					BallReadingG.add(robot.blocksensor.green());
+					BallReadingARGB.add(robot.blocksensor.argb());
+
+				}
+				if(gamepad1.x){
+
+				}
+				if(gamepad1.y){
+					blockReadingA.add(robot.blocksensor.alpha());
+					blockReadingB.add(robot.blocksensor.blue());
+					blockReadingR.add(robot.blocksensor.red());
+					blockReadingG.add(robot.blocksensor.green());
+					blockReadingARGB.add(robot.blocksensor.argb());
+				}
+
+				if(gamepad1.left_bumper && gamepad1.right_bumper){
+					max = Integer.MIN_VALUE;
+					min = Integer.MAX_VALUE;
+					blockReadingA.clear();
+					blockReadingB.clear();
+					blockReadingR.clear();
+					blockReadingG.clear();
+					blockReadingARGB.clear();
 				}
 
 				telemetry.addData("Reading 1", robot.distance1.getDistance(DistanceUnit.INCH));
