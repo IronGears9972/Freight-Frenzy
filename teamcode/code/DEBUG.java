@@ -20,6 +20,7 @@ public class DEBUG extends LinearOpMode {
 
 	String test = "";
 	char ins = '\u00B7';
+	int balls = 0;
 
 	public void runOpMode() {
 
