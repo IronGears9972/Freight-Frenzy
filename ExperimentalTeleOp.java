@@ -47,7 +47,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				Dillon = false;
 			}
 
-			if (gamepad2.y) {
+			if (gamepad1.y) {
 				Red = true;
 			}
 			else if (gamepad2.x) {
