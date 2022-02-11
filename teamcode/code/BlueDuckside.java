@@ -70,7 +70,7 @@ public class BlueDuckside extends LinearOpMode {
 		double DL = 0;
 		int layer = 0;
 		int targetL = 0;
-		int duckTarget = -1150;
+		int duckTarget = -1234;
 
 
 
@@ -100,9 +100,9 @@ public class BlueDuckside extends LinearOpMode {
 			if (DL > 17 && DL < 100) {
 				layer = 2;
 			} else if (DR > 17 && DR < 100) {
-				layer = 1;
-			} else {
 				layer = 3;
+			} else {
+				layer = 1;
 			}
 			sleep(250);
 			robot.distancearmservo1.setPosition(robot.retreating);
@@ -143,7 +143,7 @@ public class BlueDuckside extends LinearOpMode {
 			if (layer == 1){
 				//GO TO LEFT ELEMENT
 				align = drive.trajectoryBuilder(ducky)
-						.lineToLinearHeading(blueE1)
+						.lineToLinearHeading(blueE3)
 						.build();
 				targetL = robot.layer1A;
 			}
@@ -157,7 +157,7 @@ public class BlueDuckside extends LinearOpMode {
 			else if (layer == 3){
 				//GO TO RIGHT ELEMENT
 				align = drive.trajectoryBuilder(ducky)
-						.lineToLinearHeading(blueE3)
+						.lineToLinearHeading(blueE1)
 						.build();
 				targetL = robot.layer3A;
 			}

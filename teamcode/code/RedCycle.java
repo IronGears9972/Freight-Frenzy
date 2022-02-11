@@ -134,6 +134,7 @@ public class RedCycle extends LinearOpMode {
 				telemetry.update();
 				sleep(10);
 			}
+			//sleep(5000);
 
 			DR = DR / 10;
 			DL = DL / 10;
@@ -246,6 +247,8 @@ public class RedCycle extends LinearOpMode {
 
 				collect(collectionIncrement,drive);
 
+				robot.intakemotor.setPower(0.95);
+
 				park(parking,drive,redParking1,redParking2,redParking3);
 
 
@@ -308,9 +311,9 @@ public class RedCycle extends LinearOpMode {
 			robot.intakemotor.setPower(-0.9);
 
 			Trajectory forwardByThree = drive.trajectoryBuilder(drive.getPoseEstimate())
-					.forward(2.5,
-							SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-							SampleMecanumDrive.getAccelerationConstraint(10))
+					.forward(2,
+							SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+							SampleMecanumDrive.getAccelerationConstraint(15))
 					.build();
 
 			drive.followTrajectory(forwardByThree);
@@ -347,7 +350,7 @@ public class RedCycle extends LinearOpMode {
 	}
 
 	private void liftIt() {
-		robot.lifter.setTargetPosition(robot.layer1A-300);
+		robot.lifter.setTargetPosition(robot.layer3A);
 		robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.lifter.setPower(0.85);
 
@@ -374,8 +377,8 @@ public class RedCycle extends LinearOpMode {
 				.lineToLinearHeading(new Pose2d(
 								drive.getPoseEstimate().getX()-drive.getLastError().getX(),
 								drive.getPoseEstimate().getY()-drive.getLastError().getY()),
-						SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-						SampleMecanumDrive.getAccelerationConstraint(5))
+						SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(10))
 				.build();
 	}
 

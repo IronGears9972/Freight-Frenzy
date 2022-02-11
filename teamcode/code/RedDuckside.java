@@ -28,7 +28,6 @@ public class RedDuckside extends LinearOpMode {
 		robot.distancearmservo1.setPosition(robot.reading);
 		robot.distancearmservo2.setPosition(robot.reading+0.01);
 		while(!opModeIsActive()){
-			if(gamepad1.a){
 				if(gamepad1.a){
 					parking = 1;
 				}
@@ -41,7 +40,7 @@ public class RedDuckside extends LinearOpMode {
 				if(gamepad1.y){
 					parking = 0;
 				}
-			}
+
 			telemetry.addData("Parking Position", posToWord(parking));
 			telemetry.addLine("A - " + posToWord(1) + "\n B - " + posToWord(2) + "\n X - " + posToWord(3) + "\n Y - " + posToWord(0));
 			telemetry.update();
@@ -68,9 +67,9 @@ public class RedDuckside extends LinearOpMode {
 		Pose2d redParking1 = 		new Pose2d(36, -65, Math.toRadians(0));
 		Pose2d redParking2 = 		new Pose2d(36, -36, Math.toRadians(315));
 		Pose2d redParking3 = 		new Pose2d(60, -36, Math.toRadians(270));
-		Pose2d redOutOfWay = 		new Pose2d(0,-64, Math.toRadians(0));
+		Pose2d redOutOfWay = 		new Pose2d(-24,-60, Math.toRadians(0));
 		Pose2d redWarehouseOut = 	new Pose2d(12, -65, Math.toRadians(0));
-		Pose2d redWarehouseIn = 	new Pose2d(36, -65, Math.toRadians(0));
+		Pose2d redWarehouseIn = 	new Pose2d(42, -65, Math.toRadians(0));
 		Pose2d Reading = null;
 
 
@@ -82,7 +81,7 @@ public class RedDuckside extends LinearOpMode {
 		double DL = 0;
 		int layer = 0;
 		int targetL = 0;
-		int duckTarget = -1180;
+		int duckTarget = -1234;
 
 		double sFactor = 1;
 
@@ -142,7 +141,6 @@ public class RedDuckside extends LinearOpMode {
 			robot.duckextend.setTargetPosition(0);
 			robot.duckextend.setPower(-0.8);
 
-
 			robot.elementarm.setPosition(robot.down);
 			robot.elementclamp1.setPosition(robot.open);
 			robot.elementclamp2.setPosition(robot.open);
@@ -187,20 +185,21 @@ public class RedDuckside extends LinearOpMode {
 			sleep(500);
 			robot.elementarm.setPosition(robot.up);
 
+
+			//go to drop on the parking side, and then break
+			Trajectory parkingGoal = drive.trajectoryBuilder(align.end())
+					.lineToLinearHeading(redGoalParking)
+					.build();
+
+			raise(targetL);
+			sleep(500);
+			drive.followTrajectory(parkingGoal);
+			sleep(250);
+
+			robot.lightsaber.setPosition(robot.open);
+			sleep(500);
+
 			if(parking == 0){
-				//go to drop on the parking side, and then break
-				Trajectory parkingGoal = drive.trajectoryBuilder(align.end())
-						.lineToLinearHeading(redGoalParking)
-						.build();
-
-				raise(targetL);
-				sleep(500);
-
-				drive.followTrajectory(parkingGoal);
-				sleep(250);
-				robot.lightsaber.setPosition(robot.open);
-				sleep(500);
-
 				Trajectory prepPark = drive.trajectoryBuilder(redGoalParking)
 						.lineToLinearHeading(new Pose2d(-36,-24,Math.toRadians(180)))
 						.build();
@@ -217,25 +216,17 @@ public class RedDuckside extends LinearOpMode {
 				drive.followTrajectory(parkInGoal);
 			}
 			else{
-				Trajectory gomid = drive.trajectoryBuilder(align.end())
-						.lineToLinearHeading(redGoalAlliance)
-						.build();
 
-				raise(targetL);
-
-				drive.followTrajectory(gomid);
-
-				robot.lightsaber.setPosition(1);
-				sleep(250);
-
-				Trajectory reverse = drive.trajectoryBuilder(gomid.end())
+				Trajectory reverse = drive.trajectoryBuilder(parkingGoal.end())
 						.lineToLinearHeading(redOutOfWay)
 						.build();
 
 				drive.followTrajectory(reverse);
+				robot.lightsaber.setPosition(1);
+				dropIt();
 
 				if (parking == 1){
-					sleep(5000);
+					sleep(4000);
 				}
 
 				Trajectory prepareEnter = drive.trajectoryBuilder(reverse.end())
@@ -244,7 +235,7 @@ public class RedDuckside extends LinearOpMode {
 
 				drive.followTrajectory(prepareEnter);
 
-				Trajectory enter = drive.trajectoryBuilder(reverse.end())
+				Trajectory enter = drive.trajectoryBuilder(prepareEnter.end())
 						.lineToLinearHeading(redWarehouseIn)
 						.build();
 
@@ -252,6 +243,8 @@ public class RedDuckside extends LinearOpMode {
 
 				if(parking == 2){
 					collect(drive);
+					robot.intakemotor.setPower(0.95);
+					sleep(500);
 				}
 
 			}
@@ -291,7 +284,7 @@ public class RedDuckside extends LinearOpMode {
 			robot.intakemotor.setPower(-0.9);
 
 			Trajectory forwardByThree = drive.trajectoryBuilder(drive.getPoseEstimate())
-					.forward(2.5,
+					.forward(2,
 							SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 							SampleMecanumDrive.getAccelerationConstraint(10))
 					.build();

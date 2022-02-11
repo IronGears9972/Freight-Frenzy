@@ -50,26 +50,26 @@ public class blueCycle extends LinearOpMode {
 		waitForStart();
 		runtime.reset();
 
-		Pose2d starty = new Pose2d(6,-66,Math.toRadians(270));
-		Pose2d ducky = new Pose2d(-41, -60, Math.toRadians(270));
-		Pose2d away = new Pose2d(0, -48, Math.toRadians(270));
-		Pose2d blueParking0 = new Pose2d(-60, 36, Math.toRadians(0));
-		Pose2d blueE1 = new Pose2d(-44.5, 49, Math.toRadians(90));
-		Pose2d blueE2 = new Pose2d(-36, 49, Math.toRadians(90));
-		Pose2d blueE3 = new Pose2d(-27.5, 48.5, Math.toRadians(90));
-		Pose2d blueE4 = new Pose2d(3.5, 48, Math.toRadians(90));
-		Pose2d blueE5 = new Pose2d(12, 48, Math.toRadians(90));
-		Pose2d blueE6 = new Pose2d(20.5, 48, Math.toRadians(90));
-		Pose2d blueGoalAlliance = new Pose2d(-12, 38, Math.toRadians(90));
+		Pose2d starty = 			new Pose2d(6,66,Math.toRadians(90));
+		Pose2d ducky = 				new Pose2d(-41, 60, Math.toRadians(270));
+		Pose2d away = 				new Pose2d(0, 48, Math.toRadians(90));
+		Pose2d blueParking0 = 		new Pose2d(-60, 36, Math.toRadians(0));
+		Pose2d blueE1 = 			new Pose2d(-44.5, 49, Math.toRadians(90));
+		Pose2d blueE2 = 			new Pose2d(-36, 49, Math.toRadians(90));
+		Pose2d blueE3 =				new Pose2d(-27.5, 48.5, Math.toRadians(90));
+		Pose2d blueE4 = 			new Pose2d(3.5, 48, Math.toRadians(90));
+		Pose2d blueE5 = 			new Pose2d(12, 48, Math.toRadians(90));
+		Pose2d blueE6 = 			new Pose2d(20.5, 48, Math.toRadians(90));
+		Pose2d blueGoalAlliance = 	new Pose2d(-12, 38, Math.toRadians(90));
 		Pose2d blueGoalAlliancePrep = new Pose2d(-12, 40, Math.toRadians(90));
-		Pose2d blueGoalAlliance45 = new Pose2d(-1, 33, Math.toRadians(315)); //fixed
-		Pose2d blueGoalParking = new Pose2d(-27, 24, Math.toRadians(180));
-		Pose2d blueGoalWarehouse = new Pose2d(12, 24, Math.toRadians(0));
-		Pose2d blueParking1 = new Pose2d(36, 65, Math.toRadians(0));
-		Pose2d blueParking2 = new Pose2d(36, 36, Math.toRadians(45));
-		Pose2d blueParking3 = new Pose2d(60, 36, Math.toRadians(90));
-		Pose2d blueWarehouseOut = new Pose2d(12, 65, Math.toRadians(0));
-		Pose2d blueWarehouseIn = new Pose2d(36, 65, Math.toRadians(0));
+		Pose2d blueGoalAlliance45 = new Pose2d(-2, 33, Math.toRadians(45)); //fixed
+		Pose2d blueGoalParking = 	new Pose2d(-27, 24, Math.toRadians(180));
+		Pose2d blueGoalWarehouse = 	new Pose2d(12, 24, Math.toRadians(0));
+		Pose2d blueParking1 = 		new Pose2d(36, 65, Math.toRadians(0));
+		Pose2d blueParking2 = 		new Pose2d(36, 36, Math.toRadians(45));
+		Pose2d blueParking3 = 		new Pose2d(60, 36, Math.toRadians(90));
+		Pose2d blueWarehouseOut = 	new Pose2d(12, 65.5, Math.toRadians(0));
+		Pose2d blueWarehouseIn = 	new Pose2d(42, 65.5, Math.toRadians(0));
 
 		Pose2d Reading = null;
 		Pose2d E_Ending = null;
@@ -131,15 +131,16 @@ public class blueCycle extends LinearOpMode {
 				sleep(10);
 			}
 
+			//sleep(5000);
 			DR = DR / 10;
 			DL = DL / 10;
 
 			if (DL > 17 && DL < 24) {
-				layer = robot.layer1A;
-			} else if (DR > 17 && DR < 24) {
 				layer = robot.layer2A;
-			} else {
+			} else if (DR > 17 && DR < 24) {
 				layer = robot.layer3A;
+			} else {
+				layer = robot.layer1A-200;
 			}
 
 			robot.lifter.setTargetPosition(layer);
@@ -154,10 +155,10 @@ public class blueCycle extends LinearOpMode {
 
 			robot.lightsaber.setPosition(robot.open);
 
-			sleep(testSleep);
+			sleep(350);
 
 			Trajectory unalign2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-					.strafeTo(new Vector2d(0,-48))
+					.strafeTo(new Vector2d(0,48))
 					.build();
 
 			drive.followTrajectory(unalign2);
@@ -199,7 +200,7 @@ public class blueCycle extends LinearOpMode {
 
 			sleep(testSleep);
 
-			if(layer == robot.layer1A){
+			if(layer == robot.layer3A){
 				drive.followTrajectory(align);
 				sleep(testSleep);
 				drive.followTrajectory(score);
@@ -234,12 +235,14 @@ public class blueCycle extends LinearOpMode {
 			sleep(testSleep);
 
 			Trajectory changeUp = drive.trajectoryBuilder(EnterWarehouse.end())
-					.strafeLeft(18)
+					.strafeRight(1+8)
 					.build();
 
 			drive.followTrajectory(changeUp);
 
 			collect(collectionIncrement,drive);
+			robot.intakemotor.setPower(0.95);
+			sleep(500);
 
 			park(parking,drive,blueParking1,blueParking2,blueParking3);
 
@@ -303,8 +306,8 @@ public class blueCycle extends LinearOpMode {
 			robot.intakemotor.setPower(-0.9);
 
 			Trajectory forwardByThree = drive.trajectoryBuilder(drive.getPoseEstimate())
-					.forward(2.5,
-							SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+					.forward(1.5,
+							SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 							SampleMecanumDrive.getAccelerationConstraint(10))
 					.build();
 
@@ -328,7 +331,7 @@ public class blueCycle extends LinearOpMode {
 	}
 
 	private void liftIt() {
-		robot.lifter.setTargetPosition(robot.layer1A-300);
+		robot.lifter.setTargetPosition(robot.layer3A);
 		robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.lifter.setPower(0.85);
 
@@ -355,10 +358,12 @@ public class blueCycle extends LinearOpMode {
 				.lineToLinearHeading(new Pose2d(
 								drive.getPoseEstimate().getX()-drive.getLastError().getX(),
 								drive.getPoseEstimate().getY()-drive.getLastError().getY()),
-						SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-						SampleMecanumDrive.getAccelerationConstraint(5))
+						SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(10))
 				.build();
 	}
+
+
 
 	private String posToWord(int park) {
 		String result = "";
