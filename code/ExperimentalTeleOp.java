@@ -25,6 +25,8 @@ public class ExperimentalTeleOp extends LinearOpMode {
 	double rearright = 0;
 	double frontright = 0;
 
+	boolean closed = false;
+
 	boolean Dillon = false;
 	boolean Red = false;
 
@@ -175,9 +177,15 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				}
 
 				if (gamepad1.x && !gamepad1.left_bumper) {
-					robot.lightsaber.setPosition(0.6);
+					if (closed) {
+						robot.lightsaber.setPosition(0.6);
+						closed = false;
+					}
 				} else {
-					robot.lightsaber.setPosition(0);
+					if (closed == false) {
+						robot.lightsaber.setPosition(0);
+						closed = true;
+					}
 				}
 
 
@@ -253,10 +261,10 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				}
 
 				if (gamepad1.x && !gamepad1.left_bumper) {
-					robot.lightsaber.setPosition(0.55);
+					robot.lightsaber.setPosition(0.6);
 				}
 				else {
-					robot.lightsaber.setPosition(1);
+					robot.lightsaber.setPosition(0);
 				}
 
 				if (Red = false) {
@@ -312,12 +320,10 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			}
 
 			if (runtime.seconds() > 0 && runtime.seconds() <= 80) {
-				if (robot.blocksensor.argb() > -15400000 && robot.blocksensor.argb() < -15240000 ||
-						robot.blocksensor.argb() > -305000000 && robot.blocksensor.argb() < -200000000 ) {
-					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
-				}
-				else if (robot.blocksensor.argb() < 0) {
+				if (robot.blocksensor.argb() < 0) {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+					closed = true;
+					robot.lightsaber.setPosition(.15);
 				}
 				else {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
@@ -332,11 +338,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
 			}
 			else if (runtime.seconds() >= 90 && runtime.seconds() < 110) {
-				if (robot.blocksensor.argb() > -15400000 && robot.blocksensor.argb() < -15240000 ||
-						robot.blocksensor.argb() > -305000000 && robot.blocksensor.argb() < -200000000 ) {
-					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
-				}
-				else if (robot.blocksensor.argb() < 0) {
+				if (robot.blocksensor.argb() < 0) {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
 				}
 				else {
