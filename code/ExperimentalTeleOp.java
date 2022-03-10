@@ -19,6 +19,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 	private ElapsedTime runtime = new ElapsedTime();
 	private ElapsedTime time = new ElapsedTime();
 	private ElapsedTime ducktime = new ElapsedTime();
+	private ElapsedTime lightsabertime = new ElapsedTime();
 
 	double frontleft = 0;
 	double rearleft = 0;
@@ -176,14 +177,15 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.elementarm.setPosition(0);
 				}
 
-				if (gamepad1.x && !gamepad1.left_bumper) {
-					if (closed) {
-						robot.lightsaber.setPosition(0.6);
+				if (gamepad1.x) {
+					if (closed && lightsabertime.seconds() > 1) {
+						robot.lightsaber.setPosition(0.45);
 						closed = false;
+						lightsabertime.reset();
 					}
 				} else {
-					if (closed == false) {
-						robot.lightsaber.setPosition(0);
+					if (closed == false && lightsabertime.seconds() > 1) {
+						robot.lightsaber.setPosition(.1);
 						closed = true;
 					}
 				}
@@ -322,24 +324,26 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			if (runtime.seconds() > 0 && runtime.seconds() <= 80) {
 				if (robot.blocksensor.argb() < 0) {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
-					closed = true;
-					robot.lightsaber.setPosition(.15);
+					if (lightsabertime.seconds() > 1) {
+						closed = true;
+						robot.lightsaber.setPosition(.23);
+					}
 				}
 				else {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
 				}
 			}
 			else if (runtime.seconds() > 80 && runtime.seconds() < 85) {
-				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GOLD);
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_SLOW);
 			}
 			else if (runtime.seconds() >= 85 && runtime.seconds() < 90) {
-				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
 			}
 			else if (runtime.seconds() >= 90 && runtime.seconds() < 110) {
 				if (robot.blocksensor.argb() < 0) {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+					closed = true;
+					robot.lightsaber.setPosition(.22);
 				}
 				else {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
@@ -352,7 +356,14 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
 			}
 			else {
-				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+				if (robot.blocksensor.argb() < 0) {
+					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+					closed = true;
+					robot.lightsaber.setPosition(.22);
+				}
+				else {
+					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+				}
 			}
 
 			telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -372,6 +383,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			telemetry.addData("RR", rearright);
 
 			telemetry.addData("BS-ARGB", robot.blocksensor.argb());
+			telemetry.addData("Closed", closed);
 
 			telemetry.addData("boxSensor", robot.distance3.getDistance(DistanceUnit.INCH));
 			telemetry.addData("colorDistance", robot.blocksensor_distance.getDistance(DistanceUnit.INCH));

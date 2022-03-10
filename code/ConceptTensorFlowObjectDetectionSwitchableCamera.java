@@ -51,7 +51,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * is explained below.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection Switchable Cameras", group = "Concept")
-@Disabled
 public class ConceptTensorFlowObjectDetectionSwitchableCamera extends LinearOpMode {
     /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
      * the following 4 detectable objects
@@ -85,7 +84,7 @@ public class ConceptTensorFlowObjectDetectionSwitchableCamera extends LinearOpMo
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+            "AU2ne7j/////AAABmVnObR/UmkTwlIWslw0M3PhbCKZz1zqnqAPh50b1cKYgW7S2e0sM2P06SmDa+ClCAUh/TLJic+MN9jlOEQi+yW7ytjhnEtMyCBxMktuYhoog8VM7HpWYejdoyWu+KDbPd7820Tt16jfZGxCdiBTdvueekVz1zL2U3oPWSBDM4vdtlXE+l+wreA+SCpqeKvk7TvAgo7mk2HcqV6TZ5oB6HeTlYUhjds+x2mZ/7G0hLiEgXZlpcpP8uPAow5H1wci/0H6yx1sTylMPUGBiGQhpOBaKEmVwWZLwk/Zggfissqu3qUGXH84menZWlPv5IMDWSiBmLtoTxx4VVv/env9+v2LS0C8LiD/P+c3msMiLTM1E";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -143,6 +142,7 @@ public class ConceptTensorFlowObjectDetectionSwitchableCamera extends LinearOpMo
                     telemetry.addData("# Object Detected", recognitions.size());
                     // step through the list of recognitions and display boundary info.
                     int i = 0;
+                    boolean isDuckDetected = false;     //  ** ADDED **
                     for (Recognition recognition : recognitions) {
                         telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                         telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
@@ -150,6 +150,14 @@ public class ConceptTensorFlowObjectDetectionSwitchableCamera extends LinearOpMo
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
                         i++;
+
+                        // check label to see if the camera now sees a Duck         ** ADDED **
+                        if (recognition.getLabel().equals("Duck")) {            //  ** ADDED **
+                            isDuckDetected = true;                             //  ** ADDED **
+                            telemetry.addData("Object Detected", "Duck");      //  ** ADDED **
+                        } else {                                               //  ** ADDED **
+                            isDuckDetected = false;                            //  ** ADDED **
+                        }
                     }
                     telemetry.update();
                 }
@@ -169,8 +177,8 @@ public class ConceptTensorFlowObjectDetectionSwitchableCamera extends LinearOpMo
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
 
         // Indicate that we wish to be able to switch cameras.
-        webcam1 = hardwareMap.get(WebcamName.class, "Webcam 1");
-        webcam2 = hardwareMap.get(WebcamName.class, "Webcam 2");
+        webcam1 = hardwareMap.get(WebcamName.class, "Something Cool");
+        webcam2 = hardwareMap.get(WebcamName.class, "Something Awesome");
         parameters.cameraName = ClassFactory.getInstance().getCameraManager().nameForSwitchableCamera(webcam1, webcam2);
 
         //  Instantiate the Vuforia engine

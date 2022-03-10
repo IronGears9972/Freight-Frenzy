@@ -136,7 +136,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
                         // step through the list of recognitions and display boundary info.
                         int i = 0;
-                        boolean isDuckDetected = false;     //  ** ADDED **
+                        boolean isMarkerDetected = false;     //  ** ADDED **
                         for (Recognition recognition : updatedRecognitions) {
                             telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                             telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
@@ -146,11 +146,11 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
                             i++;
 
                             // check label to see if the camera now sees a Duck         ** ADDED **
-                            if (recognition.getLabel().equals("Duck")) {            //  ** ADDED **
-                                isDuckDetected = true;                             //  ** ADDED **
+                            if (recognition.getLabel().equals("Marker")) {            //  ** ADDED **
+                                isMarkerDetected = true;                             //  ** ADDED **
                                 telemetry.addData("Object Detected", "Duck");      //  ** ADDED **
                             } else {                                               //  ** ADDED **
-                                isDuckDetected = false;                            //  ** ADDED **
+                                isMarkerDetected = false;                            //  ** ADDED **
                             }                                                      //  ** ADDED **
                         }
                         telemetry.update();
