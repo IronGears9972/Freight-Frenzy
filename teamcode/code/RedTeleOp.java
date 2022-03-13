@@ -160,7 +160,7 @@ public class RedTeleOp extends LinearOpMode {
 				}
 
 				if (gamepad2.x && !gamepad2.left_bumper) {
-					robot.lightsaber.setPosition(0.6);
+					robot.lightsaber.setPosition(0.5);
 				}
 				else {
 					robot.lightsaber.setPosition(1);

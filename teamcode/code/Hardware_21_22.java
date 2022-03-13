@@ -101,7 +101,7 @@ public class Hardware_21_22 {
 
         //Set Direction the Servos will turn
         elementarm.setDirection(Servo.Direction.FORWARD);
-        lightsaber.setDirection(Servo.Direction.FORWARD);
+        lightsaber.setDirection(Servo.Direction.REVERSE);
         elementclamp2.setDirection(Servo.Direction.FORWARD);
         elementclamp1.setDirection(Servo.Direction.REVERSE);
         duckextend.setDirection(CRServo.Direction.REVERSE);
@@ -133,7 +133,7 @@ public class Hardware_21_22 {
         elementclamp1.setPosition(0);
         elementclamp2.setPosition(0);
         lifter.setTargetPosition(0);
-        lightsaber.setPosition(1);
+        lightsaber.setPosition(0);
         elementarm.setPosition(0);
 
         //Set all motors that are using Servos to RUN_USING_ENCODER
