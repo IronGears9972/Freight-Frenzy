@@ -19,6 +19,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.Angle;
 
+import org.firstinspires.ftc.teamcode.code.Hardware_21_22;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.SequenceSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
@@ -29,6 +30,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class TrajectorySequenceBuilder {
+
+    static Hardware_21_22 robot = new Hardware_21_22();
+
     private final double resolution = 0.25;
 
     private final TrajectoryVelocityConstraint baseVelConstraint;
@@ -119,6 +123,7 @@ public class TrajectorySequenceBuilder {
                 baseTurnConstraintMaxAngVel, baseTurnConstraintMaxAngAccel
         );
     }
+
 
     public TrajectorySequenceBuilder lineTo(Vector2d endPosition) {
         return addPath(() -> currentTrajectoryBuilder.lineTo(endPosition, currentVelConstraint, currentAccelConstraint));

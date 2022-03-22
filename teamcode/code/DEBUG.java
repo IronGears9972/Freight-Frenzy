@@ -61,7 +61,7 @@ public class DEBUG extends LinearOpMode {
 					"\t"+ ins + "\tB - Elevator\n" +
 					"\t"+ ins + "\tY - Distances and Color Sensors\n" +
 					"\t"+ ins + "\tX - Wheels\n" +
-					"\t"+ ins + "\tDPAD_UP - Element Arm");
+					"\t"+ ins + "\tDPAD_UP - Tape Measure");
 			telemetry.update();
 
 			if(isStopRequested()){
@@ -242,6 +242,7 @@ public class DEBUG extends LinearOpMode {
 
 			if(test.equals("Element Arm")){
 
+				/*
 				if (gamepad1.dpad_up){
 					robot.elementarm.setPosition(0);
 				}
@@ -264,8 +265,20 @@ public class DEBUG extends LinearOpMode {
 
 				}
 
+				 */
 
-				telemetry.addData("TARGET", robot.elementarm.getPosition());
+				if (gamepad1.dpad_right){
+					robot.TapeMeasureThing.setPower(0.8); // this one go out
+				}
+				else if (gamepad1.dpad_left){
+					robot.TapeMeasureThing.setPower(-0.8);
+				}
+				else{
+					robot.TapeMeasureThing.setPower(0);
+				}
+
+
+				//telemetry.addData("TARGET", robot.elementarm.getPosition());
 				//telemetry.addData("Elevator Reading", robot.elevatorSensor.getDistance(DistanceUnit.INCH));
 				telemetry.update();
 

@@ -32,6 +32,8 @@ public class Hardware_21_22 {
     public Servo elementclamp2 = null;
     public Servo distancearmservo2 = null;
     public Servo distancearmservo1 = null;
+    public CRServo TapeMeasureThing = null;
+
 
     //Give names to our IMU for our Programs
     public BNO055IMU imu = null;
@@ -40,6 +42,7 @@ public class Hardware_21_22 {
     public DistanceSensor distance1;
     public DistanceSensor distance2;
     public DistanceSensor distance3;
+    public DistanceSensor freightDetector;
     public DistanceSensor blocksensor_distance;
     public ColorSensor blocksensor;
 
@@ -81,6 +84,7 @@ public class Hardware_21_22 {
         elementclamp2 = hwMap.get(Servo.class, "elementclamp2");
         distancearmservo2 = hwMap.get(Servo.class, "distancearmservoR");
         distancearmservo1 = hwMap.get(Servo.class, "distancearmservoL");
+        TapeMeasureThing = hwMap.get(CRServo.class, "tapeextension");
 
         cargolights = hwMap.get(RevBlinkinLedDriver.class, "cargolights");
 
@@ -90,7 +94,7 @@ public class Hardware_21_22 {
         distance3 = hwMap.get(DistanceSensor.class, "distance3");
         blocksensor = hwMap.get(ColorSensor.class, "blockyboy");
         blocksensor_distance = hwMap.get(DistanceSensor.class, "blockyboy");
-        //ballsensor = hwMap.get(ColorSensor.class, "ballyman");
+        freightDetector = hwMap.get(DistanceSensor.class, "blockyboy");
 
         //Set Direction the Motors will turn
         frontLeftMotor.setDirection(DcMotorEx.Direction.FORWARD);
@@ -170,5 +174,72 @@ public class Hardware_21_22 {
     public double open = 0.5;
     public double reading = 0.99;
     public double retreating = 0.3;
+
+    int duckTarget = 1234;
+
+    public void raiseToLayer(int layer){
+        if(layer == 1){
+            lifter.setTargetPosition(layer1A);
+        }
+        else if(layer == 2){
+            lifter.setTargetPosition(layer2A);
+        }
+        else if(layer == 3){
+            lifter.setTargetPosition(layer3A);
+        }
+        lifter.setPower(0.95);
+    }
+
+    public void backToZero(){
+        lifter.setTargetPosition(0);
+        lifter.setPower(0.95);
+    }
+
+    public void stopLift(){
+        lifter.setPower(0);
+    }
+
+    public int read(boolean redSide, boolean leftRead, boolean rightRead){
+        int layerOrPosition = 3;
+        //vuforia moment
+        //blah blah blah conditionals
+
+        if(redSide){
+            if(leftRead){
+                layerOrPosition = 1;
+            }
+            else if(rightRead){
+                layerOrPosition = 2;
+            }
+            else{
+                layerOrPosition = 3;
+            }
+        }
+        else{
+            if(leftRead){
+                layerOrPosition = 2;
+            }
+            else if(rightRead){
+                layerOrPosition = 1;
+            }
+            else{
+                layerOrPosition = 3;
+            }
+        }
+
+        return layerOrPosition;
+    }
+
+    public void extend(){
+        duckextend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        duckextend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        duckextend.setTargetPosition(duckTarget);
+        duckextend.setPower(0.95);
+        while(duckextend.getCurrentPosition() < duckTarget){
+
+        }
+
+
+    }
 
 }

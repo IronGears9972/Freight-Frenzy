@@ -18,6 +18,7 @@ public class RedDuckside extends LinearOpMode {
 
 	private ElapsedTime runtime = new ElapsedTime();
 
+
 	public void runOpMode() {
 		SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 		robot.init(hardwareMap, this);
@@ -85,6 +86,7 @@ public class RedDuckside extends LinearOpMode {
 
 		double sFactor = 1;
 
+		ducky = PoseLibrary.duckRed;
 
 
 		while (opModeIsActive()) {

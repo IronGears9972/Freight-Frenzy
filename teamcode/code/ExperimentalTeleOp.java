@@ -32,6 +32,8 @@ public class ExperimentalTeleOp extends LinearOpMode {
 	boolean Red = false;
 
 	boolean failSafe = false;
+	boolean read = true;
+	double targetlight;
 
 	public void runOpMode() {
 
@@ -88,6 +90,9 @@ public class ExperimentalTeleOp extends LinearOpMode {
 		robot.rearRightMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
 		while (opModeIsActive()) {
+
+			drive.update();
+			telemetry.addData("Position", "\nX:" + drive.getPoseEstimate().getX() + "\nY:" + drive.getPoseEstimate().getY() + "\nHeading:" + drive.getPoseEstimate().getHeading());
 
 			if (failSafe == false) {
 				robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -176,6 +181,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				else if (!gamepad1.left_bumper && gamepad1.dpad_up) {
 					robot.elementarm.setPosition(0);
 				}
+				/*
 
 				if (gamepad1.x) {
 					if (closed && lightsabertime.seconds() > 1) {
@@ -189,6 +195,37 @@ public class ExperimentalTeleOp extends LinearOpMode {
 						closed = true;
 					}
 				}
+				 */
+
+				if(robot.freightDetector.getDistance(DistanceUnit.INCH) < 1.5){
+					read = true;
+				}
+				else{
+					read = false;
+				}
+
+				if(gamepad1.x){
+					targetlight = 0.5;
+					robot.lightsaber.setPosition(targetlight);
+				}
+				else if(read){
+					targetlight = 0.2;
+					robot.lightsaber.setPosition(targetlight);
+				}
+				else{
+					targetlight = 0.05;
+					robot.lightsaber.setPosition(targetlight);
+				}
+				/*
+				if(read && !gamepad1.x){
+					targetlight = 0.15;
+				}
+				if(gamepad1.x){
+					targetlight = 0.45;
+				}
+
+				 */
+
 
 
 				if (!gamepad1.left_bumper && gamepad1.a) {
@@ -261,13 +298,15 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				else {
 					robot.duckextend.setPower(0);
 				}
-
+				/*
 				if (gamepad1.x && !gamepad1.left_bumper) {
 					robot.lightsaber.setPosition(0.6);
 				}
 				else {
 					robot.lightsaber.setPosition(0);
 				}
+
+				 */
 
 				if (Red = false) {
 					if (gamepad1.y && !gamepad1.left_bumper) {
@@ -326,7 +365,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
 					if (lightsabertime.seconds() > 1) {
 						closed = true;
-						robot.lightsaber.setPosition(.23);
+						//robot.lightsaber.setPosition(.23);
 					}
 				}
 				else {
@@ -343,7 +382,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				if (robot.blocksensor.argb() < 0) {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
 					closed = true;
-					robot.lightsaber.setPosition(.22);
+					//robot.lightsaber.setPosition(.22);
 				}
 				else {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
@@ -359,7 +398,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				if (robot.blocksensor.argb() < 0) {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
 					closed = true;
-					robot.lightsaber.setPosition(.22);
+					//robot.lightsaber.setPosition(.22);
 				}
 				else {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
@@ -390,6 +429,10 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			telemetry.addData("lifterCP", robot.lifter.getCurrentPosition());
 			telemetry.addData("lifterTP", robot.lifter.getTargetPosition());
 			telemetry.addData("Lift Power", robot.lifter.getPower());
+
+			telemetry.addData("Target Position", targetlight);
+			telemetry.addData("Freight Reading", robot.freightDetector.getDistance(DistanceUnit.INCH));
+			telemetry.addData("Reading?", read);
 
 			telemetry.addData("Intake Power", robot.intakemotor.getPower());
 			telemetry.update();
