@@ -130,7 +130,6 @@ public class DEBUG extends LinearOpMode {
 				telemetry.addData("lifterCP", robot.lifter.getCurrentPosition());
 				telemetry.addData("Lift Power", robot.lifter.getPower());
 				telemetry.addData("Color Distance", robot.blocksensor_distance.getDistance(DistanceUnit.INCH));
-				telemetry.addData("Box Distance", robot.distance3.getDistance(DistanceUnit.INCH));
 				telemetry.addData("Stored Value 1", stored1);
 				telemetry.addData("Stored Value 2", stored2);
 				telemetry.addData("Stored Value 3", stored3);
@@ -213,9 +212,6 @@ public class DEBUG extends LinearOpMode {
 					blockReadingG.clear();
 					blockReadingARGB.clear();
 				}
-
-				telemetry.addData("Reading 1", robot.distance1.getDistance(DistanceUnit.INCH));
-				telemetry.addData("Reading 2", robot.distance2.getDistance(DistanceUnit.INCH));
 				//telemetry.addData("Elevator Reading", robot.elevatorSensor.getDistance(DistanceUnit.INCH));
 				telemetry.update();
 

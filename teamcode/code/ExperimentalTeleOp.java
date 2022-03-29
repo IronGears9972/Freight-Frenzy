@@ -28,6 +28,8 @@ public class ExperimentalTeleOp extends LinearOpMode {
 
 	boolean closed = false;
 
+	boolean swag = true;
+
 	boolean Dillon = false;
 	boolean Red = false;
 
@@ -101,10 +103,16 @@ public class ExperimentalTeleOp extends LinearOpMode {
 
 				if (robot.lifter.getCurrentPosition() > -15 && robot.lifter.getCurrentPosition() < 30) {
 
-					if (robot.distance3.getDistance(DistanceUnit.INCH) < 3) {
-						time.reset();
+					if (robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 2) {
+						if(swag) {
+							time.reset();
+							swag = false;
+						}
 						if (time.seconds() < 1) {
 							robot.intakemotor.setPower(.95);
+						}
+						else{
+							robot.intakemotor.setPower(0);
 						}
 					} else {
 						if (time.seconds() > 1) {
@@ -197,7 +205,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				}
 				 */
 
-				if(robot.freightDetector.getDistance(DistanceUnit.INCH) < 1.5){
+				if(robot.freightDetector.getDistance(DistanceUnit.INCH) < 1.85){
 					read = true;
 				}
 				else{
@@ -206,6 +214,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 
 				if(gamepad1.x){
 					targetlight = 0.5;
+					swag = true;
 					robot.lightsaber.setPosition(targetlight);
 				}
 				else if(read){
@@ -424,7 +433,6 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			telemetry.addData("BS-ARGB", robot.blocksensor.argb());
 			telemetry.addData("Closed", closed);
 
-			telemetry.addData("boxSensor", robot.distance3.getDistance(DistanceUnit.INCH));
 			telemetry.addData("colorDistance", robot.blocksensor_distance.getDistance(DistanceUnit.INCH));
 			telemetry.addData("lifterCP", robot.lifter.getCurrentPosition());
 			telemetry.addData("lifterTP", robot.lifter.getTargetPosition());
@@ -433,6 +441,8 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			telemetry.addData("Target Position", targetlight);
 			telemetry.addData("Freight Reading", robot.freightDetector.getDistance(DistanceUnit.INCH));
 			telemetry.addData("Reading?", read);
+			telemetry.addData("Swag?", swag);
+			telemetry.addData("Fart Time?", time.seconds());
 
 			telemetry.addData("Intake Power", robot.intakemotor.getPower());
 			telemetry.update();

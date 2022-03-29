@@ -57,7 +57,6 @@ public class localizeRecognition extends LinearOpMode {
     private static final String[] LABELS = { "Ball", "Cube", "Duck", "Marker" };
     private static final String VUFORIA_KEY = "AU2ne7j/////AAABmVnObR/UmkTwlIWslw0M3PhbCKZz1zqnqAPh50b1cKYgW7S2e0sM2P06SmDa+ClCAUh/TLJic+MN9jlOEQi+yW7ytjhnEtMyCBxMktuYhoog8VM7HpWYejdoyWu+KDbPd7820Tt16jfZGxCdiBTdvueekVz1zL2U3oPWSBDM4vdtlXE+l+wreA+SCpqeKvk7TvAgo7mk2HcqV6TZ5oB6HeTlYUhjds+x2mZ/7G0hLiEgXZlpcpP8uPAow5H1wci/0H6yx1sTylMPUGBiGQhpOBaKEmVwWZLwk/Zggfissqu3qUGXH84menZWlPv5IMDWSiBmLtoTxx4VVv/env9+v2LS0C8LiD/P+c3msMiLTM1E";
     private VuforiaLocalizer vuforia;
-    private VuforiaLocalizer vuforia2;
     private TFObjectDetector tfod;
 
     Hardware_21_22 robot = new Hardware_21_22();
@@ -72,7 +71,6 @@ public class localizeRecognition extends LinearOpMode {
     public void runOpMode() {
         initVuforia();
         initTfod();
-        Bitmap gart = vuforia2.convertFrameToBitmap(vuforia2.getFrameQueue().peek());
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         robot.init(hardwareMap, this);
@@ -185,21 +183,6 @@ public class localizeRecognition extends LinearOpMode {
         robot.rearRightMotor.setPower(rearright);
         robot.frontRightMotor.setPower(frontright);
 
-    }
-
-    private double areaCalc(Recognition r){
-        double increment = 0;
-        /*
-        if(r.getHeight() > r.getWidth()+increment || r.getHeight() < r.getWidth()-increment){
-            return r.getWidth()*r.getWidth();
-        }
-        else {
-            return r.getWidth()*r.getHeight();
-        }
-
-
-         */
-        return r.getWidth()*r.getWidth();
     }
 
     private double getDisplacement(double minimum){

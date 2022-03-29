@@ -38,10 +38,6 @@ public class Hardware_21_22 {
     //Give names to our IMU for our Programs
     public BNO055IMU imu = null;
 
-    //Give names our Sensors for our Programs
-    public DistanceSensor distance1;
-    public DistanceSensor distance2;
-    public DistanceSensor distance3;
     public DistanceSensor freightDetector;
     public DistanceSensor blocksensor_distance;
     public ColorSensor blocksensor;
@@ -89,9 +85,6 @@ public class Hardware_21_22 {
         cargolights = hwMap.get(RevBlinkinLedDriver.class, "cargolights");
 
         //Sensors
-        distance1 = hwMap.get(DistanceSensor.class,"distance1");
-        distance2 = hwMap.get(DistanceSensor.class, "distance2");
-        distance3 = hwMap.get(DistanceSensor.class, "distance3");
         blocksensor = hwMap.get(ColorSensor.class, "blockyboy");
         blocksensor_distance = hwMap.get(DistanceSensor.class, "blockyboy");
         freightDetector = hwMap.get(DistanceSensor.class, "blockyboy");

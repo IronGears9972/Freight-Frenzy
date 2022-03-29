@@ -85,7 +85,7 @@ public class RedTeleOp extends LinearOpMode {
 
 				if (robot.lifter.getCurrentPosition() > -15 && robot.lifter.getCurrentPosition() < 30) {
 
-					if (robot.distance3.getDistance(DistanceUnit.INCH) < 3) {
+					if (robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3) {
 						time.reset();
 						if (time.seconds() < 1) {
 							robot.intakemotor.setPower(.95);
@@ -352,7 +352,6 @@ public class RedTeleOp extends LinearOpMode {
 
 			telemetry.addData("BS-ARGB", robot.blocksensor.argb());
 
-			telemetry.addData("boxSensor", robot.distance3.getDistance(DistanceUnit.INCH));
 			telemetry.addData("colorDistance", robot.blocksensor_distance.getDistance(DistanceUnit.INCH));
 			telemetry.addData("lifterCP", robot.lifter.getCurrentPosition());
 			telemetry.addData("lifterTP", robot.lifter.getTargetPosition());
