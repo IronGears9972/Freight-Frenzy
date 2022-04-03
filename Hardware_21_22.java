@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -92,6 +93,8 @@ public class Hardware_21_22 {
         //Set Direction the Servos will turn
         lightsaber.setDirection(Servo.Direction.REVERSE);
         duckextend.setDirection(CRServo.Direction.REVERSE);
+        tapeRotate.setDirection(Servo.Direction.FORWARD);
+        tapeExtend.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Set Init Power to Motors and apply Automatic Breaking
         frontLeftMotor.setPower(0);
@@ -115,6 +118,7 @@ public class Hardware_21_22 {
         //Set Init Position to all servos
         lifter.setTargetPosition(0);
         lightsaber.setPosition(0);
+        tapeRotate.setPosition(0);
 
         //Set all motors that are using Servos to RUN_USING_ENCODER
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //L

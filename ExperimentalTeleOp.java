@@ -61,7 +61,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			if (gamepad1.y) {
 				Red = true;
 			}
-			else if (gamepad2.x) {
+			else if (gamepad1.x) {
 				Red = false;
 			}
 
@@ -172,7 +172,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.duckextend.setPower(0);
 				}*/
 
-				if (gamepad2.x) {
+				if (gamepad1.x) {
 					if (closed && lightsabertime.seconds() > 1) {
 						robot.lightsaber.setPosition(0.45);
 						closed = false;
@@ -216,21 +216,19 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				}
 				 */
 
-
-
-				if (!gamepad2.left_bumper && gamepad2.a) {
+				if (!gamepad1.left_bumper && gamepad1.a) {
 					robot.lifter.setTargetPosition(1175);
 					robot.lifter.setPower(.95);
-				} else if (!gamepad2.left_bumper && gamepad2.b) {
+				} else if (!gamepad1.left_bumper && gamepad1.b) {
 					robot.lifter.setTargetPosition(2815);
 					robot.lifter.setPower(.95);
-				} else if (gamepad2.left_bumper && gamepad2.a) {
+				} else if (gamepad1.left_bumper && gamepad1.a) {
 					robot.lifter.setTargetPosition(3290);
 					robot.lifter.setPower(.95);
-				} else if (gamepad2.left_bumper && gamepad2.b) {
+				} else if (gamepad1.left_bumper && gamepad1.b) {
 					robot.lifter.setTargetPosition(3500);
 					robot.lifter.setPower(.95);
-				} else if (gamepad2.left_bumper && gamepad2.right_bumper) {
+				} else if (gamepad1.left_bumper && gamepad1.right_bumper) {
 					robot.lifter.setTargetPosition(0);
 					robot.lifter.setPower(.95);
 					down = true;
@@ -290,8 +288,15 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					}
 				}
 
-
-
+				if (gamepad1.dpad_up) {
+					robot.tapeExtend.setPower(.95);
+				}
+				else if (gamepad1.dpad_down){
+					robot.tapeExtend.setPower(-.95);
+				}
+				else {
+					robot.tapeExtend.setPower(0);
+				}
 
 				if (gamepad1.left_bumper && gamepad1.right_bumper && gamepad1.right_trigger == 1 && gamepad1.left_trigger == 1) {
 					failSafe = true;
