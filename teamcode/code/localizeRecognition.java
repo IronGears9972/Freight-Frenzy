@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.code;
 
 import android.graphics.Bitmap;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -75,10 +76,11 @@ public class localizeRecognition extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         robot.init(hardwareMap, this);
         drive.setPoseEstimate(new Pose2d(36,-(72-8.25),0));
+        drive.setPoseEstimate(new Pose2d(0,0,0));
 
         if (tfod != null) {
             tfod.activate();
-            tfod.setZoom(1.5, 16.0 / 9.0);
+            tfod.setZoom(1, 4.0 / 3.0);
         }
 
         /** Waits for the game to begin */
@@ -109,13 +111,21 @@ public class localizeRecognition extends LinearOpMode {
                                     recognition.getRight(), recognition.getBottom());
                             telemetry.addData(String.format("  width,height (%d)", i), "%.03f , %.03f",
                                     recognition.getWidth(), recognition.getHeight());
-                            telemetry.addData("Width", recognition.getImageWidth());
-                            telemetry.addData("Height", recognition.getImageHeight());
+                            telemetry.addData("Image Width", recognition.getImageWidth());
+                            telemetry.addData("width", recognition.getWidth());
+
+                            telemetry.addData("Distance", recognition.getImageHeight()-recognition.getTop());
+
 
                             i++;
 
                             if (recognition.getLabel().equals("Ball")){
                                 telemetry.addData("Object Detected", "Ball");
+                                double d1 = 34.58 - 0.1121*recognition.getWidth();
+                                double d2 = 0.02601*(recognition.getImageHeight()-recognition.getTop()) - 1.518;
+                                telemetry.addData("distance away (width)\n", d1);
+                                telemetry.addData("distance away (pixels from top)\n",d2);
+                                telemetry.addData("distance away (averaged)\n",(d2+d1)/2.0 - ((d2+d1)/2.0)%0.001);
 
                                 double min = 0;
                                 if(recognition.getHeight() <= recognition.getWidth()){
@@ -125,9 +135,10 @@ public class localizeRecognition extends LinearOpMode {
                                     min = recognition.getWidth();
                                 }
 
+
                                 double displacement = getDisplacement(min);
                                 double LR = getLeftRight(displacement,getMidpoint(recognition));
-                                displacement = normalizePitch(18.43495,displacement);
+                                displacement = normalizePitch(90-56.3,displacement);
                                 telemetry.addData("Inches Away", displacement);
                                 telemetry.addData("Left/Right from Camera (inches)", getLeftRight(displacement,getMidpoint(recognition)));
                                 double roboX = drive.getPoseEstimate().getX();
@@ -198,7 +209,7 @@ public class localizeRecognition extends LinearOpMode {
 
     private double getLeftRight(double displacement, double midpoint){
 
-        double maxDisplacement = displacement*Math.tan(Math.toRadians(14.4));
+        double maxDisplacement = displacement*Math.tan(Math.toRadians(27.5));
         double pixelsMaybe = 640.0/(2*maxDisplacement);
         double rawResult = (midpoint/pixelsMaybe) - maxDisplacement;
         return rawResult - (rawResult%0.001);
@@ -216,10 +227,12 @@ public class localizeRecognition extends LinearOpMode {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraName = hardwareMap.get(WebcamName.class, "Something Cool");
+
         parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
@@ -228,10 +241,12 @@ public class localizeRecognition extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
+        tfodParameters.minResultConfidence = 0.7f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 320;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+
+        FtcDashboard.getInstance().startCameraStream(tfod,0);
     }
 }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.code;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -24,6 +25,7 @@ public class newRedDuckside extends LinearOpMode {
 	Hardware_21_22 robot = new Hardware_21_22();
 
 	private ElapsedTime runtime = new ElapsedTime();
+	private ElapsedTime spinTime = new ElapsedTime();
 
 	private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
 	private static final String[] LABELS = { "Ball", "Cube", "Duck", "Marker" };
@@ -35,15 +37,28 @@ public class newRedDuckside extends LinearOpMode {
 	private int buffer = 3000;
 
 	public void runOpMode() {
+		telemetry.addLine("step 0");
+		telemetry.update();
+
 		initVuforia();
 		initTfod();
+		if(tfod != null){
+			tfod.activate();
+			tfod.setZoom(1.25, 4.0 / 3.0);
+		}
 		SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 		robot.init(hardwareMap, this);
+		drive.setPoseEstimate(PoseLibrary.startRedDuck);
+
+		telemetry.addLine("step 1");
+		telemetry.update();
 
 		Trajectory driveToDuck = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
 				.lineToLinearHeading(PoseLibrary.duckRed)
 				.build();
 
+
+		/*
 		Trajectory r1AlignToScore = drive.trajectoryBuilder(driveToDuck.end())
 				.splineToConstantHeading(PoseLibrary.redGoalAllianceV, Math.toRadians(270))
 				.build();
@@ -57,18 +72,84 @@ public class newRedDuckside extends LinearOpMode {
 				.lineToLinearHeading(PoseLibrary.redGoalParking)
 				.build();
 
-		Trajectory gart = drive.trajectoryBuilder(driveToDuck.end())
-				.lineToLinearHeading(PoseLibrary.redGoalAlliance)
-				.build();
+		 */
+		telemetry.addLine("step 2");
+		telemetry.update();
 
-		Trajectory gart2 = drive.trajectoryBuilder(gart.end())
+		Trajectory duckPose = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
+				.lineToLinearHeading(PoseLibrary.duckRed)
+				.build();
+		telemetry.addLine("step 3");
+		telemetry.update();
+
+		Trajectory route0_1 = drive.trajectoryBuilder(duckPose.end())
+				.lineToLinearHeading(PoseLibrary.redParking0)
+				.build();
+		telemetry.addLine("step 4");
+		telemetry.update();
+
+		Trajectory route0_2 = drive.trajectoryBuilder(route0_1.end())
+				.lineToLinearHeading(PoseLibrary.redGoalParking)
+				.build();
+		telemetry.addLine("step 5");
+		telemetry.update();
+
+		Trajectory route0_3 = drive.trajectoryBuilder(route0_2.end())
+				.lineToLinearHeading(PoseLibrary.redParking0)
+				.build();
+		telemetry.addLine("step 6");
+		telemetry.update();
+
+		Trajectory route1_1 = drive.trajectoryBuilder(duckPose.end())
 				.lineToLinearHeading(PoseLibrary.redGoalAlliance)
 				.build();
+		telemetry.addLine("step 7");
+		telemetry.update();
+
+		Trajectory route1_2 = drive.trajectoryBuilder(route1_1.end())
+				.lineToLinearHeading(PoseLibrary.redWarehouseOut)
+				.build();
+		telemetry.addLine("step 8");
+		telemetry.update();
+
+		Trajectory route1_3 = drive.trajectoryBuilder(route1_2.end())
+				.lineToLinearHeading(PoseLibrary.redWarehouseIn)
+				.build();
+		telemetry.addLine("step 9");
+		telemetry.update();
+
+		Trajectory route1_4a = drive.trajectoryBuilder(route1_3.end())
+				.lineToLinearHeading(PoseLibrary.redParking1)
+				.build();
+		telemetry.addLine("step 10");
+		telemetry.update();
+
+		Trajectory route1_4b = drive.trajectoryBuilder(route1_3.end())
+				.lineToLinearHeading(PoseLibrary.redParking2)
+				.build();
+		telemetry.addLine("step 11");
+		telemetry.update();
+
+		Trajectory route1_4c = drive.trajectoryBuilder(route1_3.end())
+				.lineToLinearHeading(PoseLibrary.redParking3)
+				.build();
+		telemetry.addLine("step 12");
+		telemetry.update();
+
+
+
+
+
+		String str = "";
+		int parking = 0;
+		telemetry.addLine("Everything is initialized!");
+		telemetry.update();
 
 		while(!opModeIsActive()){
 			boolean reading = false;
 
 			if (tfod != null){
+
 
 				updatedRecognitions = tfod.getUpdatedRecognitions();
 
@@ -91,30 +172,48 @@ public class newRedDuckside extends LinearOpMode {
 
 						i++;
 
-						if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Marker")){
-							if(recognition.getLeft() < 250){
-								telemetry.addLine("It on da left");
+						if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Marker")) {
+							if (recognition.getLeft() < 250) {
+								str = "Its on da left";
+							} else {
+								str = "It on the right";
 							}
-							else{
-								telemetry.addLine("Its on the right");
-							}
-							reading = true;
 						}
+					}
 
-					}
-					String str = "";
-					if(reading){
-						str = "not seen";
-					}
 					telemetry.addLine(str);
+					telemetry.addData("route", posToWord(route));
+					telemetry.addLine("A - " + posToWord(1) + "\nB - " + posToWord(2) + "\nX - " + posToWord(3) + "\nY - " + posToWord(0));
+					telemetry.addLine(parking + "");
 					telemetry.update();
+				}
+				else{
+					str = "not seen";
 				}
 			}
 
 			if(gamepad1.a){
 				route = 1;
 			}
+			if(gamepad1.b){
+				route = 2;
+			}
+			if(gamepad1.x){
+				route = 3;
+			}
+			if(gamepad1.y){
+				route = 0;
+			}
 
+			if(gamepad1.dpad_up){
+				parking = 1;
+			}
+			if(gamepad1.dpad_right){
+				parking = 2;
+			}
+			if(gamepad1.dpad_down){
+				parking = 3;
+			}
 
 			if(isStopRequested()){
 				break;
@@ -141,37 +240,64 @@ public class newRedDuckside extends LinearOpMode {
 
 		while (opModeIsActive()) {
 
-			boolean[] arr = read();
+			boolean[] arr = new boolean[2];
+			arr = read();
 			int layer = robot.read(true, arr[0],arr[1]);
 			sleep(buffer);
 
-			drive.followTrajectory(driveToDuck);
+			drive.followTrajectory(duckPose);
 			sleep(buffer);
 
 			extend();
 			sleep(buffer);
+
 			spin();
 			sleep(buffer);
+
 			unextend();
 			sleep(buffer);
-			robot.raiseToLayer(layer);
 
 
-			if(route == 0){
-				drive.followTrajectory(r1AlignToScore);
+
+
+			if(route == 0) {
+				drive.followTrajectory(route0_1);
+				sleep(buffer);
+				robot.raiseToLayer(layer);
+				robot.duckextend.setPower(0);
+				drive.followTrajectory(route0_2);
+				sleep(buffer);
+				robot.lightsaber.setPosition(robot.open);
+				sleep(buffer);
+				drive.followTrajectory(route0_3);
+				robot.raiseToLayer(0);
 				sleep(buffer);
 			}
+
 			if(route == 1){
-				drive.followTrajectory(r2Align1);
+				robot.raiseToLayer(layer);
+				robot.duckextend.setPower(0);
+				drive.followTrajectory(route1_1);
 				sleep(buffer);
-				drive.followTrajectory(r2Align2);
+				robot.lightsaber.setPosition(robot.open);
 				sleep(buffer);
-			}
-
-			robot.lightsaber.setPosition(robot.open);
-			sleep(buffer);
-
-			if(route == 0){
+				drive.followTrajectory(route1_2);
+				sleep(buffer);
+				robot.raiseToLayer(0);
+				drive.followTrajectory(route1_3);
+				sleep(buffer);
+				if(parking == 1) {
+					drive.followTrajectory(route1_4a);
+					sleep(buffer);
+				}
+				if(parking == 2) {
+					drive.followTrajectory(route1_4b);
+					sleep(buffer);
+				}
+				if(parking == 3) {
+					drive.followTrajectory(route1_4c);
+					sleep(buffer);
+				}
 
 			}
 
@@ -180,54 +306,70 @@ public class newRedDuckside extends LinearOpMode {
 		}
 	}
 
-	private boolean[] read(){
+	private boolean[] read() {
 		boolean[] result = new boolean[2];
+		result[0] = false;
+		result[1] = false;
 
 		updatedRecognitions = tfod.getUpdatedRecognitions();
 
-		if(updatedRecognitions.size() == 0){
-			result[0] = false;
-			result[1] = false;
-		}
+		if (updatedRecognitions != null) {
 
-		if(updatedRecognitions.get(0).getLeft() < 250){
-			result[0] = true;
-			result[1] = false;
+			if (updatedRecognitions.get(0).getLeft() < 320) {
+				result[0] = true;
+				result[1] = false;
+			} else {
+				result[0] = false;
+				result[1] = true;
+			}
 		}
-		else{
-			result[0] = false;
-			result[1] = true;
-		}
-
-		return result;
+			return result;
 	}
 
+
 	private void spin() {
+		spinTime.reset();
+
+		robot.duckspin.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		robot.duckspin.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 		robot.duckspin.setTargetPosition(514);
 		robot.duckspin.setPower(0.5);
 
-		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition()){
+		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 0){
+			telemetry.addData("CP2",robot.duckspin.getCurrentPosition());
+			telemetry.addData("TP2",robot.duckspin.getTargetPosition());
+			telemetry.update();
 		sleep(1);
 		}
 	}
 
 	private void unextend() {
+		robot.duckextend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		robot.duckextend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		robot.duckextend.setTargetPosition(0);
+		robot.duckextend.setPower(0.95);
 		
 	}
 
 	public void extend(){
+
+		ElapsedTime guy = new ElapsedTime();
 
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.duckextend.setTargetPosition(robot.duckTarget);
 		robot.duckextend.setPower(0.95);
 
-		while(robot.duckextend.getCurrentPosition() < robot.duckTarget){
+		while(robot.duckextend.getCurrentPosition() < robot.duckTarget && guy.seconds() < 0){
+
 			telemetry.addData("CP",robot.duckextend.getCurrentPosition());
 			telemetry.addData("TP",robot.duckTarget);
 			telemetry.update();
 			sleep(1);
 		}
+
+		robot.duckextend.setPower(0);
 
 
 	}
@@ -294,7 +436,7 @@ public class newRedDuckside extends LinearOpMode {
 		String result = "";
 
 		if (park == 0){
-			result = "Alliance Specific Warehouse";
+			result = "basic route";
 		}
 		if (park == 1){
 			result = "Warehouse Entry LAST SECOND";
@@ -316,7 +458,7 @@ public class newRedDuckside extends LinearOpMode {
 		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
 		parameters.vuforiaLicenseKey = VUFORIA_KEY;
-		parameters.cameraName = hardwareMap.get(WebcamName.class, "Something Cool");
+		parameters.cameraName = hardwareMap.get(WebcamName.class, "Something Awesome");
 		parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES;
 
 		//  Instantiate the Vuforia engine
@@ -334,5 +476,6 @@ public class newRedDuckside extends LinearOpMode {
 		tfodParameters.inputSize = 320;
 		tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
 		tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+		FtcDashboard.getInstance().startCameraStream(tfod,0);
 	}
 }

@@ -171,14 +171,7 @@ public class DEBUG extends LinearOpMode {
 			if(test.equals("Distances + Color")){
 
 
-				if (gamepad1.dpad_up){
-					robot.distancearmservo1.setPosition(.3);
-					robot.distancearmservo2.setPosition(.31);
-				}
-				if (gamepad1.dpad_down){
-					robot.distancearmservo1.setPosition(.98);
-					robot.distancearmservo2.setPosition(1);
-				}
+
 
 				if(gamepad1.a){
 
@@ -263,15 +256,6 @@ public class DEBUG extends LinearOpMode {
 
 				 */
 
-				if (gamepad1.dpad_right){
-					robot.TapeMeasureThing.setPower(0.8); // this one go out
-				}
-				else if (gamepad1.dpad_left){
-					robot.TapeMeasureThing.setPower(-0.8);
-				}
-				else{
-					robot.TapeMeasureThing.setPower(0);
-				}
 
 
 				//telemetry.addData("TARGET", robot.elementarm.getPosition());

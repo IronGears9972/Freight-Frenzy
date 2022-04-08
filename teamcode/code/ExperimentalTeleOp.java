@@ -37,6 +37,10 @@ public class ExperimentalTeleOp extends LinearOpMode {
 	boolean read = true;
 	double targetlight;
 
+	boolean down;
+
+	double x = 0;
+	double y = 0;
 	public void runOpMode() {
 
 		telemetry.addData("Say", "Hello Iron Gears");
@@ -57,7 +61,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			if (gamepad1.y) {
 				Red = true;
 			}
-			else if (gamepad2.x) {
+			else if (gamepad1.x) {
 				Red = false;
 			}
 
@@ -127,19 +131,10 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					}
 				}
 
-				if (gamepad1.dpad_up && gamepad1.left_bumper) {
-					robot.elementclamp1.setPosition(.5);
-					robot.elementclamp2.setPosition(.5);
-				}
-				else {
-					robot.elementclamp1.setPosition(0);
-					robot.elementclamp2.setPosition(0);
-				}
-
 				if (Red = false) {
-					if (gamepad1.y && !gamepad1.left_bumper) {
+					if (gamepad2.y && !gamepad2.left_bumper) {
 						ducktime.reset();
-						while (gamepad1.y) {
+						while (gamepad2.y) {
 							if (ducktime.seconds() < .5) {
 								robot.duckspin.setPower(0.8);
 							} else if (ducktime.seconds() < 1) {
@@ -152,9 +147,9 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					}
 				}
 				else {
-					if (gamepad1.y && !gamepad1.left_bumper) {
+					if (gamepad2.y && !gamepad2.left_bumper) {
 						ducktime.reset();
-						while (gamepad1.y) {
+						while (gamepad2.y) {
 							if (ducktime.seconds() < .5) {
 								robot.duckspin.setPower(-.8);
 							} else {
@@ -167,29 +162,15 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					}
 				}
 
-				if (gamepad1.dpad_left) {
+				if (gamepad2.dpad_left && !gamepad2.left_bumper) {
 					robot.duckextend.setPower(.95);
 				}
-				else if (gamepad1.dpad_right) {
+				else if (gamepad2.dpad_right && !gamepad2.left_bumper) {
 					robot.duckextend.setPower(-.95);
 				}
 				else {
 					robot.duckextend.setPower(0);
 				}
-
-				if (!gamepad1.left_bumper && gamepad1.dpad_down && !gamepad1.right_bumper) {
-					robot.elementarm.setPosition(.295);
-				}
-				else if (gamepad1.left_bumper && gamepad1.dpad_down && !gamepad1.right_bumper) {
-					robot.elementarm.setPosition(0.355);
-				}
-				else if (gamepad1.right_bumper && gamepad1.dpad_down) {
-					robot.elementarm.setPosition(0.25);
-				}
-				else if (!gamepad1.left_bumper && gamepad1.dpad_up) {
-					robot.elementarm.setPosition(0);
-				}
-				/*
 
 				if (gamepad1.x) {
 					if (closed && lightsabertime.seconds() > 1) {
@@ -199,13 +180,14 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					}
 				} else {
 					if (closed == false && lightsabertime.seconds() > 1) {
-						robot.lightsaber.setPosition(.1);
+						robot.lightsaber.setPosition(0);
 						closed = true;
+						lightsabertime.reset();
 					}
 				}
-				 */
 
-				if(robot.freightDetector.getDistance(DistanceUnit.INCH) < 1.85){
+
+				/*if(robot.freightDetector.getDistance(DistanceUnit.INCH) < 1.85){
 					read = true;
 				}
 				else{
@@ -218,40 +200,49 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.lightsaber.setPosition(targetlight);
 				}
 				else if(read){
-					targetlight = 0.2;
+					targetlight = 0.15;
 					robot.lightsaber.setPosition(targetlight);
 				}
 				else{
-					targetlight = 0.05;
-					robot.lightsaber.setPosition(targetlight);
+					targetlight = 0;
+					robot.lightsaber.setPosition(0);
 				}
-				/*
+
 				if(read && !gamepad1.x){
 					targetlight = 0.15;
 				}
 				if(gamepad1.x){
 					targetlight = 0.45;
 				}
-
 				 */
-
-
 
 				if (!gamepad1.left_bumper && gamepad1.a) {
 					robot.lifter.setTargetPosition(1175);
-					robot.lifter.setPower(.9);
+					robot.lifter.setPower(.95);
 				} else if (!gamepad1.left_bumper && gamepad1.b) {
 					robot.lifter.setTargetPosition(2815);
-					robot.lifter.setPower(.9);
+					robot.lifter.setPower(.95);
 				} else if (gamepad1.left_bumper && gamepad1.a) {
 					robot.lifter.setTargetPosition(3290);
-					robot.lifter.setPower(.9);
+					robot.lifter.setPower(.95);
 				} else if (gamepad1.left_bumper && gamepad1.b) {
 					robot.lifter.setTargetPosition(3500);
-					robot.lifter.setPower(.9);
+					robot.lifter.setPower(.95);
 				} else if (gamepad1.left_bumper && gamepad1.right_bumper) {
 					robot.lifter.setTargetPosition(0);
-					robot.lifter.setPower(.9);
+					robot.lifter.setPower(.95);
+					down = true;
+				}
+
+				if (down) {
+					if (robot.lifter.getCurrentPosition() > 175 || robot.lifter.getCurrentPosition() < 800) {
+						robot.lightsaber.setPosition(.45);
+					}
+
+					if (robot.lifter.getCurrentPosition() < 300) {
+						robot.lightsaber.setPosition(0);
+						down = false;
+					}
 				}
 
 				if (robot.lifter.getCurrentPosition() <= (robot.lifter.getTargetPosition() - 15) || robot.lifter.getCurrentPosition() >= (robot.lifter.getTargetPosition() + 15)) {
@@ -260,9 +251,66 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.lifter.setPower(0);
 				}
 
+				if (gamepad1.dpad_right && !gamepad1.right_bumper && !gamepad1.left_bumper) {
+					robot.tapeRotate.setPosition(x);
+					if (x <= .6) {
+						x += .01;
+					}
+				}
+				else if (gamepad1.dpad_left && !gamepad1.right_bumper && !gamepad1.left_bumper) {
+					robot.tapeRotate.setPosition(x);
+					if (x >= 0) {
+						x -= .01;
+					}
+				}
+				else if (gamepad1.dpad_right && gamepad1.left_bumper) {
+					robot.tapeRotate.setPosition(x);
+					if (x <= .6) {
+						x += .005;
+					}
+				}
+				else if (gamepad1.dpad_left && gamepad1.left_bumper) {
+					robot.tapeRotate.setPosition(x);
+					if (x >= 0) {
+						x -= .005;
+					}
+				}
+				else if (gamepad1.dpad_right && gamepad1.right_bumper) {
+					if (x <= .6) {
+						x += .05;
+					}
+				}
+				else if (gamepad1.dpad_left && gamepad1.right_bumper) {
 
-				if (gamepad1.left_bumper && gamepad1.right_bumper && gamepad1.right_trigger == 1 && gamepad1.left_trigger == 1)
-				{
+					if (x >= 0) {
+						x -= .05;
+					}
+				}
+				robot.tapeRotate.setPosition(x);
+				robot.tapeUpDown.setPosition(y);
+
+				if (gamepad1.dpad_up && !gamepad1.right_bumper && !gamepad1.left_bumper) {
+					if (y <= 0.57) {
+						y += .01;
+					}
+				}
+				else if (gamepad1.dpad_down && !gamepad1.right_bumper && !gamepad1.left_bumper) {
+					if (y >= 0) {
+						y -= .01;
+					}
+				}
+
+				if (gamepad1.a) {
+					robot.tapeExtend.setPower(1);
+				}
+				else if (gamepad1.b){
+					robot.tapeExtend.setPower(-1);
+				}
+				else {
+					robot.tapeExtend.setPower(0);
+				}
+
+				if (gamepad1.left_bumper && gamepad1.right_bumper && gamepad1.right_trigger == 1 && gamepad1.left_trigger == 1) {
 					failSafe = true;
 				}
 
@@ -285,29 +333,16 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.lifter.setPower(0);
 				}
 
-				if (!gamepad1.left_bumper && gamepad1.dpad_down) {
-					robot.elementarm.setPosition(.295);
-				}
-				else if (!gamepad1.left_bumper && gamepad1.dpad_down && !gamepad1.right_bumper) {
-					robot.elementarm.setPosition(0.355);
-				}
-				else if (gamepad1.right_bumper && gamepad1.dpad_down) {
-					robot.elementarm.setPosition(0.25);
-				}
-				else if (!gamepad1.left_bumper && gamepad1.dpad_up) {
-					robot.elementarm.setPosition(0);
-				}
-
-				if (gamepad1.dpad_left) {
+				if (gamepad2.dpad_left && !gamepad1.left_bumper) {
 					robot.duckextend.setPower(.95);
 				}
-				else if (gamepad1.dpad_right) {
+				else if (gamepad2.dpad_right && !gamepad1.left_bumper) {
 					robot.duckextend.setPower(-.95);
 				}
 				else {
 					robot.duckextend.setPower(0);
 				}
-				/*
+
 				if (gamepad1.x && !gamepad1.left_bumper) {
 					robot.lightsaber.setPosition(0.6);
 				}
@@ -315,7 +350,6 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.lightsaber.setPosition(0);
 				}
 
-				 */
 
 				if (Red = false) {
 					if (gamepad1.y && !gamepad1.left_bumper) {
@@ -348,15 +382,6 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					}
 				}
 
-				if (gamepad1.dpad_up && gamepad1.left_bumper) {
-					robot.elementclamp1.setPosition(.5);
-					robot.elementclamp2.setPosition(.5);
-				}
-				else {
-					robot.elementclamp1.setPosition(0);
-					robot.elementclamp2.setPosition(0);
-				}
-
 				if (gamepad1.right_trigger == 1) {
 					robot.intakemotor.setPower(-.95);
 				}
@@ -374,7 +399,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
 					if (lightsabertime.seconds() > 1) {
 						closed = true;
-						//robot.lightsaber.setPosition(.23);
+						robot.lightsaber.setPosition(.15);
 					}
 				}
 				else {
@@ -383,15 +408,29 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			}
 			else if (runtime.seconds() > 80 && runtime.seconds() < 85) {
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_SLOW);
+				if (robot.blocksensor.argb() < 0) {
+					if (lightsabertime.seconds() > 1) {
+						closed = true;
+						robot.lightsaber.setPosition(.15);
+					}
+				}
 			}
 			else if (runtime.seconds() >= 85 && runtime.seconds() < 90) {
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
+				if (robot.blocksensor.argb() < 0) {
+					if (lightsabertime.seconds() > 1) {
+						closed = true;
+						robot.lightsaber.setPosition(.15);
+					}
+				}
 			}
 			else if (runtime.seconds() >= 90 && runtime.seconds() < 110) {
 				if (robot.blocksensor.argb() < 0) {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
-					closed = true;
-					//robot.lightsaber.setPosition(.22);
+					if (lightsabertime.seconds() > 1) {
+						closed = true;
+						robot.lightsaber.setPosition(.15);
+					}
 				}
 				else {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
@@ -399,15 +438,28 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			}
 			else if (runtime.seconds() >= 110 && runtime.seconds() < 115) {
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_SLOW);
+				if (robot.blocksensor.argb() < 0) {
+					if (lightsabertime.seconds() > 1) {
+						closed = true;
+						robot.lightsaber.setPosition(.15);
+					}
+				}
 			}
 			else if (runtime.seconds() >= 115 && runtime.seconds() < 120) {
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
+				if (robot.blocksensor.argb() < 0) {
+					if (lightsabertime.seconds() > 1) {
+						closed = true;
+						robot.lightsaber.setPosition(.15);
+					}
+				}
 			}
 			else {
 				if (robot.blocksensor.argb() < 0) {
-					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
-					closed = true;
-					//robot.lightsaber.setPosition(.22);
+					if (lightsabertime.seconds() > 1) {
+						closed = true;
+						robot.lightsaber.setPosition(.15);
+					}
 				}
 				else {
 					robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
@@ -443,6 +495,9 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			telemetry.addData("Reading?", read);
 			telemetry.addData("Swag?", swag);
 			telemetry.addData("Fart Time?", time.seconds());
+
+			telemetry.addData("x", x);
+			telemetry.addData("y", y);
 
 			telemetry.addData("Intake Power", robot.intakemotor.getPower());
 			telemetry.update();

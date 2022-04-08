@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 public class PoseLibrary {
 
     public static Pose2d startRedDuck =		    new Pose2d(-41,     -65,    Math.toRadians(270));
+    public static Pose2d startRedBland =		new Pose2d(7,       -65,    Math.toRadians(270));
     public static Pose2d duckRed = 				new Pose2d(-41,     -60,    Math.toRadians(270));
     public static Pose2d redParking0 = 		    new Pose2d(-60,     -36,    Math.toRadians(0));
     public static Pose2d redE1 = 				new Pose2d(-44.5,   -49,    Math.toRadians(270));
@@ -14,7 +15,7 @@ public class PoseLibrary {
     public static Pose2d redE4 =			 	new Pose2d(3.5,     -48,    Math.toRadians(270));
     public static Pose2d redE5 =				new Pose2d(12,      -48,    Math.toRadians(270));
     public static Pose2d redE6 = 				new Pose2d(20.5,    -48,    Math.toRadians(270));
-    public static Pose2d redGoalAlliance = 	    new Pose2d(-12,     -36,    Math.toRadians(270));
+    public static Pose2d redGoalAlliance = 	    new Pose2d(-12,     -39.5,    Math.toRadians(270));
     public static Pose2d redGoalParking = 	    new Pose2d(-27,     -24,    Math.toRadians(180));
     public static Pose2d redGoalWarehouse = 	new Pose2d(12,      -24,    Math.toRadians(0));
     public static Pose2d redParking1 = 		    new Pose2d(36,      -65,    Math.toRadians(0));
@@ -22,7 +23,8 @@ public class PoseLibrary {
     public static Pose2d redParking3 = 		    new Pose2d(60,      -36,    Math.toRadians(270));
     public static Pose2d redOutOfWay = 		    new Pose2d(-24,     -60,    Math.toRadians(0));
     public static Pose2d redWarehouseOut = 	    new Pose2d(12,      -65,    Math.toRadians(0));
-    public static Pose2d redWarehouseIn = 	    new Pose2d(42,      -65,    Math.toRadians(0));
+    public static Pose2d redWarehouseIn = 	    new Pose2d(38,      -65,    Math.toRadians(0));
+    public static Pose2d redReading =   	    new Pose2d(40,    -65,    Math.toRadians(0));
     public static Pose2d blueParking0 = 		new Pose2d(-60,     36,     Math.toRadians(0));
     public static Pose2d blueE1 = 			    new Pose2d(-44,     51,     Math.toRadians(90));
     public static Pose2d blueE2 = 			    new Pose2d(-36,     51,     Math.toRadians(90));
@@ -38,7 +40,7 @@ public class PoseLibrary {
     public static Pose2d blueParking3 = 		new Pose2d(60,      36,     Math.toRadians(90));
     public static Pose2d blueWarehouseOut = 	new Pose2d(12,      65,     Math.toRadians(0));
     public static Pose2d blueWarehouseIn = 	    new Pose2d(36,      65,     Math.toRadians(0));
-
+//---------------------------------------------------------------------------------------------------------------------------------------------
     public static Vector2d startRedDuckV =		    new Vector2d(-41,     -65);
     public static Vector2d duckRedV = 				new Vector2d(-41,     -60);
     public static Vector2d redParking0V = 		    new Vector2d(-60,     -36);
