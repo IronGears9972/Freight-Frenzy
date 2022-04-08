@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -26,13 +27,10 @@ public class Hardware_21_22 {
     public DcMotor duckspin = null;
 
     //Give names to our Servos for our Programs
-    public Servo elementarm = null;
     public Servo lightsaber = null;
-    public Servo elementclamp1 = null;
-    public Servo elementclamp2 = null;
-    public Servo distancearmservo2 = null;
-    public Servo distancearmservo1 = null;
-    public CRServo TapeMeasureThing = null;
+    public CRServo tapeExtend = null;
+    public Servo tapeRotate = null;
+    public Servo tapeUpDown = null;
 
 
     //Give names to our IMU for our Programs
@@ -61,8 +59,6 @@ public class Hardware_21_22 {
         hwMap = ahwMap;
         opMode = aopMode;
 
-
-
         //Name Motors for Config
         frontLeftMotor = hwMap.get(DcMotorEx.class, "front_left");
         frontRightMotor = hwMap.get(DcMotorEx.class, "front_right");
@@ -75,13 +71,10 @@ public class Hardware_21_22 {
         duckextend = hwMap.get(DcMotor.class, "duckextend");
 
         //Name Servos for Config
-        elementarm = hwMap.get(Servo.class, "elementarm");
         lightsaber = hwMap.get(Servo.class, "lightsaber");
-        elementclamp1 = hwMap.get(Servo.class, "elementclamp1");
-        elementclamp2 = hwMap.get(Servo.class, "elementclamp2");
-        distancearmservo2 = hwMap.get(Servo.class, "distancearmservoR");
-        distancearmservo1 = hwMap.get(Servo.class, "distancearmservoL");
-        TapeMeasureThing = hwMap.get(CRServo.class, "tapeextension");
+        tapeExtend = hwMap.get(CRServo.class, "tapeextension");
+        tapeRotate = hwMap.get(Servo.class, "taperotate");
+        tapeUpDown = hwMap.get(Servo.class, "up down");
 
         cargolights = hwMap.get(RevBlinkinLedDriver.class, "cargolights");
 
@@ -98,13 +91,10 @@ public class Hardware_21_22 {
         intakemotor.setDirection(DcMotor.Direction.FORWARD);
 
         //Set Direction the Servos will turn
-        elementarm.setDirection(Servo.Direction.FORWARD);
         lightsaber.setDirection(Servo.Direction.REVERSE);
-        elementclamp2.setDirection(Servo.Direction.FORWARD);
-        elementclamp1.setDirection(Servo.Direction.REVERSE);
         duckextend.setDirection(CRServo.Direction.REVERSE);
-        distancearmservo1.setDirection(Servo.Direction.REVERSE);
-        distancearmservo2.setDirection(Servo.Direction.FORWARD);
+        tapeRotate.setDirection(Servo.Direction.REVERSE);
+        tapeExtend.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Set Init Power to Motors and apply Automatic Breaking
         frontLeftMotor.setPower(0);
@@ -126,13 +116,10 @@ public class Hardware_21_22 {
         duckspin.setPower(0);
 
         //Set Init Position to all servos
-        //distancearmservoL.setPosition(.1);
-        //distancearmservoR.setPosition(.1);
-        elementclamp1.setPosition(0);
-        elementclamp2.setPosition(0);
         lifter.setTargetPosition(0);
         lightsaber.setPosition(0);
-        elementarm.setPosition(0);
+        tapeRotate.setPosition(0.5);
+        tapeUpDown.setPosition(0.3);
 
         //Set all motors that are using Servos to RUN_USING_ENCODER
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //L
@@ -172,6 +159,7 @@ public class Hardware_21_22 {
     int duckTarget = 1234;
 
     public void raiseToLayer(int layer){
+        lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(layer == 1){
             lifter.setTargetPosition(layer1A);
         }
@@ -180,6 +168,9 @@ public class Hardware_21_22 {
         }
         else if(layer == 3){
             lifter.setTargetPosition(layer3A);
+        }
+        else if(layer == 0){
+            lifter.setTargetPosition(0);
         }
         lifter.setPower(0.95);
     }
