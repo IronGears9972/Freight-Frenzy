@@ -19,8 +19,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.List;
 
-@Autonomous(name = "New Red Duckside", group = "AUTONOMOUS")
-public class newRedDuckside extends LinearOpMode {
+@Autonomous(name = "New blue Duckside", group = "AUTONOMOUS")
+public class newBlueDuckside extends LinearOpMode {
 
 	Hardware_21_22 robot = new Hardware_21_22();
 
@@ -48,74 +48,74 @@ public class newRedDuckside extends LinearOpMode {
 		}
 		SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 		robot.init(hardwareMap, this);
-		drive.setPoseEstimate(PoseLibrary.startRedDuck);
+		drive.setPoseEstimate(PoseLibrary.startblueDuck);
 
 		telemetry.addLine("step 1");
 		telemetry.update();
 
-		Trajectory driveToDuck = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
-				.lineToLinearHeading(PoseLibrary.duckRed)
+		Trajectory driveToDuck = drive.trajectoryBuilder(PoseLibrary.startblueDuck)
+				.lineToLinearHeading(PoseLibrary.duckblue)
 				.build();
 
 		telemetry.addLine("step 2");
 		telemetry.update();
 
-		Trajectory duckPose = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
-				.lineToLinearHeading(PoseLibrary.duckRed)
+		Trajectory duckPose = drive.trajectoryBuilder(PoseLibrary.startblueDuck)
+				.lineToLinearHeading(PoseLibrary.duckblue)
 				.build();
 		telemetry.addLine("step 3");
 		telemetry.update();
 
 		Trajectory route0_1 = drive.trajectoryBuilder(duckPose.end())
-				.lineToLinearHeading(PoseLibrary.redOutOfWay)
+				.lineToLinearHeading(PoseLibrary.blueOutOfWay)
 				.build();
 		telemetry.addLine("step 4");
 		telemetry.update();
 
 		Trajectory route0_2 = drive.trajectoryBuilder(route0_1.end())
-				.lineToLinearHeading(PoseLibrary.redGoalParking)
+				.lineToLinearHeading(PoseLibrary.blueGoalParking)
 				.build();
 		telemetry.addLine("step 5");
 		telemetry.update();
 
 		Trajectory route0_3 = drive.trajectoryBuilder(route0_2.end())
-				.lineToLinearHeading(PoseLibrary.redParking0)
+				.lineToLinearHeading(PoseLibrary.blueParking0)
 				.build();
 		telemetry.addLine("step 6");
 		telemetry.update();
 
 		Trajectory route1_1 = drive.trajectoryBuilder(duckPose.end())
-				.lineToLinearHeading(PoseLibrary.redGoalAlliance)
+				.lineToLinearHeading(PoseLibrary.blueGoalAlliance)
 				.build();
 		telemetry.addLine("step 7");
 		telemetry.update();
 
 		Trajectory route1_2 = drive.trajectoryBuilder(route1_1.end())
-				.lineToLinearHeading(PoseLibrary.redWarehouseOut)
+				.lineToLinearHeading(PoseLibrary.blueWarehouseOut)
 				.build();
 		telemetry.addLine("step 8");
 		telemetry.update();
 
 		Trajectory route1_3 = drive.trajectoryBuilder(route1_2.end())
-				.lineToLinearHeading(PoseLibrary.redWarehouseIn)
+				.lineToLinearHeading(PoseLibrary.blueWarehouseIn)
 				.build();
 		telemetry.addLine("step 9");
 		telemetry.update();
 
 		Trajectory route1_4a = drive.trajectoryBuilder(route1_3.end())
-				.lineToLinearHeading(PoseLibrary.redParking1)
+				.lineToLinearHeading(PoseLibrary.blueParking1)
 				.build();
 		telemetry.addLine("step 10");
 		telemetry.update();
 
 		Trajectory route1_4b = drive.trajectoryBuilder(route1_3.end())
-				.lineToLinearHeading(PoseLibrary.redParking2)
+				.lineToLinearHeading(PoseLibrary.blueParking2)
 				.build();
 		telemetry.addLine("step 11");
 		telemetry.update();
 
 		Trajectory route1_4c = drive.trajectoryBuilder(route1_3.end())
-				.lineToLinearHeading(PoseLibrary.redParking3)
+				.lineToLinearHeading(PoseLibrary.blueParking3)
 				.build();
 		telemetry.addLine("step 12");
 		telemetry.update();
@@ -304,7 +304,7 @@ public class newRedDuckside extends LinearOpMode {
 				result[1] = true;
 			}
 		}
-			return result;
+		return result;
 	}
 
 
@@ -331,7 +331,7 @@ public class newRedDuckside extends LinearOpMode {
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.duckextend.setTargetPosition(0);
 		robot.duckextend.setPower(0.95);
-		
+
 	}
 
 	public void extend(){
@@ -428,7 +428,7 @@ public class newRedDuckside extends LinearOpMode {
 			result = "Pre-load in the Warehouse";
 		}
 		if (park == 3){
-			result =  "Warehouse Exit (Near the Shared Goal)";
+			result =  "Warehouse Exit (Near the Shablue Goal)";
 		}
 
 		return result;

@@ -128,6 +128,8 @@ public class Hardware_21_22 {
         intakemotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        duckextend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        duckextend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Set motors to run without Encoder
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

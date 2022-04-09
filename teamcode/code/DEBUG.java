@@ -139,13 +139,16 @@ public class DEBUG extends LinearOpMode {
 
 			if(test.equals("Duck Extend / Spin")){
 				if (gamepad1.a) {
-					robot.duckextend.setPower(0.5);
+					robot.duckextend.setPower(0.85);
 				}
 				else if (gamepad1.b) {
-					robot.duckextend.setPower(-.5);
+					robot.duckextend.setPower(-.85);
 				}
 				else {
 					robot.duckextend.setPower(0);
+				}
+				if (gamepad1.x) {
+					spin();
 				}
 
 				if (gamepad1.right_trigger != 0) {
@@ -268,6 +271,27 @@ public class DEBUG extends LinearOpMode {
 			if(isStopRequested()){
 				break;
 			}
+
+		}
+
+	}
+
+	private void spin() {
+		ElapsedTime spinTime = new ElapsedTime();
+		spinTime.reset();
+
+		robot.duckspin.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		robot.duckspin.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+		robot.duckspin.setTargetPosition(514);
+		robot.duckspin.setPower(0.85);
+
+		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 5){
+			robot.duckspin.setPower(0.85);
+			telemetry.addData("CP2",robot.duckspin.getCurrentPosition());
+			telemetry.addData("TP2",robot.duckspin.getTargetPosition());
+			telemetry.update();
+			sleep(1);
 		}
 	}
 }
