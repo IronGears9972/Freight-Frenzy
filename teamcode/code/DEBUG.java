@@ -115,10 +115,10 @@ public class DEBUG extends LinearOpMode {
 					stored4 = robot.lifter.getCurrentPosition();
 
 				if(gamepad1.dpad_right){
-					robot.lightsaber.setPosition(0.5);
+					robot.lightsaber.setPosition(0.45);
 				}
 				else if (gamepad1.dpad_left){
-					robot.lightsaber.setPosition(1);
+					robot.lightsaber.setPosition(0);
 
 				}
 

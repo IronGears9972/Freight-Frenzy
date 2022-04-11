@@ -156,7 +156,7 @@ public class newBlueDuckside extends LinearOpMode {
 
 						i++;
 
-						if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Marker")) {
+						if (recognition.getLabel().equals("Ball")) {
 							if (recognition.getLeft() < 250) {
 								str = "Its on da left";
 							} else {
@@ -295,6 +295,10 @@ public class newBlueDuckside extends LinearOpMode {
 		updatedRecognitions = tfod.getUpdatedRecognitions();
 
 		if (updatedRecognitions != null) {
+
+			for(Recognition r : updatedRecognitions){
+
+			}
 
 			if (updatedRecognitions.get(0).getLeft() < 350) {
 				result[0] = true;

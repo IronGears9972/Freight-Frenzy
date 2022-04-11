@@ -147,9 +147,9 @@ public class Hardware_21_22 {
     public int layer2 = 2815;
     public int bottom = 1175;
 
-    public int layer1A = 1050;
-    public int layer2A = 1600;
-    public int layer3A = 2725;
+    public int layer1A = 310;
+    public int layer2A = 1385;
+    public int layer3A = 2800;
 
     public double down = 0.355;
     public double up = 0;
@@ -174,7 +174,7 @@ public class Hardware_21_22 {
         else if(layer == 0){
             lifter.setTargetPosition(0);
         }
-        lifter.setPower(0.95);
+        lifter.setPower(1);
     }
 
     public void backToZero(){
@@ -207,10 +207,10 @@ public class Hardware_21_22 {
                 layerOrPosition = 2;
             }
             else if(rightRead){
-                layerOrPosition = 1;
+                layerOrPosition = 3;
             }
             else{
-                layerOrPosition = 3;
+                layerOrPosition = 1;
             }
         }
 

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.SwitchableCamera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -34,6 +35,10 @@ public class newBlueBland extends LinearOpMode {
 	//private VuforiaLocalizer vuforia2;
 	private TFObjectDetector tfod;
 	private List<Recognition> updatedRecognitions;
+
+	private WebcamName intake, elevatorCamera;
+	private SwitchableCamera switchableCamera;
+
 	private ArrayList<Pose2d> Readings = new ArrayList<Pose2d>();
 	private int route = 0;
 	private int buffer = 100;
@@ -122,7 +127,7 @@ public class newBlueBland extends LinearOpMode {
 
 						i++;
 
-						if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Marker")) {
+						if (recognition.getLabel().equals("Ball")) {
 							if (recognition.getLeft() < 250) {
 								str = "Its on da left";
 								layer = 1;
@@ -193,6 +198,10 @@ public class newBlueBland extends LinearOpMode {
 
 		while (opModeIsActive()) {
 			returnTime.reset();
+
+			boolean[] arr = scan();
+
+			layer = robot.read(false, arr[0],arr[1]);
 
 			robot.raiseToLayer(layer);
 			sleep(buffer);
@@ -333,6 +342,7 @@ public class newBlueBland extends LinearOpMode {
 				result[1] = true;
 			}
 		}
+
 		return result;
 	}
 
@@ -474,11 +484,16 @@ public class newBlueBland extends LinearOpMode {
 		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
 		parameters.vuforiaLicenseKey = VUFORIA_KEY;
-		parameters.cameraName = hardwareMap.get(WebcamName.class, "Something Cool");
+		intake = hardwareMap.get(WebcamName.class, "Something Cool");
+		elevatorCamera = hardwareMap.get(WebcamName.class, "Something Awesome");
+		parameters.cameraName = ClassFactory.getInstance().getCameraManager().nameForSwitchableCamera(intake, elevatorCamera);
 		parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES;
 
 		//  Instantiate the Vuforia engine
 		vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+		switchableCamera = (SwitchableCamera) vuforia.getCamera();
+		switchableCamera.setActiveCamera(elevatorCamera);
 
 		// Loading trackables is not necessary for the TensorFlow Object Detection engine.
 	}

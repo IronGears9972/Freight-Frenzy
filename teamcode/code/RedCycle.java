@@ -25,8 +25,6 @@ public class RedCycle extends LinearOpMode {
 		double pi = Math.PI;
 		double tile = 24;
 		int parking = 0;
-		robot.distancearmservo1.setPosition(robot.reading);
-		robot.distancearmservo2.setPosition(robot.reading+0.01);
 		while(!opModeIsActive()){
 			if(gamepad1.a){
 				parking = 1;
@@ -126,15 +124,6 @@ public class RedCycle extends LinearOpMode {
 
 			//--------------------------------------------------------------------------------------
 
-			for (int x = 0; x < 10; ++x) {
-				DR = DR + robot.distance2.getDistance(DistanceUnit.INCH);
-				DL = DL + robot.distance1.getDistance(DistanceUnit.INCH);
-				telemetry.addData("DR", DR);
-				telemetry.addData("DL", DL);
-				telemetry.update();
-				sleep(10);
-			}
-			//sleep(5000);
 
 			DR = DR / 10;
 			DL = DL / 10;
@@ -148,8 +137,6 @@ public class RedCycle extends LinearOpMode {
 			}
 
 			robot.lifter.setTargetPosition(layer);
-			robot.distancearmservo1.setPosition(robot.retreating);
-			robot.distancearmservo2.setPosition(robot.retreating);
 			sleep(testSleep);
 			robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 			robot.lifter.setPower(0.85);
@@ -179,77 +166,77 @@ public class RedCycle extends LinearOpMode {
 			sleep(testSleep);
 
 
-				drive.followTrajectory(EnterWarehouse);
+			drive.followTrajectory(EnterWarehouse);
+			sleep(testSleep);
+
+
+			collectionIncrement = collect(collectionIncrement,drive);
+
+			robot.intakemotor.setPower(0.95);
+			sleep(testSleep);
+
+			Trajectory leave1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+					.lineToLinearHeading(redWarehouseIn)
+					.build();
+
+			drive.followTrajectory(leave1);
+			robot.intakemotor.setPower(0);
+
+			Trajectory leave2 = drive.trajectoryBuilder(leave1.end())
+					.lineToLinearHeading(redWarehouseOut)
+					.build();
+
+			drive.followTrajectory(leave2);
+
+			liftIt();
+
+			sleep(testSleep);
+
+			if(layer == robot.layer1A){
+				drive.followTrajectory(align);
 				sleep(testSleep);
-
-
-				collectionIncrement = collect(collectionIncrement,drive);
-
-				robot.intakemotor.setPower(0.95);
+				drive.followTrajectory(score);
 				sleep(testSleep);
-
-				Trajectory leave1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-						.lineToLinearHeading(redWarehouseIn)
-						.build();
-
-				drive.followTrajectory(leave1);
-				robot.intakemotor.setPower(0);
-
-				Trajectory leave2 = drive.trajectoryBuilder(leave1.end())
-						.lineToLinearHeading(redWarehouseOut)
-						.build();
-
-				drive.followTrajectory(leave2);
-
-				liftIt();
-
+			}
+			else {
+				drive.followTrajectory(score45);
 				sleep(testSleep);
+			}
 
-				if(layer == robot.layer1A){
-					drive.followTrajectory(align);
-					sleep(testSleep);
-					drive.followTrajectory(score);
-					sleep(testSleep);
-				}
-				else {
-					drive.followTrajectory(score45);
-					sleep(testSleep);
-				}
+			robot.lightsaber.setPosition(robot.open);
+			sleep(550);
 
-				robot.lightsaber.setPosition(robot.open);
-				sleep(550);
+			Trajectory unalign = drive.trajectoryBuilder(drive.getPoseEstimate())
+					.lineToLinearHeading(away)
+					.build();
 
-				Trajectory unalign = drive.trajectoryBuilder(drive.getPoseEstimate())
-						.lineToLinearHeading(away)
-						.build();
+			drive.followTrajectory(unalign);
+			robot.lightsaber.setPosition(1);
 
-				drive.followTrajectory(unalign);
-				robot.lightsaber.setPosition(1);
+			dropIt();
+			sleep(testSleep);
 
-				dropIt();
-				sleep(testSleep);
+			Trajectory fromGoalToEntrance = drive.trajectoryBuilder(drive.getPoseEstimate())
+					.lineToLinearHeading(redWarehouseOut)
+					.build();
 
-				Trajectory fromGoalToEntrance = drive.trajectoryBuilder(drive.getPoseEstimate())
-						.lineToLinearHeading(redWarehouseOut)
-						.build();
+			drive.followTrajectory(fromGoalToEntrance);
+			sleep(testSleep);
 
-				drive.followTrajectory(fromGoalToEntrance);
-				sleep(testSleep);
+			drive.followTrajectory(EnterWarehouse);
+			sleep(testSleep);
 
-				drive.followTrajectory(EnterWarehouse);
-				sleep(testSleep);
+			Trajectory changeUp = drive.trajectoryBuilder(EnterWarehouse.end())
+					.strafeLeft(18)
+					.build();
 
-				Trajectory changeUp = drive.trajectoryBuilder(EnterWarehouse.end())
-						.strafeLeft(18)
-						.build();
+			drive.followTrajectory(changeUp);
 
-				drive.followTrajectory(changeUp);
+			collect(collectionIncrement,drive);
 
-				collect(collectionIncrement,drive);
+			robot.intakemotor.setPower(0.95);
 
-				robot.intakemotor.setPower(0.95);
-
-				park(parking,drive,redParking1,redParking2,redParking3);
+			park(parking,drive,redParking1,redParking2,redParking3);
 
 
 
@@ -302,12 +289,12 @@ public class RedCycle extends LinearOpMode {
 
 		drive.followTrajectory(eliminateconstant);
 
-		if(robot.distance3.getDistance(DistanceUnit.INCH) < 3 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3){
+		if(robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3){
 			robot.intakemotor.setPower(0.95);
 			return constant;
 		}
 
-		while(robot.distance3.getDistance(DistanceUnit.INCH) > 3 && robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 3){
+		while(robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 3){
 			robot.intakemotor.setPower(-0.9);
 
 			Trajectory forwardByThree = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -321,7 +308,6 @@ public class RedCycle extends LinearOpMode {
 			constant+=2;
 
 			telemetry.addData("constant", constant);
-			telemetry.addData("reading", robot.distance3.getDistance(DistanceUnit.INCH));
 			telemetry.addData("reading lightsaber", robot.blocksensor_distance.getDistance(DistanceUnit.INCH));
 			telemetry.update();
 
@@ -337,7 +323,7 @@ public class RedCycle extends LinearOpMode {
 
 	private int collect2(int constant, double power){
 
-		while(robot.distance3.getDistance(DistanceUnit.INCH) > 3 && robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 3){
+		while(robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 3){
 			robot.frontLeftMotor.setPower(power);
 			robot.frontRightMotor.setPower(power);
 			robot.rearLeftMotor.setPower(power);

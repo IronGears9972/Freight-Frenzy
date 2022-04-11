@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.code;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,12 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.SwitchableCamera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.List;
@@ -33,6 +32,10 @@ public class newRedDuckside extends LinearOpMode {
 	private VuforiaLocalizer vuforia;
 	private TFObjectDetector tfod;
 	private List<Recognition> updatedRecognitions;
+
+	private WebcamName intake, elevatorCamera;
+	private SwitchableCamera switchableCamera;
+
 	private int route = 0;
 	private int buffer = 3000;
 
@@ -127,6 +130,9 @@ public class newRedDuckside extends LinearOpMode {
 		String str = "";
 		int parking = 0;
 		telemetry.addLine("Everything is initialized!");
+		TelemetryPacket t = new TelemetryPacket();
+		t.addLine("Everything is initialized");
+		FtcDashboard.getInstance().sendTelemetryPacket(t);
 		telemetry.update();
 
 		while(!opModeIsActive()){
@@ -156,7 +162,7 @@ public class newRedDuckside extends LinearOpMode {
 
 						i++;
 
-						if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Marker")) {
+						if (recognition.getLabel().equals("Ball")) {
 							if (recognition.getLeft() < 250) {
 								str = "Its on da left";
 							} else {
@@ -441,11 +447,17 @@ public class newRedDuckside extends LinearOpMode {
 		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
 		parameters.vuforiaLicenseKey = VUFORIA_KEY;
-		parameters.cameraName = hardwareMap.get(WebcamName.class, "Something Awesome");
+
+		intake = hardwareMap.get(WebcamName.class, "Something Cool");
+		elevatorCamera = hardwareMap.get(WebcamName.class, "Something Awesome");
+		parameters.cameraName = ClassFactory.getInstance().getCameraManager().nameForSwitchableCamera(intake, elevatorCamera);
 		parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES;
 
 		//  Instantiate the Vuforia engine
 		vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+		switchableCamera = (SwitchableCamera) vuforia.getCamera();
+		switchableCamera.setActiveCamera(elevatorCamera);
 
 		// Loading trackables is not necessary for the TensorFlow Object Detection engine.
 	}

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.SwitchableCamera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -34,13 +35,22 @@ public class newRedBland extends LinearOpMode {
 	//private VuforiaLocalizer vuforia2;
 	private TFObjectDetector tfod;
 	private List<Recognition> updatedRecognitions;
+
+	private WebcamName intake, elevatorCamera;
+	private SwitchableCamera switchableCamera;
+
 	private ArrayList<Pose2d> Readings = new ArrayList<Pose2d>();
 	private int route = 0;
 	private int buffer = 100;
+	private int x = 0;
+	private boolean[] arr = new boolean[2];
+
 
 	public void runOpMode() {
 		telemetry.addLine("step 0");
 		telemetry.update();
+		arr[0] = false;
+		arr[1] = false;
 
 		initVuforia();
 		initTfod();
@@ -122,7 +132,7 @@ public class newRedBland extends LinearOpMode {
 
 						i++;
 
-						if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Marker")) {
+						if (recognition.getLabel().equals("Ball")) {
 							if (recognition.getLeft() < 250) {
 								str = "Its on da left";
 								layer = 1;
@@ -131,12 +141,18 @@ public class newRedBland extends LinearOpMode {
 								layer = 2;
 							}
 						}
+						if(recognition.getLabel().equals("Cube") || recognition.getLabel().equals("Ball")){
+							x = i;
+						}
 					}
 
 					telemetry.addLine(str);
 					telemetry.addData("route", posToWord(route));
 					telemetry.addLine("A - " + posToWord(1) + "\nB - " + posToWord(2) + "\nX - " + posToWord(3) + "\nY - " + posToWord(0));
 					telemetry.addLine(parking + "");
+					arr = scan();
+					telemetry.addData("Index 1", arr[0]);
+					telemetry.addData("Index 2", arr[1]);
 					telemetry.update();
 				}
 				else{
@@ -194,18 +210,25 @@ public class newRedBland extends LinearOpMode {
 		while (opModeIsActive()) {
 			returnTime.reset();
 
+			layer = robot.read(true, arr[0],arr[1]);
+
 			robot.raiseToLayer(layer);
+
+			telemetry.update();
 			sleep(buffer);
 			drive.followTrajectory(gart);
 			sleep(buffer+750);
 			robot.lightsaber.setPosition(0.4);
 			sleep(buffer+500);
 
+			switchableCamera.setActiveCamera(intake);
+
 			drive.followTrajectory(firstTime01);
 			sleep(buffer);
 			robot.raiseToLayer(0);
 			drive.followTrajectory(firstTime02);
 			robot.lightsaber.setPosition(0);
+			sleep(750);
 			read(drive);
 
 			while(!timeLeft(drive)){
@@ -224,11 +247,17 @@ public class newRedBland extends LinearOpMode {
 							.build();
 
 					drive.followTrajectory(reAlign);
+
+					//TODO ADD LOOP TO MAKE SURE YOU COLLECT
+
 					robot.intakemotor.setPower(0.95);
 					sleep(buffer+500);
 					robot.intakemotor.setPower(0);
 					robot.lightsaber.setPosition(0.15);
 					drive.followTrajectory(cycling00);
+
+					//outside below
+
 					sleep(buffer);
 					drive.followTrajectory(cycling01);
 					robot.raiseToLayer(3);
@@ -278,6 +307,7 @@ public class newRedBland extends LinearOpMode {
 
 				telemetry.addData("width", recognition.getWidth());
 				telemetry.addData("Distance", getDisplacement(recognition));
+				telemetry.update();
 
 				i++;
 				if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Cube") || recognition.getLabel().equals("Duck")) {
@@ -321,11 +351,11 @@ public class newRedBland extends LinearOpMode {
 		result[0] = false;
 		result[1] = false;
 
-		updatedRecognitions = tfod.getUpdatedRecognitions();
+		//updatedRecognitions = tfod.getUpdatedRecognitions();
 
-		if (updatedRecognitions != null) {
+		if (updatedRecognitions.size() > 0) {
 
-			if (updatedRecognitions.get(0).getLeft() < 250) {
+			if (updatedRecognitions.get(x).getLeft() < 250) {
 				result[0] = true;
 				result[1] = false;
 			} else {
@@ -474,11 +504,16 @@ public class newRedBland extends LinearOpMode {
 		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
 		parameters.vuforiaLicenseKey = VUFORIA_KEY;
-		parameters.cameraName = hardwareMap.get(WebcamName.class, "Something Cool");
+		intake = hardwareMap.get(WebcamName.class, "Something Cool");
+		elevatorCamera = hardwareMap.get(WebcamName.class, "Something Awesome");
+		parameters.cameraName = ClassFactory.getInstance().getCameraManager().nameForSwitchableCamera(intake, elevatorCamera);
 		parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES;
 
 		//  Instantiate the Vuforia engine
 		vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+		switchableCamera = (SwitchableCamera) vuforia.getCamera();
+		switchableCamera.setActiveCamera(elevatorCamera);
 
 		// Loading trackables is not necessary for the TensorFlow Object Detection engine.
 	}

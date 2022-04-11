@@ -6,11 +6,11 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 public class PoseLibrary {
 
     public static Pose2d startRedDuck =		    new Pose2d(-37.25,     -64.75,    Math.toRadians(270));
-    public static Pose2d startRedBland =		new Pose2d(7,       -65,    Math.toRadians(270));
-    public static Pose2d startblueDuck =		    new Pose2d(-37.25,     64.75,    Math.toRadians(270));
-    public static Pose2d startblueBland =		new Pose2d(7,       65,    Math.toRadians(270));
+    public static Pose2d startRedBland =		new Pose2d(9.125,    -64.75,    Math.toRadians(270));
+    public static Pose2d startblueDuck =		new Pose2d(-37.25,     64.75,    Math.toRadians(270));
+    public static Pose2d startblueBland =		new Pose2d(9.125,    64.75,    Math.toRadians(270));
     public static Pose2d duckRed = 				new Pose2d(-51.75,     -58.5,    Math.toRadians(270));
-    public static Pose2d duckblue = 				new Pose2d(-51.75,     58.5,    Math.toRadians(270));
+    public static Pose2d duckblue = 		    new Pose2d(-51.75,     58.5,    Math.toRadians(270));
     public static Pose2d redParking0 = 		    new Pose2d(-60,     -36,    Math.toRadians(0));
     public static Pose2d redE1 = 				new Pose2d(-44.5,   -49,    Math.toRadians(270));
     public static Pose2d redE2 = 				new Pose2d(-36,     -49,    Math.toRadians(270));
@@ -18,7 +18,7 @@ public class PoseLibrary {
     public static Pose2d redE4 =			 	new Pose2d(3.5,     -48,    Math.toRadians(270));
     public static Pose2d redE5 =				new Pose2d(12,      -48,    Math.toRadians(270));
     public static Pose2d redE6 = 				new Pose2d(20.5,    -48,    Math.toRadians(270));
-    public static Pose2d redGoalAlliance = 	    new Pose2d(-12,     -39.5,    Math.toRadians(270));
+    public static Pose2d redGoalAlliance = 	    new Pose2d(-12,     -38,    Math.toRadians(270));
     public static Pose2d redGoalParking = 	    new Pose2d(-22,     -26,    Math.toRadians(180));
     public static Pose2d redGoalWarehouse = 	new Pose2d(12,      -24,    Math.toRadians(0));
     public static Pose2d redParking1 = 		    new Pose2d(36,      -65,    Math.toRadians(0));

@@ -39,8 +39,9 @@ public class ExperimentalTeleOp extends LinearOpMode {
 
 	boolean down;
 
-	double x = 0;
+	double x = .5;
 	double y = 0;
+
 	public void runOpMode() {
 
 		telemetry.addData("Say", "Hello Iron Gears");
@@ -108,14 +109,14 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				if (robot.lifter.getCurrentPosition() > -15 && robot.lifter.getCurrentPosition() < 30) {
 
 					if (robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 2) {
-						if(swag) {
+						if (swag) {
 							time.reset();
 							swag = false;
 						}
 						if (time.seconds() < 1) {
 							robot.intakemotor.setPower(.95);
 						}
-						else{
+						else {
 							robot.intakemotor.setPower(0);
 						}
 					} else {
@@ -132,9 +133,9 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				}
 
 				if (Red = false) {
-					if (gamepad2.y && !gamepad2.left_bumper) {
+					if (gamepad1.y && !gamepad1.left_bumper) {
 						ducktime.reset();
-						while (gamepad2.y) {
+						while (gamepad1.y) {
 							if (ducktime.seconds() < .5) {
 								robot.duckspin.setPower(0.8);
 							} else if (ducktime.seconds() < 1) {
@@ -147,9 +148,9 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					}
 				}
 				else {
-					if (gamepad2.y && !gamepad2.left_bumper) {
+					if (gamepad1.y && !gamepad1.left_bumper) {
 						ducktime.reset();
-						while (gamepad2.y) {
+						while (gamepad1.y) {
 							if (ducktime.seconds() < .5) {
 								robot.duckspin.setPower(-.8);
 							} else {
@@ -162,15 +163,15 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					}
 				}
 
-				if (gamepad2.dpad_left && !gamepad2.left_bumper) {
+				/*if (gamepad1.dpad_left && !gamepad1.left_bumper) {
 					robot.duckextend.setPower(.95);
 				}
-				else if (gamepad2.dpad_right && !gamepad2.left_bumper) {
+				else if (gamepad1.dpad_right && !gamepad1.left_bumper) {
 					robot.duckextend.setPower(-.95);
 				}
 				else {
 					robot.duckextend.setPower(0);
-				}
+				}*/
 
 				if (gamepad1.x) {
 					if (closed && lightsabertime.seconds() > 1) {
@@ -187,34 +188,6 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				}
 
 
-				/*if(robot.freightDetector.getDistance(DistanceUnit.INCH) < 1.85){
-					read = true;
-				}
-				else{
-					read = false;
-				}
-
-				if(gamepad1.x){
-					targetlight = 0.5;
-					swag = true;
-					robot.lightsaber.setPosition(targetlight);
-				}
-				else if(read){
-					targetlight = 0.15;
-					robot.lightsaber.setPosition(targetlight);
-				}
-				else{
-					targetlight = 0;
-					robot.lightsaber.setPosition(0);
-				}
-
-				if(read && !gamepad1.x){
-					targetlight = 0.15;
-				}
-				if(gamepad1.x){
-					targetlight = 0.45;
-				}
-				 */
 
 				if (!gamepad1.left_bumper && gamepad1.a) {
 					robot.lifter.setTargetPosition(1175);
@@ -251,43 +224,36 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.lifter.setPower(0);
 				}
 
-				if (gamepad1.dpad_right && !gamepad1.right_bumper && !gamepad1.left_bumper) {
-					robot.tapeRotate.setPosition(x);
-					if (x <= .6) {
+				if (gamepad1.dpad_left && !gamepad1.right_bumper && !gamepad1.left_bumper) {
+					if (x <= .5) {
 						x += .01;
 					}
 				}
-				else if (gamepad1.dpad_left && !gamepad1.right_bumper && !gamepad1.left_bumper) {
-					robot.tapeRotate.setPosition(x);
+				else if (gamepad1.dpad_right && !gamepad1.right_bumper && !gamepad1.left_bumper) {
 					if (x >= 0) {
 						x -= .01;
 					}
 				}
-				else if (gamepad1.dpad_right && gamepad1.left_bumper) {
-					robot.tapeRotate.setPosition(x);
-					if (x <= .6) {
+				else if (gamepad1.dpad_left && gamepad1.left_bumper) {
+					if (x <= .5) {
 						x += .005;
 					}
 				}
-				else if (gamepad1.dpad_left && gamepad1.left_bumper) {
-					robot.tapeRotate.setPosition(x);
+				else if (gamepad1.dpad_right && gamepad1.left_bumper) {
 					if (x >= 0) {
 						x -= .005;
 					}
 				}
-				else if (gamepad1.dpad_right && gamepad1.right_bumper) {
-					if (x <= .6) {
-						x += .05;
-					}
-				}
 				else if (gamepad1.dpad_left && gamepad1.right_bumper) {
-
-					if (x >= 0) {
-						x -= .05;
+					if (x <= .5) {
+						x += .5;
 					}
 				}
-				robot.tapeRotate.setPosition(x);
-				robot.tapeUpDown.setPosition(y);
+				else if (gamepad1.dpad_right && gamepad1.right_bumper) {
+					if (x >= 0) {
+						x -= .5;
+					}
+				}
 
 				if (gamepad1.dpad_up && !gamepad1.right_bumper && !gamepad1.left_bumper) {
 					if (y <= 0.57) {
@@ -300,10 +266,13 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					}
 				}
 
-				if (gamepad1.a) {
+				robot.tapeRotate.setPosition(x);
+				robot.tapeUpDown.setPosition(y);
+
+				if (gamepad1.a && gamepad1.right_bumper) {
 					robot.tapeExtend.setPower(1);
 				}
-				else if (gamepad1.b){
+				else if (gamepad1.b && gamepad1.right_bumper){
 					robot.tapeExtend.setPower(-1);
 				}
 				else {
@@ -333,10 +302,10 @@ public class ExperimentalTeleOp extends LinearOpMode {
 					robot.lifter.setPower(0);
 				}
 
-				if (gamepad2.dpad_left && !gamepad1.left_bumper) {
+				if (gamepad1.dpad_left && !gamepad1.left_bumper) {
 					robot.duckextend.setPower(.95);
 				}
-				else if (gamepad2.dpad_right && !gamepad1.left_bumper) {
+				else if (gamepad1.dpad_right && !gamepad1.left_bumper) {
 					robot.duckextend.setPower(-.95);
 				}
 				else {
@@ -490,14 +459,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 			telemetry.addData("lifterTP", robot.lifter.getTargetPosition());
 			telemetry.addData("Lift Power", robot.lifter.getPower());
 
-			telemetry.addData("Target Position", targetlight);
-			telemetry.addData("Freight Reading", robot.freightDetector.getDistance(DistanceUnit.INCH));
-			telemetry.addData("Reading?", read);
-			telemetry.addData("Swag?", swag);
-			telemetry.addData("Fart Time?", time.seconds());
-
-			telemetry.addData("x", x);
-			telemetry.addData("y", y);
+			telemetry.addData("Duck Extend", robot.duckextend.getCurrentPosition());
 
 			telemetry.addData("Intake Power", robot.intakemotor.getPower());
 			telemetry.update();
