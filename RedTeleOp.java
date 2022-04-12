@@ -37,7 +37,7 @@ public class RedTeleOp extends LinearOpMode {
 	boolean down;
 
 	double x = .5;
-	double y = 0;
+	double y = .3;
 
 	public void runOpMode() {
 
@@ -212,11 +212,11 @@ public class RedTeleOp extends LinearOpMode {
 						}
 					} else if (gamepad2.dpad_left && gamepad2.left_bumper) {
 						if (x <= .45) {
-							x += .005;
+							x += .002;
 						}
 					} else if (gamepad2.dpad_right && gamepad2.left_bumper) {
 						if (x >= 0) {
-							x -= .005;
+							x -= .002;
 						}
 					} else if (gamepad2.dpad_left && gamepad2.right_bumper) {
 						if (x <= .45) {
