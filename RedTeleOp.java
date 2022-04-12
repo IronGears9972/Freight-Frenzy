@@ -154,16 +154,17 @@ public class RedTeleOp extends LinearOpMode {
 					robot.duckextend.setPower(0);
 				}
 
+
+
 				if (gamepad2.x) {
-					if (closed && lightsabertime.seconds() > 1) {
-						robot.lightsaber.setPosition(0.45);
+					robot.lightsaber.setPosition(0.45);
+					if (closed) {
 						closed = false;
 						lightsabertime.reset();
 					}
 				} else {
-					if (closed == false && lightsabertime.seconds() > 1) {
+					if (!closed && lightsabertime.seconds() > 1) {
 						robot.lightsaber.setPosition(0);
-						lightsabertime.reset();
 					}
 				}
 
@@ -268,17 +269,17 @@ public class RedTeleOp extends LinearOpMode {
 
 
 
-					if (gamepad2.right_trigger >= .6 && !gamepad2.left_bumper) {
+					if (gamepad2.right_trigger >= .6 && gamepad2.left_bumper) {
+						robot.tapeExtend.setPower(.2);
+					}
+					else if (gamepad2.right_trigger >= .6 && !gamepad2.left_bumper) {
 						robot.tapeExtend.setPower(1);
 					}
-					else if (gamepad2.right_trigger >= .6 && gamepad2.left_bumper) {
-						robot.tapeExtend.setPower(.5);
-					}
 					else if (gamepad2.left_trigger >= .6 && !gamepad2.left_bumper){
-						robot.tapeExtend.setPower(-1);
+						robot.tapeExtend.setPower(-.2);
 					}
 					else if (gamepad2.left_trigger >= .6 && gamepad2.left_bumper) {
-						robot.tapeExtend.setPower(-.5);
+						robot.tapeExtend.setPower(-1);
 					}
 					else {
 						robot.tapeExtend.setPower(0);
@@ -358,6 +359,15 @@ public class RedTeleOp extends LinearOpMode {
 			}
 
 			if (runtime.seconds() > 0 && runtime.seconds() <= 80) {
+				if (robot.blocksensor.argb() < 0) {
+					if (lightsabertime.seconds() > 1) {
+						closed = true;
+						robot.lightsaber.setPosition(.15);
+					}
+				}
+			}
+			else if (runtime.seconds() > 80 && runtime.seconds() < 85) {
+				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_SLOW);
 				if (robot.blocksensor.argb() < 0 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
 					if (lightsabertime.seconds() > 1) {
 						closed = true;
@@ -365,44 +375,35 @@ public class RedTeleOp extends LinearOpMode {
 					}
 				}
 			}
-			else if (runtime.seconds() > 80 && runtime.seconds() < 85 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
-				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_SLOW);
-				if (robot.blocksensor.argb() < 0) {
-					if (lightsabertime.seconds() > 1) {
-						closed = true;
-						robot.lightsaber.setPosition(.15);
-					}
-				}
-			}
-			else if (runtime.seconds() >= 85 && runtime.seconds() < 90 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
+			else if (runtime.seconds() >= 85 && runtime.seconds() < 90) {
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
-				if (robot.blocksensor.argb() < 0) {
+				if (robot.blocksensor.argb() < 0 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
 					if (lightsabertime.seconds() > 1) {
 						closed = true;
 						robot.lightsaber.setPosition(.15);
 					}
 				}
 			}
-			else if (runtime.seconds() >= 90 && runtime.seconds() < 110 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
-				if (robot.blocksensor.argb() < 0) {
+			else if (runtime.seconds() >= 90 && runtime.seconds() < 110) {
+				if (robot.blocksensor.argb() < 0 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
 					if (lightsabertime.seconds() > 1) {
 						closed = true;
 						robot.lightsaber.setPosition(.15);
 					}
 				}
 			}
-			else if (runtime.seconds() >= 110 && runtime.seconds() < 115 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
+			else if (runtime.seconds() >= 110 && runtime.seconds() < 115) {
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_SLOW);
-				if (robot.blocksensor.argb() < 0) {
+				if (robot.blocksensor.argb() < 0 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
 					if (lightsabertime.seconds() > 1) {
 						closed = true;
 						robot.lightsaber.setPosition(.15);
 					}
 				}
 			}
-			else if (runtime.seconds() >= 115 && runtime.seconds() < 120 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
+			else if (runtime.seconds() >= 115 && runtime.seconds() < 120) {
 				robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
-				if (robot.blocksensor.argb() < 0) {
+				if (robot.blocksensor.argb() < 0 || robot.blocksensor_distance.getDistance(DistanceUnit.INCH) < 3.5) {
 					if (lightsabertime.seconds() > 1) {
 						closed = true;
 						robot.lightsaber.setPosition(.15);
