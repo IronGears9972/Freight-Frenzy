@@ -37,7 +37,7 @@ public class RedTeleOp extends LinearOpMode {
 	boolean down;
 
 	double x = .5;
-	double y = 0;
+	double y = .3;
 
 	public void runOpMode() {
 
@@ -108,10 +108,10 @@ public class RedTeleOp extends LinearOpMode {
 					}
 					else {
 						if (time.seconds() > 1) {
-							if (gamepad1.right_trigger == 1) {
-								robot.intakemotor.setPower(-.8);
-							} else if (gamepad1.left_trigger == 1) {
-								robot.intakemotor.setPower(.8);
+							if (gamepad1.right_trigger >= .6) {
+								robot.intakemotor.setPower(-.95);
+							} else if (gamepad1.left_trigger >= .6) {
+								robot.intakemotor.setPower(.95);
 							}  else {
 								robot.intakemotor.setPower(0);
 							}
@@ -154,16 +154,17 @@ public class RedTeleOp extends LinearOpMode {
 					robot.duckextend.setPower(0);
 				}
 
+
+
 				if (gamepad2.x) {
-					if (closed && lightsabertime.seconds() > 1) {
-						robot.lightsaber.setPosition(0.45);
+					robot.lightsaber.setPosition(0.45);
+					if (closed) {
 						closed = false;
 						lightsabertime.reset();
 					}
 				} else {
-					if (closed == false && lightsabertime.seconds() > 1) {
+					if (!closed && lightsabertime.seconds() > 1) {
 						robot.lightsaber.setPosition(0);
-						lightsabertime.reset();
 					}
 				}
 
@@ -212,11 +213,11 @@ public class RedTeleOp extends LinearOpMode {
 						}
 					} else if (gamepad2.dpad_left && gamepad2.left_bumper) {
 						if (x <= .45) {
-							x += .005;
+							x += .002;
 						}
 					} else if (gamepad2.dpad_right && gamepad2.left_bumper) {
 						if (x >= 0) {
-							x -= .005;
+							x -= .002;
 						}
 					} else if (gamepad2.dpad_left && gamepad2.right_bumper) {
 						if (x <= .45) {
@@ -236,7 +237,7 @@ public class RedTeleOp extends LinearOpMode {
 						}
 					}
 					else if (gamepad2.dpad_down && !gamepad2.right_bumper && !gamepad2.left_bumper) {
-						if (y >= .175) {
+						if (y >= .18) {
 							y -= .01;
 						}
 					}
@@ -246,7 +247,7 @@ public class RedTeleOp extends LinearOpMode {
 						}
 					}
 					else if (gamepad2.dpad_down && !gamepad2.right_bumper && gamepad2.left_bumper) {
-						if (y >= .175) {
+						if (y >= .18) {
 							y -= .005;
 						}
 					}
@@ -268,17 +269,17 @@ public class RedTeleOp extends LinearOpMode {
 
 
 
-					if (gamepad2.right_trigger >= .6) {
-						robot.tapeExtend.setPower(1);
+					if (gamepad2.right_trigger >= .6 && gamepad2.left_bumper) {
+						robot.tapeExtend.setPower(.1);
 					}
-					else if (gamepad2.right_trigger >= .6 && gamepad2.left_bumper) {
-						robot.tapeExtend.setPower(.5);
+					else if (gamepad2.right_trigger >= .6 && !gamepad2.left_bumper) {
+						robot.tapeExtend.setPower(.9);
 					}
-					else if (gamepad2.left_trigger >= .6){
-						robot.tapeExtend.setPower(-1);
+					else if (gamepad2.left_trigger >= .6 && !gamepad2.left_bumper){
+						robot.tapeExtend.setPower(-.1);
 					}
 					else if (gamepad2.left_trigger >= .6 && gamepad2.left_bumper) {
-						robot.tapeExtend.setPower(-.5);
+						robot.tapeExtend.setPower(-.9);
 					}
 					else {
 						robot.tapeExtend.setPower(0);
@@ -450,6 +451,8 @@ public class RedTeleOp extends LinearOpMode {
 			telemetry.addData("Lift Power", robot.lifter.getPower());
 
 			telemetry.addData("Duck Extend", robot.duckextend.getCurrentPosition());
+
+			telemetry.addData("Tape Extend", robot.tapeEncoder.getCurrentPosition());
 
 			telemetry.addData("Intake Power", robot.intakemotor.getPower());
 			telemetry.update();

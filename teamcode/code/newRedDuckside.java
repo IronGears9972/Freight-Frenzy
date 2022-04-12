@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.List;
@@ -37,7 +39,7 @@ public class newRedDuckside extends LinearOpMode {
 	private SwitchableCamera switchableCamera;
 
 	private int route = 0;
-	private int buffer = 3000;
+	private int buffer = 1000;
 
 	public void runOpMode() {
 		telemetry.addLine("step 0");
@@ -70,22 +72,35 @@ public class newRedDuckside extends LinearOpMode {
 		telemetry.update();
 
 		Trajectory route0_1 = drive.trajectoryBuilder(duckPose.end())
-				.lineToLinearHeading(PoseLibrary.redOutOfWay)
+				.lineToLinearHeading(PoseLibrary.redOutOfWay,
+						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
 				.build();
 		telemetry.addLine("step 4");
 		telemetry.update();
 
 		Trajectory route0_2 = drive.trajectoryBuilder(route0_1.end())
-				.lineToLinearHeading(PoseLibrary.redGoalParking)
+				.lineToLinearHeading(PoseLibrary.redGoalParking,
+						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
 				.build();
 		telemetry.addLine("step 5");
 		telemetry.update();
 
 		Trajectory route0_3 = drive.trajectoryBuilder(route0_2.end())
-				.lineToLinearHeading(PoseLibrary.redParking0)
+				.lineToLinearHeading(PoseLibrary.redOutOfWay,
+						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
 				.build();
 		telemetry.addLine("step 6");
 		telemetry.update();
+
+		Trajectory route0_4 = drive.trajectoryBuilder(route0_3.end())
+				.lineToLinearHeading(PoseLibrary.redParking0)
+				.build();
+		telemetry.addLine("step 6.5");
+		telemetry.update();
+
 
 		Trajectory route1_1 = drive.trajectoryBuilder(duckPose.end())
 				.lineToLinearHeading(PoseLibrary.redGoalAlliance)
@@ -94,7 +109,9 @@ public class newRedDuckside extends LinearOpMode {
 		telemetry.update();
 
 		Trajectory route1_2 = drive.trajectoryBuilder(route1_1.end())
-				.lineToLinearHeading(PoseLibrary.redWarehouseOut)
+				.lineToLinearHeading(PoseLibrary.redWarehouseOut,
+						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
 				.build();
 		telemetry.addLine("step 8");
 		telemetry.update();
@@ -122,10 +139,6 @@ public class newRedDuckside extends LinearOpMode {
 				.build();
 		telemetry.addLine("step 12");
 		telemetry.update();
-
-
-
-
 
 		String str = "";
 		int parking = 0;
@@ -317,14 +330,16 @@ public class newRedDuckside extends LinearOpMode {
 	private void spin() {
 		spinTime.reset();
 
+		robot.duckspin.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 		robot.duckspin.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		robot.duckspin.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		robot.duckspin.setDirection(DcMotorSimple.Direction.REVERSE);
 
-		robot.duckspin.setTargetPosition(514);
-		robot.duckspin.setPower(0.85);
+		robot.duckspin.setTargetPosition(800);
+		robot.duckspin.setPower(0.9);
 
-		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 5){
-			robot.duckspin.setPower(0.85);
+		while(Math.abs(robot.duckspin.getCurrentPosition()) < Math.abs(robot.duckspin.getTargetPosition()) && spinTime.seconds() < 15){
+			robot.duckspin.setPower(0.9);
 			telemetry.addData("CP2",robot.duckspin.getCurrentPosition());
 			telemetry.addData("TP2",robot.duckspin.getTargetPosition());
 			telemetry.update();
@@ -349,7 +364,7 @@ public class newRedDuckside extends LinearOpMode {
 		robot.duckextend.setTargetPosition(robot.duckTarget);
 		robot.duckextend.setPower(0.85);
 
-		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 5){
+		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 7){
 
 			robot.duckextend.setPower(0.85);
 			telemetry.addData("CP",robot.duckextend.getCurrentPosition());

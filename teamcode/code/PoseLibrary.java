@@ -5,12 +5,12 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 public class PoseLibrary {
 
-    public static Pose2d startRedDuck =		    new Pose2d(-37.25,     -64.75,    Math.toRadians(270));
+    public static Pose2d startRedDuck =		    new Pose2d(-37.8125,     -64.75,    Math.toRadians(270));
     public static Pose2d startRedBland =		new Pose2d(9.125,    -64.75,    Math.toRadians(270));
-    public static Pose2d startblueDuck =		new Pose2d(-37.25,     64.75,    Math.toRadians(270));
+    public static Pose2d startblueDuck =		new Pose2d(-37.8125,     64.75,    Math.toRadians(270));
     public static Pose2d startblueBland =		new Pose2d(9.125,    64.75,    Math.toRadians(270));
-    public static Pose2d duckRed = 				new Pose2d(-51.75,     -58.5,    Math.toRadians(270));
-    public static Pose2d duckblue = 		    new Pose2d(-51.75,     58.5,    Math.toRadians(270));
+    public static Pose2d duckRed = 				new Pose2d(-51.75,     -59.5,    Math.toRadians(270));
+    public static Pose2d duckblue = 		    new Pose2d(-51.75,     59.5,    Math.toRadians(270));
     public static Pose2d redParking0 = 		    new Pose2d(-60,     -36,    Math.toRadians(0));
     public static Pose2d redE1 = 				new Pose2d(-44.5,   -49,    Math.toRadians(270));
     public static Pose2d redE2 = 				new Pose2d(-36,     -49,    Math.toRadians(270));
@@ -24,7 +24,7 @@ public class PoseLibrary {
     public static Pose2d redParking1 = 		    new Pose2d(36,      -65,    Math.toRadians(0));
     public static Pose2d redParking2 = 		    new Pose2d(36,      -36,    Math.toRadians(315));
     public static Pose2d redParking3 = 		    new Pose2d(60,      -36,    Math.toRadians(270));
-    public static Pose2d redOutOfWay = 		    new Pose2d(-51.75,     -24,    Math.toRadians(270));
+    public static Pose2d redOutOfWay = 		    new Pose2d(-54.75,     -24,    Math.toRadians(270));
     public static Pose2d redWarehouseOut = 	    new Pose2d(12,      -65,    Math.toRadians(0));
     public static Pose2d redWarehouseIn = 	    new Pose2d(38,      -65,    Math.toRadians(0));
     public static Pose2d redReading =   	    new Pose2d(40,    -65,    Math.toRadians(0));

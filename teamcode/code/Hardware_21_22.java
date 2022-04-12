@@ -25,6 +25,7 @@ public class Hardware_21_22 {
     public DcMotor lifter = null;
     public DcMotor duckextend = null;
     public DcMotor duckspin = null;
+    public DcMotor tapeEncoder = null;
 
     //Give names to our Servos for our Programs
     public Servo lightsaber = null;
@@ -69,6 +70,7 @@ public class Hardware_21_22 {
         duckspin = hwMap.get(DcMotor.class, "duckspin");
 
         duckextend = hwMap.get(DcMotor.class, "duckextend");
+        tapeEncoder = hwMap.get(DcMotorEx.class, "back_right");
 
         //Name Servos for Config
         lightsaber = hwMap.get(Servo.class, "lightsaber");
@@ -158,7 +160,7 @@ public class Hardware_21_22 {
     public double reading = 0.99;
     public double retreating = 0.3;
 
-    int duckTarget = 1234;
+    int duckTarget = 525;
 
     public void raiseToLayer(int layer){
         lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
