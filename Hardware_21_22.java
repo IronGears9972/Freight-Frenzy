@@ -33,6 +33,8 @@ public class Hardware_21_22 {
     public Servo tapeRotate = null;
     public Servo tapeUpDown = null;
 
+    public CRServo tapeUpDown2 = null;
+
 
     //Give names to our IMU for our Programs
     public BNO055IMU imu = null;
@@ -68,15 +70,16 @@ public class Hardware_21_22 {
         intakemotor = hwMap.get(DcMotor.class, "intakemotor");
         lifter = hwMap.get(DcMotor.class, "lifter");
         duckspin = hwMap.get(DcMotor.class, "duckspin");
-        tapeEncoder = hwMap.get(DcMotor.class, "back_right");
 
         duckextend = hwMap.get(DcMotor.class, "duckextend");
+        tapeEncoder = hwMap.get(DcMotorEx.class, "back_right");
 
         //Name Servos for Config
         lightsaber = hwMap.get(Servo.class, "lightsaber");
         tapeExtend = hwMap.get(CRServo.class, "tapeextension");
         tapeRotate = hwMap.get(Servo.class, "taperotate");
-        tapeUpDown = hwMap.get(Servo.class, "up down");
+        tapeUpDown = hwMap.get(Servo.class, "up down2");
+        tapeUpDown2 = hwMap.get(CRServo.class, "up down");
 
         cargolights = hwMap.get(RevBlinkinLedDriver.class, "cargolights");
 
@@ -119,7 +122,7 @@ public class Hardware_21_22 {
 
         //Set Init Position to all servos
         lifter.setTargetPosition(0);
-        lightsaber.setPosition(.05);
+        lightsaber.setPosition(0);
         tapeRotate.setPosition(0.5);
         tapeUpDown.setPosition(0.3);
 
@@ -128,11 +131,11 @@ public class Hardware_21_22 {
         rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //R
         frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //M
         intakemotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        tapeEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        duckspin.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         duckextend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        duckspin.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        duckspin.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Set motors to run without Encoder
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -161,7 +164,7 @@ public class Hardware_21_22 {
     public double reading = 0.99;
     public double retreating = 0.3;
 
-    int duckTarget = 1234;
+    int duckTarget = 550;
 
     public void raiseToLayer(int layer){
         lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
