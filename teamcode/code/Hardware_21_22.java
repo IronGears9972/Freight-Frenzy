@@ -31,7 +31,10 @@ public class Hardware_21_22 {
     public Servo lightsaber = null;
     public CRServo tapeExtend = null;
     public Servo tapeRotate = null;
-    public Servo tapeUpDown = null;
+    //public Servo tapeUpDown = null;
+    public Servo capper = null;
+
+    public DcMotorSimple tapeUpDown2 = null;
 
 
     //Give names to our IMU for our Programs
@@ -76,7 +79,9 @@ public class Hardware_21_22 {
         lightsaber = hwMap.get(Servo.class, "lightsaber");
         tapeExtend = hwMap.get(CRServo.class, "tapeextension");
         tapeRotate = hwMap.get(Servo.class, "taperotate");
-        tapeUpDown = hwMap.get(Servo.class, "up down");
+        //tapeUpDown = hwMap.get(Servo.class, "up down2");
+        capper = hwMap.get(Servo.class, "new capper");
+        tapeUpDown2 = hwMap.get(DcMotorSimple.class, "up down");
 
         cargolights = hwMap.get(RevBlinkinLedDriver.class, "cargolights");
 
@@ -91,12 +96,14 @@ public class Hardware_21_22 {
         rearLeftMotor.setDirection(DcMotorEx.Direction.FORWARD);
         rearRightMotor.setDirection(DcMotorEx.Direction.REVERSE);
         intakemotor.setDirection(DcMotor.Direction.FORWARD);
+        duckextend.setDirection(DcMotor.Direction.REVERSE);
 
         //Set Direction the Servos will turn
         lightsaber.setDirection(Servo.Direction.REVERSE);
-        duckextend.setDirection(CRServo.Direction.REVERSE);
         tapeRotate.setDirection(Servo.Direction.FORWARD);
-        tapeExtend.setDirection(DcMotorSimple.Direction.REVERSE);
+        tapeExtend.setDirection(CRServo.Direction.REVERSE);
+        capper.setDirection(Servo.Direction.FORWARD);
+        tapeUpDown2.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Set Init Power to Motors and apply Automatic Breaking
         frontLeftMotor.setPower(0);
@@ -116,12 +123,14 @@ public class Hardware_21_22 {
 
         duckextend.setPower(0);
         duckspin.setPower(0);
+        duckspin.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Set Init Position to all servos
         lifter.setTargetPosition(0);
-        lightsaber.setPosition(0);
+        lightsaber.setPosition(.05);
         tapeRotate.setPosition(0.5);
-        tapeUpDown.setPosition(0.3);
+        //tapeUpDown.setPosition(0.3);
+        capper.setPosition(.04);
 
         //Set all motors that are using Servos to RUN_USING_ENCODER
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //L
@@ -130,8 +139,9 @@ public class Hardware_21_22 {
         intakemotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        duckextend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         duckextend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        duckspin.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        duckspin.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Set motors to run without Encoder
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -160,7 +170,7 @@ public class Hardware_21_22 {
     public double reading = 0.99;
     public double retreating = 0.3;
 
-    int duckTarget = 525;
+    int duckTarget = 700;
 
     public void raiseToLayer(int layer){
         lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);

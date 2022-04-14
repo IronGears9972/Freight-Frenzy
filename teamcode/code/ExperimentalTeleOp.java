@@ -267,7 +267,7 @@ public class ExperimentalTeleOp extends LinearOpMode {
 				}
 
 				robot.tapeRotate.setPosition(x);
-				robot.tapeUpDown.setPosition(y);
+				//robot.tapeUpDown.setPosition(y);
 
 				if (gamepad1.a && gamepad1.right_bumper) {
 					robot.tapeExtend.setPower(1);

@@ -49,10 +49,10 @@ public class DEBUG extends LinearOpMode {
 				test = "Distances + Color";
 			}
 			else if (gamepad1.dpad_up) {
-				test = "Element Arm";
+				test = "Elevator Auto";
 			}
 			else if (gamepad1.dpad_down) {
-				test = "Intake Algorithm";
+				test = "Tape";
 			}
 
 			telemetry.addData("Testing", test);
@@ -61,7 +61,8 @@ public class DEBUG extends LinearOpMode {
 					"\t"+ ins + "\tB - Elevator\n" +
 					"\t"+ ins + "\tY - Distances and Color Sensors\n" +
 					"\t"+ ins + "\tX - Wheels\n" +
-					"\t"+ ins + "\tDPAD_UP - Tape Measure");
+					"\t"+ ins + "\tDPAD_UP - Elevator\n" +
+					"\t"+ ins + "\tDPAD_Down - Tape Crap");
 			telemetry.update();
 
 			if(isStopRequested()){
@@ -89,11 +90,75 @@ public class DEBUG extends LinearOpMode {
 		int sumBlG = 0;
 		int sumBlB = 0;
 		int sumBlARGB = 0;
-
+		double y = 0.0;
+		double x = 0.5;
 
 		while (opModeIsActive()) {
+
 			robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 			robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
+			if(test.equals("Tape")){
+				if(gamepad1.a){
+					y = 0.9;
+				}
+				else if(gamepad1.b){
+					y = -0.9;
+				}
+				else{
+					y = 0;
+				}
+
+				if (gamepad1.dpad_left && !gamepad1.right_bumper && !gamepad1.left_bumper) {
+					if (x <= .45) {
+						x += .01;
+					}
+				} else if (gamepad1.dpad_right && !gamepad1.right_bumper && !gamepad1.left_bumper) {
+					if (x >= 0) {
+						x -= .01;
+					}
+				} else if (gamepad1.dpad_left && gamepad1.left_bumper) {
+					if (x <= .45) {
+						x += .002;
+					}
+				} else if (gamepad1.dpad_right && gamepad1.left_bumper) {
+					if (x >= 0) {
+						x -= .002;
+					}
+				} else if (gamepad1.dpad_left && gamepad1.right_bumper) {
+					if (x <= .45) {
+						x += .025;
+					}
+				} else if (gamepad1.dpad_right && gamepad1.right_bumper) {
+					if (x >= 0) {
+						x -= .025;
+					}
+				}
+
+				if (gamepad1.left_trigger > 0.6 && gamepad1.left_bumper) {
+					robot.tapeExtend.setPower(.2);
+				}
+				else if (gamepad1.left_trigger > 0.6 && !gamepad1.left_bumper) {
+					robot.tapeExtend.setPower(1);
+				}
+				else if (gamepad1.left_trigger > 0.6 && gamepad1.left_bumper){
+					robot.tapeExtend.setPower(-.2);
+				}
+				else if (gamepad1.right_trigger > 0.6 && !gamepad1.left_bumper) {
+					robot.tapeExtend.setPower(-1);
+				}
+				else {
+					robot.tapeExtend.setPower(0);
+				}
+
+				robot.tapeUpDown2.setPower(y);
+				robot.tapeRotate.setPosition(x);
+				telemetry.addData("Power UP-DOWN",robot.tapeUpDown2.getPower());
+				telemetry.addData("Position L-R",robot.tapeRotate.getPosition());
+				telemetry.addData("Position OUT",robot.tapeEncoder.getCurrentPosition());
+				telemetry.addData("x",x);
+				telemetry.addData("y",y);
+
+			}
 
 			if(test.equals("Elevator")){
 
@@ -232,37 +297,24 @@ public class DEBUG extends LinearOpMode {
 				telemetry.update();
 			}
 
-			if(test.equals("Element Arm")){
+			if(test.equals("Elevator Auto")){
+				robot.lightsaber.setPosition(0.4);
 
-				/*
-				if (gamepad1.dpad_up){
-					robot.elementarm.setPosition(0);
+				if(gamepad1.a){
+					robot.raiseToLayer(0);
 				}
-				if (gamepad1.dpad_down){
-					robot.elementarm.setPosition(0.3);
+				if(gamepad1.b){
+					robot.raiseToLayer(1);
 				}
-				if (gamepad1.dpad_left){
-					robot.elementarm.setPosition(0.4);
+				if(gamepad1.x){
+					robot.raiseToLayer(2);
 				}
-				if (gamepad1.dpad_right){
-					robot.elementarm.setPosition(0.35);
-				}
-				if (gamepad1.a){
-					robot.elementclamp2.setPosition(robot.open);
-					robot.elementclamp1.setPosition(robot.open);
-				}
-				if (gamepad1.b){
-					robot.elementclamp2.setPosition(robot.closed);
-					robot.elementclamp1.setPosition(robot.closed);
-
+				if(gamepad1.y){
+					robot.raiseToLayer(3);
 				}
 
-				 */
-
-
-
-				//telemetry.addData("TARGET", robot.elementarm.getPosition());
-				//telemetry.addData("Elevator Reading", robot.elevatorSensor.getDistance(DistanceUnit.INCH));
+				telemetry.addData("lifterCP", robot.lifter.getCurrentPosition());
+				telemetry.addData("Lift Power", robot.lifter.getPower());
 				telemetry.update();
 
 			}
