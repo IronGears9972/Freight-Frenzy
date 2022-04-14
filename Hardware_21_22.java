@@ -102,7 +102,7 @@ public class Hardware_21_22 {
         lightsaber.setDirection(Servo.Direction.REVERSE);
         tapeRotate.setDirection(Servo.Direction.FORWARD);
         tapeExtend.setDirection(CRServo.Direction.REVERSE);
-        capper.setDirection(Servo.Direction.REVERSE);
+        capper.setDirection(Servo.Direction.FORWARD);
         tapeUpDown2.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Set Init Power to Motors and apply Automatic Breaking
@@ -130,7 +130,7 @@ public class Hardware_21_22 {
         lightsaber.setPosition(.05);
         tapeRotate.setPosition(0.5);
         //tapeUpDown.setPosition(0.3);
-        capper.setPosition(.05);
+        capper.setPosition(.04);
 
         //Set all motors that are using Servos to RUN_USING_ENCODER
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //L
