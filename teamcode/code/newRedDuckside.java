@@ -72,8 +72,8 @@ public class newRedDuckside extends LinearOpMode {
 
 		Trajectory duckPose = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
 				.lineToLinearHeading(PoseLibrary.duckRed,
-						SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-						SampleMecanumDrive.getAccelerationConstraint(10))
+						SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(15))
 				.build();
 
 		step++;
@@ -81,7 +81,9 @@ public class newRedDuckside extends LinearOpMode {
 		telemetry.update();
 
 		Trajectory ParkPath_Step1 = drive.trajectoryBuilder(duckPose.end())
-				.lineToLinearHeading(PoseLibrary.redOutOfWay)
+				.lineToLinearHeading(PoseLibrary.redOutOfWay,
+						SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
 				.build();
 		step++;
 		telemetry.addLine("step " + step);
@@ -251,8 +253,8 @@ public class newRedDuckside extends LinearOpMode {
 
 
 		String str = "";
-		String str2 = "parking only";
-		String str3 = "fastest and farthest";
+		String str2 = "alliance parking";
+		String str3 = "last second";
 		int parking = 0;
 		telemetry.addLine("Everything is initialized!");
 		TelemetryPacket t = new TelemetryPacket();
@@ -304,18 +306,20 @@ public class newRedDuckside extends LinearOpMode {
 						}
 					}
 
-					telemetry.addLine(str);
-					telemetry.addData("Index 1", arr[0]);
-					telemetry.addData("Index 2", arr[1]);
+					telemetry.addData("Raw Left 1", arr[0]);
+					telemetry.addData("Raw Right 2", arr[1]);
 
-					telemetry.addData("Super Path", str2 + " style, " + str3 + " parking, while avoiding " + str);
-					telemetry.addLine("Use Buttons on controller 1 to change path" +
-							"\n A  -  parking only" +
+					telemetry.addData("\nSuper Path","\n" +
+							"Route: " + str2 +
+							"\nParking: " + str3 +
+							"\nElement: " + str);
+					telemetry.addLine("\nUse Buttons on controller 1 to change path" +
+							"\n A  -  Alliance Parking" +
 							"\n B  -  Warehouse" +
 							"\n X  -  Looping" +
 							"\n\nUse D PAD on controller 1 to change parking styles" +
 							"\n LEFT\t-\tLast Second Parking" +
-							"\n RIGHT\t-\tPark ASAP");
+							"\n RIGHT\t-\tPark Far and Fast");
 					telemetry.update();
 				}
 				else{
@@ -324,7 +328,7 @@ public class newRedDuckside extends LinearOpMode {
 			}
 
 			if(gamepad1.a){
-				str2 = "parking only";
+				str2 = "alliance parking";
 			}
 			if(gamepad1.b){
 				str2 = "warehouse";
@@ -384,7 +388,7 @@ public class newRedDuckside extends LinearOpMode {
 			unextend();
 			sleep(buffer);
 
-			if(str2.equals("parking only")) {
+			if(str2.equals("alliance parking")) {
 				drive.followTrajectory(ParkPath_Step1);
 				sleep(buffer);
 				robot.raiseToLayer(layer);

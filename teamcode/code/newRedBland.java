@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.SwitchableCamera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -239,39 +240,80 @@ public class newRedBland extends LinearOpMode {
 						}
 					}
 
+					if(timeLeft(drive)){
+						break;
+					}
+
 					robot.intakemotor.setPower(-0.95);
 					drive.followTrajectory(collect(drive));
+
+					if(timeLeft(drive)){
+						break;
+					}
+
+
+					while(robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 1.5){
+						double power = 0.9;
+						robot.frontLeftMotor.setPower(power);
+						robot.frontRightMotor.setPower(power);
+						robot.rearLeftMotor.setPower(power);
+						robot.rearRightMotor.setPower(power);
+						if(timeLeft(drive)){
+							break;
+						}
+
+					}
+					if(timeLeft(drive)){
+						break;
+					}
+					robot.intakemotor.setPower(0.95);
+					sleep(buffer+500);
+
+					robot.lightsaber.setPosition(0.15);
 
 					Trajectory reAlign = drive.trajectoryBuilder(drive.getPoseEstimate())
 							.lineToLinearHeading(PoseLibrary.redWarehouseIn)
 							.build();
 
 					drive.followTrajectory(reAlign);
-
-					//TODO ADD LOOP TO MAKE SURE YOU COLLECT
-
-					robot.intakemotor.setPower(0.95);
-					sleep(buffer+500);
 					robot.intakemotor.setPower(0);
-					robot.lightsaber.setPosition(0.15);
+
 					drive.followTrajectory(cycling00);
+					if(timeLeft(drive)){
+						break;
+					}
 
 					//outside below
 
 					sleep(buffer);
 					drive.followTrajectory(cycling01);
+					if(timeLeft(drive)){
+						break;
+					}
 					robot.raiseToLayer(3);
 					while(robot.lifter.getCurrentPosition() < robot.lifter.getTargetPosition()-15){
 						telemetry();
+						if(timeLeft(drive)){
+							break;
+						}
 						sleep(1);
+					}
+					if(timeLeft(drive)){
+						break;
 					}
 					robot.lightsaber.setPosition(0.4);
 					sleep(buffer+500);
 					robot.raiseToLayer(0);
 					drive.followTrajectory(cycling02);
+					if(timeLeft(drive)){
+						break;
+					}
 					sleep(buffer);
 					robot.lightsaber.setPosition(0);
 					drive.followTrajectory(cycling03);
+					if(timeLeft(drive)){
+						break;
+					}
 					sleep(buffer);
 				}
 				else{
@@ -388,8 +430,8 @@ public class newRedBland extends LinearOpMode {
 			}
 		}
 		result = drive.trajectoryBuilder(drive.getPoseEstimate())
-				.lineToLinearHeading(new Pose2d(closest.getX()-4,closest.getY()),
-						SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+				.lineToLinearHeading(new Pose2d(drive.getPoseEstimate().getX(),closest.getY()),
+						SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 						SampleMecanumDrive.getAccelerationConstraint(10))
 				.build();
 		Readings.remove(closest);
