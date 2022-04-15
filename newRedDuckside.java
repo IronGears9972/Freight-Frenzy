@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class newRedDuckside extends LinearOpMode {
 
 	private ElapsedTime runtime = new ElapsedTime();
 	private ElapsedTime spinTime = new ElapsedTime();
+	private ElapsedTime returnTime = new ElapsedTime();
 
 	private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
 	private static final String[] LABELS = { "Ball", "Cube", "Duck", "Marker" };
@@ -38,6 +40,7 @@ public class newRedDuckside extends LinearOpMode {
 
 	private int route = 0;
 	private int buffer = 1000;
+	int x = 0;
 
 	public void runOpMode() {
 		telemetry.addLine("step 0");
@@ -48,102 +51,119 @@ public class newRedDuckside extends LinearOpMode {
 		initTfod();
 		if(tfod != null){
 			tfod.activate();
-			tfod.setZoom(1.25, 4.0 / 3.0);
+			tfod.setZoom(1.65, 4.0 / 3.0);
 		}
 
-			SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-			robot.init(hardwareMap, this);
-			drive.setPoseEstimate(PoseLibrary.startRedDuck);
-			step++;
-			telemetry.addLine("step " + step);
-			telemetry.update();
+		SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+		robot.init(hardwareMap, this);
+		drive.setPoseEstimate(PoseLibrary.startRedDuck);
+		step++;
+		telemetry.addLine("step " + step);
+		telemetry.update();
 
-			Trajectory driveToDuck = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
-					.lineToLinearHeading(PoseLibrary.duckRed)
-					.build();
+		Trajectory driveToDuck = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
+				.lineToLinearHeading(PoseLibrary.duckRed)
+				.build();
 
 
 		step++;
 		telemetry.addLine("step " + step);
 		telemetry.update();
 
-			Trajectory duckPose = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
-					.lineToLinearHeading(PoseLibrary.duckRed)
-					.build();
+		Trajectory duckPose = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
+				.lineToLinearHeading(PoseLibrary.duckRed,
+						SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(15))
+				.build();
 
 		step++;
 		telemetry.addLine("step " + step);
 		telemetry.update();
 
-			Trajectory route0_1 = drive.trajectoryBuilder(duckPose.end())
-					.lineToLinearHeading(PoseLibrary.redOutOfWay)
-					.build();
+		Trajectory ParkPath_Step1 = drive.trajectoryBuilder(duckPose.end())
+				.lineToLinearHeading(PoseLibrary.redOutOfWay,
+						SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
+				.build();
 		step++;
 		telemetry.addLine("step " + step);
-			telemetry.update();
+		telemetry.update();
 
-			Trajectory route0_2 = drive.trajectoryBuilder(route0_1.end())
-					.lineToLinearHeading(PoseLibrary.redGoalParking)
-					.build();
+		Trajectory ParkPath_DriveToScore = drive.trajectoryBuilder(ParkPath_Step1.end())
+				.lineToLinearHeading(PoseLibrary.redGoalParking,
+						SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
+				.build();
 		step++;
 		telemetry.addLine("step " + step);
-			telemetry.update();
+		telemetry.update();
 
-			Trajectory route0_3 = drive.trajectoryBuilder(route0_2.end())
-					.lineToLinearHeading(PoseLibrary.redParking0)
-					.build();
+		Trajectory ParkPath_Reverse = drive.trajectoryBuilder(ParkPath_DriveToScore.end())
+				.lineToLinearHeading(PoseLibrary.redOutOfWay)
+				.build();
 		step++;
 		telemetry.addLine("step " + step);
-			telemetry.update();
+		telemetry.update();
 
-		Trajectory route0_4 = drive.trajectoryBuilder(route0_3.end())
+		Trajectory ParkPath_Parking = drive.trajectoryBuilder(ParkPath_Reverse.end())
 				.lineToLinearHeading(PoseLibrary.redParking0)
 				.build();
 		step++;
 		telemetry.addLine("step " + step);
 		telemetry.update();
 
-			Trajectory route1_1 = drive.trajectoryBuilder(duckPose.end())
-					.lineToLinearHeading(PoseLibrary.redGoalAlliance)
-					.build();
+		Trajectory WarehousePath_DriveToScore = drive.trajectoryBuilder(duckPose.end())
+				.lineToLinearHeading(PoseLibrary.redGoalAlliance,
+						SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
+				.build();
 		step++;
 		telemetry.addLine("step " + step);
-			telemetry.update();
+		telemetry.update();
 
-			Trajectory route1_2 = drive.trajectoryBuilder(route1_1.end())
-					.lineToLinearHeading(PoseLibrary.redWarehouseOut)
-					.build();
+		Trajectory WarehousePath_DriveToEntrance = drive.trajectoryBuilder(WarehousePath_DriveToScore.end())
+				.lineToLinearHeading(PoseLibrary.redWarehouseOut)
+				.build();
 		step++;
 		telemetry.addLine("step " + step);
-			telemetry.update();
+		telemetry.update();
 
-			Trajectory route1_3 = drive.trajectoryBuilder(route1_2.end())
-					.lineToLinearHeading(PoseLibrary.redWarehouseIn)
-					.build();
+		Trajectory WarehousePath_EnterWarehouse = drive.trajectoryBuilder(WarehousePath_DriveToEntrance.end())
+				.lineToLinearHeading(PoseLibrary.redWarehouseIn)
+				.build();
 		step++;
 		telemetry.addLine("step " + step);
-			telemetry.update();
+		telemetry.update();
 
-			Trajectory route1_4a = drive.trajectoryBuilder(route1_3.end())
-					.lineToLinearHeading(PoseLibrary.redParking1)
-					.build();
+		Trajectory WarehousePath_ParkFar = drive.trajectoryBuilder(WarehousePath_EnterWarehouse.end())
+				.lineToLinearHeading(PoseLibrary.redParking3)
+				.build();
 		step++;
 		telemetry.addLine("step " + step);
-			telemetry.update();
+		telemetry.update();
 
-			Trajectory route1_4b = drive.trajectoryBuilder(route1_3.end())
-					.lineToLinearHeading(PoseLibrary.redParking2)
-					.build();
+		Trajectory WarehousePath_WaitHere = drive.trajectoryBuilder(WarehousePath_DriveToScore.end())
+				.lineToLinearHeading(PoseLibrary.redPause)
+				.build();
 		step++;
 		telemetry.addLine("step " + step);
-			telemetry.update();
+		telemetry.update();
 
-			Trajectory route1_4c = drive.trajectoryBuilder(route1_3.end())
-					.lineToLinearHeading(PoseLibrary.redParking3)
-					.build();
+		Trajectory WarehousePath_DriveToEntrance2 = drive.trajectoryBuilder(WarehousePath_WaitHere.end())
+				.lineToLinearHeading(PoseLibrary.redWarehouseOut,
+						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
+				.build();
 		step++;
 		telemetry.addLine("step " + step);
-			telemetry.update();
+		telemetry.update();
+
+		Trajectory WarehousePath_EnterAndPark = drive.trajectoryBuilder(WarehousePath_DriveToEntrance2.end())
+				.lineToLinearHeading(PoseLibrary.redWarehouseIn)
+				.build();
+		step++;
+		telemetry.addLine("step " + step);
+		telemetry.update();
 
 		Trajectory loopy0_0a = drive.trajectoryBuilder(duckPose.end())
 				.lineToLinearHeading(PoseLibrary.redBehindElement1)
@@ -200,7 +220,31 @@ public class newRedDuckside extends LinearOpMode {
 		telemetry.update();
 
 		Trajectory loopy0_3 = drive.trajectoryBuilder(loopy0_2.end())
-				.lineToLinearHeading(PoseLibrary.redLoopBreak)
+				.lineToLinearHeading(PoseLibrary.redWarehouseOut)
+				.build();
+
+		step++;
+		telemetry.addLine("step " + step);
+		telemetry.update();
+
+		Trajectory loopy0_3b = drive.trajectoryBuilder(loopy0_2.end())
+				.lineToLinearHeading(PoseLibrary.redManeuverAvoidMiddle)
+				.build();
+
+		step++;
+		telemetry.addLine("step " + step);
+		telemetry.update();
+
+		Trajectory loopy0_4b = drive.trajectoryBuilder(loopy0_3b.end())
+				.lineToLinearHeading(PoseLibrary.redWarehouseOut)
+				.build();
+
+		step++;
+		telemetry.addLine("step " + step);
+		telemetry.update();
+
+		Trajectory loopy0_5 = drive.trajectoryBuilder(loopy0_4b.end())
+				.lineToLinearHeading(PoseLibrary.redWarehouseIn)
 				.build();
 
 		step++;
@@ -208,14 +252,9 @@ public class newRedDuckside extends LinearOpMode {
 		telemetry.update();
 
 
-
-
-
-
-
 		String str = "";
-		String str2 = "parking only";
-		String str3 = "fastest and farthest";
+		String str2 = "warehouse";
+		String str3 = "last second";
 		int parking = 0;
 		telemetry.addLine("Everything is initialized!");
 		TelemetryPacket t = new TelemetryPacket();
@@ -225,6 +264,7 @@ public class newRedDuckside extends LinearOpMode {
 		boolean[] arr = new boolean[2];
 		arr[0] = false;
 		arr[1] = false;
+
 
 		while(!opModeIsActive()){
 			boolean reading = false;
@@ -237,6 +277,7 @@ public class newRedDuckside extends LinearOpMode {
 				if (updatedRecognitions != null) {
 
 					telemetry.addData("# Object Detected", updatedRecognitions.size());
+
 
 					int i = 0;
 
@@ -251,21 +292,32 @@ public class newRedDuckside extends LinearOpMode {
 						telemetry.addData("Width", recognition.getImageWidth());
 						telemetry.addData("Height", recognition.getImageHeight());
 
-						i++;
 
-						if (recognition.getLabel().equals("Ball")) {
+
+						if (recognition.getLabel().equals("Ball") ) {
+							arr = scan();
+							x = i;
 							if (recognition.getLeft() < 250) {
 								str = "left";
 							} else {
 								str = "middle";
 							}
+							i++;
 						}
 					}
 
 					telemetry.addLine(str);
-					telemetry.addData("route", posToWord(route));
-					telemetry.addLine("A - " + posToWord(1) + "\nB - " + posToWord(2) + "\nX - " + posToWord(3) + "\nY - " + posToWord(0));
-					telemetry.addLine(parking + "");
+					telemetry.addData("Index 1", arr[0]);
+					telemetry.addData("Index 2", arr[1]);
+
+					telemetry.addData("Super Path", str2 + " style, " + str3 + " parking, while avoiding " + str);
+					telemetry.addLine("Use Buttons on controller 1 to change path" +
+							"\n A  -  parking only" +
+							"\n B  -  Warehouse" +
+							"\n X  -  Looping" +
+							"\n\nUse D PAD on controller 1 to change parking styles" +
+							"\n LEFT\t-\tLast Second Parking" +
+							"\n RIGHT\t-\tPark ASAP");
 					telemetry.update();
 				}
 				else{
@@ -289,19 +341,7 @@ public class newRedDuckside extends LinearOpMode {
 				str3 = "fastest and farthest";
 			}
 
-			arr = scan();
 
-			telemetry.addData("Index 1", arr[0]);
-			telemetry.addData("Index 2", arr[1]);
-
-			telemetry.addData("Super Path", str2 + " style, " + str3 + " parking, while avoiding " + str);
-			telemetry.addLine("Use Buttons on controller 1 to change path" +
-					"\n A  -  parking only" +
-					"\n B  -  Warehouse" +
-					"\n X  -  Looping" +
-					"\n\nUse D PAD on controller 1 to change parking styles" +
-					"\n LEFT\t-\tLast Second Parking" +
-					"\n RIGHT\t-\tPark ASAP");
 
 			if(isStopRequested()){
 				break;
@@ -329,6 +369,7 @@ public class newRedDuckside extends LinearOpMode {
 		while (opModeIsActive()) {
 			t.addLine("Path Followed: " + str2 + " style, " + str3 + " parking, while avoiding " + str);
 			FtcDashboard.getInstance().sendTelemetryPacket(t);
+			returnTime.reset();
 
 			int layer = robot.read(true, arr[0],arr[1]);
 			sleep(buffer);
@@ -340,39 +381,61 @@ public class newRedDuckside extends LinearOpMode {
 			sleep(buffer);
 
 			spin();
-			sleep(buffer);
+			sleep(3000);
 
 			unextend();
 			sleep(buffer);
 
 			if(str2.equals("parking only")) {
-				drive.followTrajectory(route0_1);
+				drive.followTrajectory(ParkPath_Step1);
 				sleep(buffer);
 				robot.raiseToLayer(layer);
 				robot.duckextend.setPower(0);
-				drive.followTrajectory(route0_2);
+				drive.followTrajectory(ParkPath_DriveToScore);
 				sleep(buffer);
 				robot.lightsaber.setPosition(robot.open);
 				sleep(buffer);
 				robot.raiseToLayer(0);
-				drive.followTrajectory(route0_3);
+				drive.followTrajectory(ParkPath_Reverse);
 				sleep(buffer);
-				drive.followTrajectory(route0_4);
+				drive.followTrajectory(ParkPath_Parking);
 				sleep(buffer);
 			}
 
 			if(str2.equals("warehouse")){
 				robot.raiseToLayer(layer);
-				robot.duckextend.setPower(0);
-				drive.followTrajectory(route1_1);
+				drive.followTrajectory(WarehousePath_DriveToScore);
 				sleep(buffer);
 				robot.lightsaber.setPosition(robot.open);
 				sleep(buffer);
-				drive.followTrajectory(route1_2);
-				sleep(buffer);
-				robot.raiseToLayer(0);
-				drive.followTrajectory(route1_3);
-				sleep(buffer);
+				robot.duckextend.setPower(0);
+				if(str3.equals("fastest and farthest")) {
+					drive.followTrajectory(WarehousePath_DriveToEntrance);
+					sleep(buffer);
+					robot.raiseToLayer(0);
+					drive.followTrajectory(WarehousePath_EnterWarehouse);
+					sleep(buffer);
+					drive.followTrajectory(WarehousePath_ParkFar);
+					sleep(buffer);
+				}
+				if(str3.equals("last second")){
+					drive.followTrajectory(WarehousePath_WaitHere);
+					sleep(buffer);
+					robot.raiseToLayer(0);
+
+					while(!timeLeft(drive)){
+						telemetry.addData("Current Time", returnTime.seconds());
+						telemetry.update();
+						sleep(10);
+					}
+
+					drive.followTrajectory(WarehousePath_DriveToEntrance2);
+					sleep(buffer);
+
+
+					drive.followTrajectory(WarehousePath_EnterAndPark);
+					sleep(buffer);
+				}
 			}
 
 			if(str2.equals("loopy")){
@@ -406,6 +469,26 @@ public class newRedDuckside extends LinearOpMode {
 				sleep(buffer);
 				robot.raiseToLayer(0);
 				sleep(buffer);
+				if(!str.equals("middle")){
+					drive.followTrajectory(loopy0_3);
+					sleep(buffer);
+				}
+				else{
+					drive.followTrajectory(loopy0_3b);
+					sleep(buffer);
+					drive.followTrajectory(loopy0_4b);
+					sleep(buffer);
+				}
+
+				if(str3.equals("last second")){
+					while(!timeLeft(drive)){
+						telemetry.addData("Current Time", returnTime.seconds());
+						telemetry.update();
+						sleep(10);
+					}
+				}
+
+				drive.followTrajectory(loopy0_5);
 			}
 
 
@@ -420,7 +503,7 @@ public class newRedDuckside extends LinearOpMode {
 
 		if (updatedRecognitions != null) {
 
-			if (updatedRecognitions.get(0).getLeft() < 350) {
+			if (updatedRecognitions.get(x).getLeft() < 250) {
 				result[0] = true;
 				result[1] = false;
 			} else {
@@ -428,7 +511,7 @@ public class newRedDuckside extends LinearOpMode {
 				result[1] = true;
 			}
 		}
-			return result;
+		return result;
 	}
 
 
@@ -438,11 +521,11 @@ public class newRedDuckside extends LinearOpMode {
 		robot.duckspin.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		robot.duckspin.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		robot.duckspin.setTargetPosition(-514);
-		robot.duckspin.setPower(0.85);
+		robot.duckspin.setTargetPosition(-764);
+		robot.duckspin.setPower(0.90);
 
-		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 5){
-			robot.duckspin.setPower(0.85);
+		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 15){
+			robot.duckspin.setPower(0.90);
 			telemetry.addData("CP2",robot.duckspin.getCurrentPosition());
 			telemetry.addData("TP2",robot.duckspin.getTargetPosition());
 			telemetry.update();
@@ -455,7 +538,7 @@ public class newRedDuckside extends LinearOpMode {
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.duckextend.setTargetPosition(0);
 		robot.duckextend.setPower(0.95);
-		
+
 	}
 
 	public void extend(){
@@ -467,7 +550,7 @@ public class newRedDuckside extends LinearOpMode {
 		robot.duckextend.setTargetPosition(robot.duckTarget);
 		robot.duckextend.setPower(0.85);
 
-		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 5){
+		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 15){
 
 			robot.duckextend.setPower(0.85);
 			telemetry.addData("CP",robot.duckextend.getCurrentPosition());
@@ -481,62 +564,30 @@ public class newRedDuckside extends LinearOpMode {
 
 	}
 
-	private void accSpin(int i) {
-		double increment = 0;
-		for(int x = 0; x < 10; x++){
-			robot.duckspin.setPower(-(0.75 + increment));
-			sleep(i/10);
-			increment += 0.025;
+	private boolean timeLeft(SampleMecanumDrive drive){
+
+		/*
+			distance = sqrt((x2-x1)^2 + (y2-y1)^2)
+
+			distance/maxvelocity = time it takes to get to a point
+
+			if time away is greater than time remaining then break out and leave for the parking
+		 */
+
+		double X0 = drive.getPoseEstimate().getX();
+		double Y0 = drive.getPoseEstimate().getY();
+		double X1 = PoseLibrary.redWarehouseOut.getX();
+		double Y1 = PoseLibrary.redWarehouseOut.getY();
+		double distance = Math.sqrt( Math.pow( (X0-X1) , 2 )  +  Math.pow( (Y0-Y1) , 2 )  );
+		double timeAway = distance/60.0;
+		double timeLeft = 25 - returnTime.seconds();
+
+		if(timeAway > timeLeft){
+			return true;
 		}
-
-	}
-
-	private void collect(SampleMecanumDrive drive){}
-
-	private void dropIt() {
-		robot.lifter.setTargetPosition(0);
-		robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		robot.lifter.setPower(0.85);
-	}
-
-	private void accSpin(int i, int y) {
-		double increment = 0;
-		for(int x = 0; x < 10; x++){
-			robot.duckspin.setPower(-(0.75 + increment));
-			sleep(i/10);
-			increment += 0.025;
+		else{
+			return false;
 		}
-
-	}
-
-	private void teleOpReset() {
-		robot.lightsaber.setPosition(1);
-		robot.lifter.setTargetPosition(0);
-		robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		while(robot.lifter.getCurrentPosition()>0){
-			robot.lifter.setPower(0.65);
-			telemetry.addData("Current-Lift", robot.lifter.getCurrentPosition());
-			telemetry.addData("Target-Lift", 0);
-			telemetry.update();
-			sleep(1);
-		}
-		robot.lifter.setPower(0);
-		sleep(250);
-	}
-
-	private void raise(int level) {
-		robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		robot.lifter.setTargetPosition(level);
-		while(robot.lifter.getCurrentPosition()<level){
-			robot.lifter.setPower(0.65);
-			telemetry.addData("Current-Lift", robot.lifter.getCurrentPosition());
-			telemetry.addData("Target-Lift", level);
-			telemetry.update();
-			sleep(1);
-		}
-		robot.lifter.setPower(0);
-		sleep(250);
-
 	}
 
 	private String posToWord(int park) {
