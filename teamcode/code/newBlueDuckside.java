@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.List;
 
-@Autonomous(name = "New Blue Duckside", group = "AUTONOMOUS")
+@Autonomous(name = "New Blue Duckside", group = "ABLUE")
 public class newBlueDuckside extends LinearOpMode {
 
 	Hardware_21_22 robot = new Hardware_21_22();

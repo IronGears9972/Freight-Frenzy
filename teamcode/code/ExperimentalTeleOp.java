@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@TeleOp(name = "ExperimentalTeleOp", group = "ZDEBUG")
+@TeleOp(name = "ExperimentalTeleOp", group = "C")
 public class ExperimentalTeleOp extends LinearOpMode {
 
 	Hardware_21_22 robot = new Hardware_21_22();

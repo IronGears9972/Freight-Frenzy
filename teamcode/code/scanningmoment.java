@@ -57,7 +57,7 @@ import com.vuforia.Image;
 
 //--------------------------------------------------------------------------------------------------
 
-@TeleOp(name = "Peyton Go Wild", group = "Concept")
+@TeleOp(name = "Peyton Go Wild", group = "ZZConcept")
 public class scanningmoment extends LinearOpMode {
 
 	private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";

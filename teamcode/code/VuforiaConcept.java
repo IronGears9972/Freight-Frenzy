@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.R;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.vuforia.Vuforia;
 
-@TeleOp(name = "New Vuforia Concept", group = "Concept")
+@TeleOp(name = "New Vuforia Concept", group = "ZZConcept")
 
 public class VuforiaConcept extends LinearOpMode {
 

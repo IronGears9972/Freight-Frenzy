@@ -51,7 +51,7 @@ import com.vuforia.Image;
 
 //--------------------------------------------------------------------------------------------------
 
-@TeleOp(name = "Peyton Go Crazy", group = "Concept")
+@TeleOp(name = "Peyton Go Crazy", group = "ZZConcept")
 public class localizeRecognition extends LinearOpMode {
 
     private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";

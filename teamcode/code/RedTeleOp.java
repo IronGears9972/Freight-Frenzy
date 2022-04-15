@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.code.Carousel;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@TeleOp(name = "RedTeleOp", group = "TeleOp")
+@TeleOp(name = "RedTeleOp", group = "A")
 public class RedTeleOp extends LinearOpMode {
 
 	Hardware_21_22 robot = new Hardware_21_22();
