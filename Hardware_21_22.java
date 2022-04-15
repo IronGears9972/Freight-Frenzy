@@ -127,10 +127,10 @@ public class Hardware_21_22 {
 
         //Set Init Position to all servos
         lifter.setTargetPosition(0);
-        lightsaber.setPosition(.05);
-        tapeRotate.setPosition(0.5);
+        lightsaber.setPosition(.065);
+        tapeRotate.setPosition(0.62);
         //tapeUpDown.setPosition(0.3);
-        capper.setPosition(.04);
+        capper.setPosition(.02);
 
         //Set all motors that are using Servos to RUN_USING_ENCODER
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //L
@@ -170,7 +170,7 @@ public class Hardware_21_22 {
     public double reading = 0.99;
     public double retreating = 0.3;
 
-    int duckTarget = 550;
+    int duckTarget = 700;
 
     public void raiseToLayer(int layer){
         lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
