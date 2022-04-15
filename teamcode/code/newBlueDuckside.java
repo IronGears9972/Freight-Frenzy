@@ -39,7 +39,7 @@ public class newBlueDuckside extends LinearOpMode {
 	private SwitchableCamera switchableCamera;
 
 	private int route = 0;
-	private int buffer = 1000;
+	private int buffer = 500;
 	int x = 0;
 
 	public void runOpMode() {
@@ -51,18 +51,18 @@ public class newBlueDuckside extends LinearOpMode {
 		initTfod();
 		if(tfod != null){
 			tfod.activate();
-			tfod.setZoom(1.65, 4.0 / 3.0);
+			tfod.setZoom(1.05, 5.1 / 2.5);
 		}
 
 		SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 		robot.init(hardwareMap, this);
-		drive.setPoseEstimate(PoseLibrary.startRedDuck);
+		drive.setPoseEstimate(PoseLibrary.startblueDuck);
 		step++;
 		telemetry.addLine("step " + step);
 		telemetry.update();
 
-		Trajectory driveToDuck = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
-				.lineToLinearHeading(PoseLibrary.duckRed)
+		Trajectory driveToDuck = drive.trajectoryBuilder(PoseLibrary.startblueDuck)
+				.lineToLinearHeading(PoseLibrary.duckblue)
 				.build();
 
 
@@ -70,8 +70,8 @@ public class newBlueDuckside extends LinearOpMode {
 		telemetry.addLine("step " + step);
 		telemetry.update();
 
-		Trajectory duckPose = drive.trajectoryBuilder(PoseLibrary.startRedDuck)
-				.lineToLinearHeading(PoseLibrary.duckRed,
+		Trajectory duckPose = drive.trajectoryBuilder(PoseLibrary.startblueDuck)
+				.lineToLinearHeading(PoseLibrary.duckblue,
 						SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 						SampleMecanumDrive.getAccelerationConstraint(15))
 				.build();
@@ -135,7 +135,14 @@ public class newBlueDuckside extends LinearOpMode {
 		telemetry.addLine("step " + step);
 		telemetry.update();
 
-		Trajectory WarehousePath_ParkFar = drive.trajectoryBuilder(WarehousePath_EnterWarehouse.end())
+		Trajectory WarehousePath_ParkFar1 = drive.trajectoryBuilder(WarehousePath_EnterWarehouse.end())
+				.lineToLinearHeading(PoseLibrary.blueParking2)
+				.build();
+		step++;
+		telemetry.addLine("step " + step);
+		telemetry.update();
+
+		Trajectory WarehousePath_ParkFar2 = drive.trajectoryBuilder(WarehousePath_ParkFar1.end())
 				.lineToLinearHeading(PoseLibrary.blueParking3)
 				.build();
 		step++;
@@ -254,7 +261,7 @@ public class newBlueDuckside extends LinearOpMode {
 
 		String str = "";
 		String str2 = "warehouse";
-		String str3 = "last second";
+		String str3 = "fastest and farthest";
 		int parking = 0;
 		telemetry.addLine("Everything is initialized!");
 		TelemetryPacket t = new TelemetryPacket();
@@ -269,70 +276,81 @@ public class newBlueDuckside extends LinearOpMode {
 		while(!opModeIsActive()){
 			boolean reading = false;
 
-			if (tfod != null){
+			if (tfod != null) {
 
 
 				updatedRecognitions = tfod.getUpdatedRecognitions();
 
 				if (updatedRecognitions != null) {
+					if (updatedRecognitions.size() != 0) {
 
-					telemetry.addData("# Object Detected", updatedRecognitions.size());
-
-
-					int i = 0;
-
-					for (Recognition recognition : updatedRecognitions) {
-						telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-						telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-								recognition.getLeft(), recognition.getTop());
-						telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-								recognition.getRight(), recognition.getBottom());
-						telemetry.addData(String.format("  width,height (%d)", i), "%.03f , %.03f",
-								recognition.getWidth(), recognition.getHeight());
-						telemetry.addData("Width", recognition.getImageWidth());
-						telemetry.addData("Height", recognition.getImageHeight());
+						telemetry.addData("# Object Detected", updatedRecognitions.size());
 
 
+						int i = 0;
 
-						if (recognition.getLabel().equals("Ball") ) {
-							arr = scan();
-							x = i;
-							if (recognition.getLeft() < 250) {
-								str = "left";
-							} else {
-								str = "middle";
+						for (Recognition recognition : updatedRecognitions) {
+							telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+							telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+									recognition.getLeft(), recognition.getTop());
+							telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+									recognition.getRight(), recognition.getBottom());
+							telemetry.addData(String.format("  width,height (%d)", i), "%.03f , %.03f",
+									recognition.getWidth(), recognition.getHeight());
+							telemetry.addData("Width", recognition.getImageWidth());
+							telemetry.addData("Height", recognition.getImageHeight());
+
+
+							if (recognition.getLabel().equals("Ball")) {
+								arr = scan();
+								x = i;
+								if (recognition.getLeft() < 350) {
+									str = "middle";
+								} else {
+									str = "right";
+								}
+								i++;
 							}
-							i++;
 						}
+
+					}
+					else {
+						str = "left";
+						arr[0] = false;
+						arr[1] = false;
 					}
 
-					telemetry.addLine(str);
-					telemetry.addData("Index 1", arr[0]);
-					telemetry.addData("Index 2", arr[1]);
+					telemetry.addData("Raw Left 1", arr[0]);
+					telemetry.addData("Raw Right 2", arr[1]);
 
-					telemetry.addData("Super Path", str2 + " style, " + str3 + " parking, while avoiding " + str);
-					telemetry.addLine("Use Buttons on controller 1 to change path" +
-							"\n A  -  parking only" +
+					telemetry.addData("\nSuper Path", "\n" +
+							"Route: " + str2 +
+							"\nParking: " + str3 +
+							"\nElement: " + str);
+
+					telemetry.addLine("\nUse Buttons on controller 1 to change path" +
+							"\n A  -  Alliance Parking" +
 							"\n B  -  Warehouse" +
 							"\n X  -  Looping" +
 							"\n\nUse D PAD on controller 1 to change parking styles" +
 							"\n LEFT\t-\tLast Second Parking" +
-							"\n RIGHT\t-\tPark ASAP");
+							"\n RIGHT\t-\tPark Far and Fast");
 					telemetry.update();
-				}
-				else{
-					str = "right";
+
 				}
 			}
 
 			if(gamepad1.a){
-				str2 = "parking only";
+				str2 = "alliance parking";
 			}
 			if(gamepad1.b){
 				str2 = "warehouse";
 			}
 			if(gamepad1.x){
 				str2 = "loopy";
+			}
+			if(gamepad1.left_bumper && gamepad1.right_bumper){
+				str2 = "Yay Ryan finally finished!";
 			}
 			if(gamepad1.dpad_left){
 				str3 = "last second";
@@ -371,7 +389,7 @@ public class newBlueDuckside extends LinearOpMode {
 			FtcDashboard.getInstance().sendTelemetryPacket(t);
 			returnTime.reset();
 
-			int layer = robot.read(true, arr[0],arr[1]);
+			int layer = robot.read(false, arr[0],arr[1]);
 			sleep(buffer);
 
 			drive.followTrajectory(duckPose);
@@ -386,7 +404,7 @@ public class newBlueDuckside extends LinearOpMode {
 			unextend();
 			sleep(buffer);
 
-			if(str2.equals("parking only")) {
+			if(str2.equals("alliance parking")) {
 				drive.followTrajectory(ParkPath_Step1);
 				sleep(buffer);
 				robot.raiseToLayer(layer);
@@ -415,7 +433,9 @@ public class newBlueDuckside extends LinearOpMode {
 					robot.raiseToLayer(0);
 					drive.followTrajectory(WarehousePath_EnterWarehouse);
 					sleep(buffer);
-					drive.followTrajectory(WarehousePath_ParkFar);
+					drive.followTrajectory(WarehousePath_ParkFar1);
+					sleep(buffer);
+					drive.followTrajectory(WarehousePath_ParkFar2);
 					sleep(buffer);
 				}
 				if(str3.equals("last second")){
@@ -503,9 +523,14 @@ public class newBlueDuckside extends LinearOpMode {
 
 		if (updatedRecognitions != null) {
 
-			if (updatedRecognitions.get(x).getLeft() < 250) {
+			if (updatedRecognitions.get(x).getLeft() < 350) {
 				result[0] = true;
 				result[1] = false;
+				if(updatedRecognitions.get(x).getRight() < 200){
+					result[0] = false;
+					result[1] = false;
+				}
+
 			} else {
 				result[0] = false;
 				result[1] = true;
@@ -524,7 +549,7 @@ public class newBlueDuckside extends LinearOpMode {
 		robot.duckspin.setTargetPosition(-764);
 		robot.duckspin.setPower(0.90);
 
-		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 15){
+		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 3){
 			robot.duckspin.setPower(0.90);
 			telemetry.addData("CP2",robot.duckspin.getCurrentPosition());
 			telemetry.addData("TP2",robot.duckspin.getTargetPosition());
@@ -550,7 +575,7 @@ public class newBlueDuckside extends LinearOpMode {
 		robot.duckextend.setTargetPosition(robot.duckTarget);
 		robot.duckextend.setPower(0.85);
 
-		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 15){
+		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 3){
 
 			robot.duckextend.setPower(0.85);
 			telemetry.addData("CP",robot.duckextend.getCurrentPosition());

@@ -1,14 +1,22 @@
 package org.firstinspires.ftc.teamcode.code;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.SwitchableCamera;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @TeleOp(name = "DEBUGGER", group = "ZDEBUG")
@@ -17,6 +25,16 @@ public class DEBUG extends LinearOpMode {
 	Hardware_21_22 robot = new Hardware_21_22();
 
 	private ElapsedTime runtime = new ElapsedTime();
+
+	private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+	private static final String[] LABELS = { "Ball", "Cube", "Duck", "Marker" };
+	private static final String VUFORIA_KEY = "AU2ne7j/////AAABmVnObR/UmkTwlIWslw0M3PhbCKZz1zqnqAPh50b1cKYgW7S2e0sM2P06SmDa+ClCAUh/TLJic+MN9jlOEQi+yW7ytjhnEtMyCBxMktuYhoog8VM7HpWYejdoyWu+KDbPd7820Tt16jfZGxCdiBTdvueekVz1zL2U3oPWSBDM4vdtlXE+l+wreA+SCpqeKvk7TvAgo7mk2HcqV6TZ5oB6HeTlYUhjds+x2mZ/7G0hLiEgXZlpcpP8uPAow5H1wci/0H6yx1sTylMPUGBiGQhpOBaKEmVwWZLwk/Zggfissqu3qUGXH84menZWlPv5IMDWSiBmLtoTxx4VVv/env9+v2LS0C8LiD/P+c3msMiLTM1E";
+	private VuforiaLocalizer vuforia;
+	private TFObjectDetector tfod;
+	private List<Recognition> updatedRecognitions;
+
+	private WebcamName intake, elevatorCamera;
+	private SwitchableCamera switchableCamera;
 
 	String test = "";
 	char ins = '\u00B7';
@@ -54,6 +72,9 @@ public class DEBUG extends LinearOpMode {
 			else if (gamepad1.dpad_down) {
 				test = "Tape";
 			}
+			else if (gamepad1.dpad_right) {
+				test = "Aspect Ratio";
+			}
 
 			telemetry.addData("Testing", test);
 			telemetry.addLine("Press buttons to change what is tested\n" +
@@ -62,13 +83,25 @@ public class DEBUG extends LinearOpMode {
 					"\t"+ ins + "\tY - Distances and Color Sensors\n" +
 					"\t"+ ins + "\tX - Wheels\n" +
 					"\t"+ ins + "\tDPAD_UP - Elevator\n" +
-					"\t"+ ins + "\tDPAD_Down - Tape Crap");
+					"\t"+ ins + "\tDPAD_Down - Tape Crap\n" +
+					"\t"+ ins + "\tDPAD_Right - Tape Crap");
 			telemetry.update();
 
 			if(isStopRequested()){
 				break;
 			}
 
+		}
+		initVuforia();
+		initTfod();
+
+		double num = 4.0;
+		double denom = 3.0;
+		double mag = 1.0;
+
+		if(tfod != null){
+			tfod.activate();
+			tfod.setZoom(mag, num / denom);
 		}
 
 		waitForStart();
@@ -97,6 +130,35 @@ public class DEBUG extends LinearOpMode {
 
 			robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 			robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
+
+			if(test.equals("Aspect Ratio")){
+				tfod.setZoom(mag, num / denom);
+
+				if(gamepad1.left_stick_x != 0){
+					num += 0.005* gamepad1.left_stick_x;
+				}
+				if(gamepad1.right_stick_x != 0){
+					denom += 0.005* gamepad1.right_stick_x;
+				}
+				if(gamepad1.right_trigger != 0){
+					mag += 0.005* gamepad1.right_trigger;
+				}
+				if(gamepad1.left_trigger != 0 && mag >= 1.01){
+					mag -= 0.005* gamepad1.left_trigger;
+				}
+
+				if(gamepad1.left_bumper && gamepad1.right_bumper){
+					mag = 1;
+					denom = 3.0;
+					num = 4.0;
+				}
+				telemetry.addData("mag", mag);
+				telemetry.addData("num", num);
+				telemetry.addData("denom", denom);
+				telemetry.update();
+
+			}
+
 			if(test.equals("Tape")){
 				if(gamepad1.a){
 					y = 0.9;
@@ -163,9 +225,9 @@ public class DEBUG extends LinearOpMode {
 			if(test.equals("Elevator")){
 
 				if (gamepad1.dpad_up)
-					robot.lifter.setPower(0.5);
+					robot.lifter.setPower(0.75);
 				else if (gamepad1.dpad_down)
-					robot.lifter.setPower(-.5);
+					robot.lifter.setPower(-.75);
 				else
 					robot.lifter.setPower(0);
 
@@ -345,5 +407,39 @@ public class DEBUG extends LinearOpMode {
 			telemetry.update();
 			sleep(1);
 		}
+	}
+
+	private void initVuforia() {
+		/*
+		 * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+		 */
+		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+		parameters.vuforiaLicenseKey = VUFORIA_KEY;
+
+		intake = hardwareMap.get(WebcamName.class, "Something Cool");
+		elevatorCamera = hardwareMap.get(WebcamName.class, "Something Awesome");
+		parameters.cameraName = ClassFactory.getInstance().getCameraManager().nameForSwitchableCamera(intake, elevatorCamera);
+		parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES;
+
+		//  Instantiate the Vuforia engine
+		vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+		switchableCamera = (SwitchableCamera) vuforia.getCamera();
+		switchableCamera.setActiveCamera(elevatorCamera);
+
+		// Loading trackables is not necessary for the TensorFlow Object Detection engine.
+	}
+
+	private void initTfod() {
+		int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+				"tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+		tfodParameters.minResultConfidence = 0.65f;
+		tfodParameters.isModelTensorFlow2 = true;
+		tfodParameters.inputSize = 320;
+		tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+		tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+		FtcDashboard.getInstance().startCameraStream(tfod,0);
 	}
 }

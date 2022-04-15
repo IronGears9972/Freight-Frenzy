@@ -65,7 +65,6 @@ public class newRedDuckside extends LinearOpMode {
 				.lineToLinearHeading(PoseLibrary.duckRed)
 				.build();
 
-
 		step++;
 		telemetry.addLine("step " + step);
 		telemetry.update();
@@ -135,7 +134,14 @@ public class newRedDuckside extends LinearOpMode {
 		telemetry.addLine("step " + step);
 		telemetry.update();
 
-		Trajectory WarehousePath_ParkFar = drive.trajectoryBuilder(WarehousePath_EnterWarehouse.end())
+		Trajectory WarehousePath_ParkFar1 = drive.trajectoryBuilder(WarehousePath_EnterWarehouse.end())
+				.lineToLinearHeading(PoseLibrary.redParking2)
+				.build();
+		step++;
+		telemetry.addLine("step " + step);
+		telemetry.update();
+
+		Trajectory WarehousePath_ParkFar2 = drive.trajectoryBuilder(WarehousePath_ParkFar1.end())
 				.lineToLinearHeading(PoseLibrary.redParking3)
 				.build();
 		step++;
@@ -254,7 +260,7 @@ public class newRedDuckside extends LinearOpMode {
 
 		String str = "";
 		String str2 = "alliance parking";
-		String str3 = "last second";
+		String str3 = "fastest and farthest";
 		int parking = 0;
 		telemetry.addLine("Everything is initialized!");
 		TelemetryPacket t = new TelemetryPacket();
@@ -269,12 +275,13 @@ public class newRedDuckside extends LinearOpMode {
 		while(!opModeIsActive()){
 			boolean reading = false;
 
-			if (tfod != null){
+			if (tfod != null) {
 
 
 				updatedRecognitions = tfod.getUpdatedRecognitions();
 
 				if (updatedRecognitions != null) {
+					if(updatedRecognitions.size() != 0){
 
 					telemetry.addData("# Object Detected", updatedRecognitions.size());
 
@@ -293,8 +300,7 @@ public class newRedDuckside extends LinearOpMode {
 						telemetry.addData("Height", recognition.getImageHeight());
 
 
-
-						if (recognition.getLabel().equals("Ball") ) {
+						if (recognition.getLabel().equals("Ball")) {
 							arr = scan();
 							x = i;
 							if (recognition.getLeft() < 250) {
@@ -309,7 +315,7 @@ public class newRedDuckside extends LinearOpMode {
 					telemetry.addData("Raw Left 1", arr[0]);
 					telemetry.addData("Raw Right 2", arr[1]);
 
-					telemetry.addData("\nSuper Path","\n" +
+					telemetry.addData("\nSuper Path", "\n" +
 							"Route: " + str2 +
 							"\nParking: " + str3 +
 							"\nElement: " + str);
@@ -321,10 +327,12 @@ public class newRedDuckside extends LinearOpMode {
 							"\n LEFT\t-\tLast Second Parking" +
 							"\n RIGHT\t-\tPark Far and Fast");
 					telemetry.update();
-				}
-				else{
+				} else {
 					str = "right";
+					arr[0] = false;
+					arr[1] = false;
 				}
+			}
 			}
 
 			if(gamepad1.a){
@@ -383,7 +391,7 @@ public class newRedDuckside extends LinearOpMode {
 			sleep(buffer);
 
 			spin();
-			sleep(3000);
+			sleep(buffer);
 
 			unextend();
 			sleep(buffer);
@@ -417,7 +425,9 @@ public class newRedDuckside extends LinearOpMode {
 					robot.raiseToLayer(0);
 					drive.followTrajectory(WarehousePath_EnterWarehouse);
 					sleep(buffer);
-					drive.followTrajectory(WarehousePath_ParkFar);
+					drive.followTrajectory(WarehousePath_ParkFar1);
+					sleep(buffer);
+					drive.followTrajectory(WarehousePath_ParkFar2);
 					sleep(buffer);
 				}
 				if(str3.equals("last second")){

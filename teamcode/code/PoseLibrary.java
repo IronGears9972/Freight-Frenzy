@@ -7,10 +7,10 @@ public class PoseLibrary {
 
     public static Pose2d startRedDuck =		            new Pose2d(-37.8125,-64.75,     Math.toRadians(270));
     public static Pose2d startRedBland =		        new Pose2d(9.125,   -64.75,     Math.toRadians(270));
-    public static Pose2d startblueDuck =		        new Pose2d(-37.8125,64.75,      Math.toRadians(270));
-    public static Pose2d startblueBland =		        new Pose2d(9.125,   64.75,      Math.toRadians(270));
+    public static Pose2d startblueDuck =		        new Pose2d(-37.8125,64.75,      Math.toRadians(90));
+    public static Pose2d startblueBland =		        new Pose2d(9.125,   64.75,      Math.toRadians(90));
     public static Pose2d duckRed = 				        new Pose2d(-51.75,  -58.5,      Math.toRadians(270));
-    public static Pose2d duckblue = 		            new Pose2d(-51.75,  58.5,       Math.toRadians(270));
+    public static Pose2d duckblue = 		            new Pose2d(-51.75,  58.5,       Math.toRadians(90));
     public static Pose2d redParking0 =                  new Pose2d(-60,     -38,        Math.toRadians(0));
     public static Pose2d redE1 =                        new Pose2d(-44.5,   -49,        Math.toRadians(270));
     public static Pose2d redE2 =                        new Pose2d(-36,     -49,        Math.toRadians(270));
@@ -38,20 +38,20 @@ public class PoseLibrary {
     public static Pose2d redWarehouseIn =               new Pose2d(38,      -65,        Math.toRadians(0));
     public static Pose2d redReading =                   new Pose2d(40,      -65,        Math.toRadians(0));
 
-    public static Pose2d blueParking0 =                 new Pose2d(-60,     38,         Math.toRadians(0));
+    public static Pose2d blueParking0 =                 new Pose2d(-63,     39,         Math.toRadians(0));
     public static Pose2d blueE1 =                       new Pose2d(-44.5,   49,         Math.toRadians(90));
     public static Pose2d blueE2 =                       new Pose2d(-36,     49,         Math.toRadians(90));
     public static Pose2d blueE3 =                       new Pose2d(-27.5,   48.5,       Math.toRadians(90));
     public static Pose2d blueE4 =                       new Pose2d(3.5,     48,         Math.toRadians(90));
     public static Pose2d blueE5 =                       new Pose2d(12,      48,         Math.toRadians(90));
     public static Pose2d blueE6 =                       new Pose2d(20.5,    48,         Math.toRadians(90));
-    public static Pose2d blueGoalAlliance =             new Pose2d(-10,     39,         Math.toRadians(90));
-    public static Pose2d blueGoalParking =              new Pose2d(-23,     26,         Math.toRadians(180));
+    public static Pose2d blueGoalAlliance =             new Pose2d(-10,     37.5,       Math.toRadians(90));
+    public static Pose2d blueGoalParking =              new Pose2d(-26,     26,         Math.toRadians(180));
     public static Pose2d blueGoalWarehouse =            new Pose2d(12,      24,         Math.toRadians(0));
     public static Pose2d blueGoalOpposite =             new Pose2d(-12,     12,         Math.toRadians(90));
     public static Pose2d blueParking1 =                 new Pose2d(36,      65,         Math.toRadians(0));
-    public static Pose2d blueParking2 =                 new Pose2d(36,      36,         Math.toRadians(45));
-    public static Pose2d blueParking3 =                 new Pose2d(62,      40,         Math.toRadians(90));
+    public static Pose2d blueParking2 =                 new Pose2d(36,      34,         Math.toRadians(45));
+    public static Pose2d blueParking3 =                 new Pose2d(62,      36,         Math.toRadians(90));
     public static Pose2d blueLoopBreak =                new Pose2d(12,      18,         Math.toRadians(90));
     public static Pose2d bluePause =                    new Pose2d(-40,     63,         Math.toRadians(0));
     public static Pose2d blueOutOfWay =                 new Pose2d(-56,     24,         Math.toRadians(90));
@@ -59,7 +59,7 @@ public class PoseLibrary {
     public static Pose2d blueBehindElement2 =           new Pose2d(-41.75,  14,         Math.toRadians(90));
     public static Pose2d blueBehindElement3 =           new Pose2d(-34,     14,         Math.toRadians(90));
     public static Pose2d blueManeuverAvoidMiddle=       new Pose2d(0,       36,         Math.toRadians(90));
-    public static Pose2d blueWarehouseOut =             new Pose2d(12,      65.75,      Math.toRadians(0));
+    public static Pose2d blueWarehouseOut =             new Pose2d(12,      65.25,      Math.toRadians(0));
     public static Pose2d blueWarehouseOut3 =            new Pose2d(12,      67,         Math.toRadians(0));
     public static Pose2d blueWarehouseOut2 =            new Pose2d(12,      65,         Math.toRadians(360));
     public static Pose2d blueWarehouseIn =              new Pose2d(38,      65,         Math.toRadians(0));
