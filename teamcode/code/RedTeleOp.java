@@ -212,7 +212,11 @@ public class RedTeleOp extends LinearOpMode {
 					}
 				}
 
-				if (gamepad1.x) {
+				if((gamepad1.x && gamepad1.left_bumper)){
+					big = false;
+				}
+
+				if (gamepad1.x && !gamepad1.left_bumper) {
 					robot.capper.setPosition(.4);
 					big = true;
 				}

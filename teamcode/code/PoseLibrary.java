@@ -10,7 +10,7 @@ public class PoseLibrary {
     public static Pose2d startblueDuck =		        new Pose2d(-37.8125,64.75,      Math.toRadians(90));
     public static Pose2d startblueBland =		        new Pose2d(9.125,   64.75,      Math.toRadians(90));
     public static Pose2d duckRed = 				        new Pose2d(-51.75,  -58.5,      Math.toRadians(270));
-    public static Pose2d duckblue = 		            new Pose2d(-51.75,  58.5,       Math.toRadians(90));
+    public static Pose2d duckblue = 		            new Pose2d(-51.75,  59.5,       Math.toRadians(90));
     public static Pose2d redParking0 =                  new Pose2d(-60,     -38,        Math.toRadians(0));
     public static Pose2d redE1 =                        new Pose2d(-44.5,   -49,        Math.toRadians(270));
     public static Pose2d redE2 =                        new Pose2d(-36,     -49,        Math.toRadians(270));

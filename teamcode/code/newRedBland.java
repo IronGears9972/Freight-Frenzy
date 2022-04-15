@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name = "New Red Blandside", group = "ARED")
+@Autonomous(name = "New Red Blandside", group = "ARED   ")
 public class newRedBland extends LinearOpMode {
 
 	Hardware_21_22 robot = new Hardware_21_22();

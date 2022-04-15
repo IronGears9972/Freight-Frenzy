@@ -546,10 +546,10 @@ public class newBlueDuckside extends LinearOpMode {
 		robot.duckspin.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		robot.duckspin.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		robot.duckspin.setTargetPosition(-764);
+		robot.duckspin.setTargetPosition(764);
 		robot.duckspin.setPower(0.90);
 
-		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 3){
+		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 5){
 			robot.duckspin.setPower(0.90);
 			telemetry.addData("CP2",robot.duckspin.getCurrentPosition());
 			telemetry.addData("TP2",robot.duckspin.getTargetPosition());
@@ -561,7 +561,7 @@ public class newBlueDuckside extends LinearOpMode {
 	private void unextend() {
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		robot.duckextend.setTargetPosition(0);
+		robot.duckextend.setTargetPosition(10);
 		robot.duckextend.setPower(0.95);
 
 	}
@@ -575,7 +575,7 @@ public class newBlueDuckside extends LinearOpMode {
 		robot.duckextend.setTargetPosition(robot.duckTarget);
 		robot.duckextend.setPower(0.85);
 
-		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 3){
+		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 5){
 
 			robot.duckextend.setPower(0.85);
 			telemetry.addData("CP",robot.duckextend.getCurrentPosition());

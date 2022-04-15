@@ -312,6 +312,12 @@ public class newRedDuckside extends LinearOpMode {
 						}
 					}
 
+
+				} else {
+					str = "right";
+					arr[0] = false;
+					arr[1] = false;
+				}
 					telemetry.addData("Raw Left 1", arr[0]);
 					telemetry.addData("Raw Right 2", arr[1]);
 
@@ -327,11 +333,6 @@ public class newRedDuckside extends LinearOpMode {
 							"\n LEFT\t-\tLast Second Parking" +
 							"\n RIGHT\t-\tPark Far and Fast");
 					telemetry.update();
-				} else {
-					str = "right";
-					arr[0] = false;
-					arr[1] = false;
-				}
 			}
 			}
 
