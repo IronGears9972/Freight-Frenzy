@@ -157,11 +157,11 @@ public class BlueTeleOp extends LinearOpMode {
 
                 if (gamepad2.dpad_left && !gamepad2.left_bumper) {
                     robot.duckextend.setPower(-.95);
-                    duckTarget = 0;
+                    duckTarget = -100;
                 }
                 else if (gamepad2.dpad_right && !gamepad2.left_bumper) {
                     robot.duckextend.setPower(.95);
-                    duckTarget = 0;
+                    duckTarget = -100;
                 }
                 else if (robot.duckextend.getCurrentPosition() < duckTarget) {
                     robot.duckextend.setPower(.75);
@@ -231,6 +231,7 @@ public class BlueTeleOp extends LinearOpMode {
                 }
 
 
+
                 if (robot.lifter.getCurrentPosition() <= (robot.lifter.getTargetPosition() - 15) || robot.lifter.getCurrentPosition() >= (robot.lifter.getTargetPosition() + 15)) {
                     robot.lifter.setPower(0.9);
                 } else {
@@ -270,8 +271,7 @@ public class BlueTeleOp extends LinearOpMode {
 
 					/*if (gamepad1.dpad_up && !gamepad1.right_bumper && !gamepad1.left_bumper) {
 						if (y <= 0.5) {
-							y += .01;
-						}
+							y += .01;						}
 					}
 					else if (gamepad1.dpad_down && !gamepad1.right_bumper && !gamepad1.left_bumper) {
 						if (y >= .18) {
@@ -308,10 +308,10 @@ public class BlueTeleOp extends LinearOpMode {
 
 
                     if (gamepad1.right_stick_button) {
-                        x = .38;
+                        x = .08;
                     }
                     else if (gamepad1.left_stick_button) {
-                        x = .952;
+                        x = .15;
                     }
                     else if (gamepad1.y && !sauce) {
                         x1 = x;
@@ -385,7 +385,7 @@ public class BlueTeleOp extends LinearOpMode {
                     robot.lightsaber.setPosition(.06);
                 }
 
-                if((gamepad1.x && gamepad1.left_bumper)){
+                if(gamepad1.x && gamepad1.left_bumper){
                     big = false;
                 }
 
@@ -460,10 +460,10 @@ public class BlueTeleOp extends LinearOpMode {
                 }
 
                 if (gamepad1.right_stick_button) {
-                    x = .38;
+                    x = .15;
                 }
                 else if (gamepad1.left_stick_button) {
-                    x = .952;
+                    x = .2;
                 }
                 else if (gamepad1.y && !sauce) {
                     x1 = x;
@@ -535,6 +535,7 @@ public class BlueTeleOp extends LinearOpMode {
             telemetry.addData("Lift Power", robot.lifter.getPower());
 
             telemetry.addData("Duck Extend", robot.duckextend.getCurrentPosition());
+            telemetry.addData("Duck Spin", robot.duckspin.getPower());
 
             telemetry.addData("Tape Extend Position", robot.tapeEncoder.getCurrentPosition());
             telemetry.addData("Tape Power", robot.tapeExtend.getPower());
@@ -579,4 +580,5 @@ public class BlueTeleOp extends LinearOpMode {
         robot.frontRightMotor.setPower(frontright);
 
     }
+
 }

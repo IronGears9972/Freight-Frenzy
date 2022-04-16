@@ -47,6 +47,7 @@ public class RedTeleOp extends LinearOpMode {
 	double x1 = 0;
 
 	Carousel cl;
+
 	public void runOpMode() {
 
 		telemetry.addData("Say", "Hello Iron Gears");
@@ -156,11 +157,11 @@ public class RedTeleOp extends LinearOpMode {
 
 				if (gamepad2.dpad_left && !gamepad2.left_bumper) {
 					robot.duckextend.setPower(.95);
-					duckTarget = 0;
+					duckTarget = -100;
 				}
 				else if (gamepad2.dpad_right && !gamepad2.left_bumper) {
 					robot.duckextend.setPower(-.95);
-					duckTarget = 0;
+					duckTarget = -100;
 				}
 				else if (robot.duckextend.getCurrentPosition() < duckTarget) {
 					robot.duckextend.setPower(.75);
@@ -205,7 +206,7 @@ public class RedTeleOp extends LinearOpMode {
 
 				if (down) {
 					if (robot.lifter.getCurrentPosition() > 175 || robot.lifter.getCurrentPosition() < 800) {
-						robot.lightsaber.setPosition(.5);
+						robot.lightsaber.setPosition(.45);
 					}
 
 					if (robot.lifter.getCurrentPosition() < 300) {
@@ -338,43 +339,6 @@ public class RedTeleOp extends LinearOpMode {
 					else {
 						robot.tapeExtend.setPower(0);
 					}
-
-					/*if (gamepad1.a) {
-						tapeSetpoint += 10;
-					}
-					else if (gamepad1.b) {
-						tapeSetpoint -= 10;
-					}
-					else {
-						tapeServoPower = 0;
-					}
-
-					if (Math.abs(tapeSetpoint - robot.tapeEncoder.getCurrentPosition()) < 50) {
-						tapeSpeedSet *= ((Math.abs(tapeSetpoint - robot.tapeEncoder.getCurrentPosition()))/50);
-					}
-					else {
-						tapeSpeedSet = 100;
-					}
-
-					if (robot.tapeEncoder.getCurrentPosition() < tapeSetpoint) {
-						tapeDirection = 1;
-					}
-					else {
-						tapeDirection = -1;
-					}
-
-					tapeSpeedSet = Math.copySign(tapeSpeedSet, tapeDirection);
-
-					tapeCurrentSpeed = (tapeLastEncoder - robot.tapeEncoder.getCurrentPosition())/(tapeLastTime - getRuntime());
-
-					tapeServoPower = tapeServoPower + (tapeSpeedSet - tapeCurrentSpeed) * .001;
-
-
-
-					robot.tapeExtend.setPower(tapeServoPower);
-
-					tapeLastEncoder = robot.tapeEncoder.getCurrentPosition();
-					tapeLastTime = getRuntime();*/
 				}
 
 
@@ -405,8 +369,6 @@ public class RedTeleOp extends LinearOpMode {
 					robot.lifter.setPower(0);
 				}
 
-
-
 				if (gamepad2.dpad_left && !gamepad2.left_bumper) {
 					robot.duckextend.setPower(.95);
 				}
@@ -417,8 +379,6 @@ public class RedTeleOp extends LinearOpMode {
 					robot.duckextend.setPower(0);
 				}
 
-
-
 				if (gamepad2.x && !gamepad2.left_bumper) {
 					robot.lightsaber.setPosition(0.48);
 				}
@@ -426,9 +386,7 @@ public class RedTeleOp extends LinearOpMode {
 					robot.lightsaber.setPosition(.06);
 				}
 
-
-
-				if((gamepad1.x && gamepad1.left_bumper)){
+				if(gamepad1.x && gamepad1.left_bumper){
 					big = false;
 				}
 
@@ -443,15 +401,12 @@ public class RedTeleOp extends LinearOpMode {
 					robot.capper.setPosition(.22);
 				}
 
-
-
 				if (gamepad2.y) {
 					cl.startWheel(speed);
 				}
 				else {
 					cl.stopWheel(6.5);
 				}
-
 
 				if (gamepad1.right_trigger == 1) {
 					robot.intakemotor.setPower(-.95);
@@ -462,8 +417,6 @@ public class RedTeleOp extends LinearOpMode {
 				else {
 					robot.intakemotor.setPower(0);
 				}
-
-
 
 				if (gamepad1.dpad_left && !gamepad1.right_bumper && !gamepad1.left_bumper) {
 					if (x <= .62) {
@@ -507,8 +460,6 @@ public class RedTeleOp extends LinearOpMode {
 					robot.tapeUpDown2.setPower(.02);
 				}
 
-
-
 				if (gamepad1.right_stick_button) {
 					x = .42;
 				}
@@ -522,8 +473,6 @@ public class RedTeleOp extends LinearOpMode {
 				else if (gamepad1.y && sauce) {
 					x = x1;
 				}
-
-
 
 				if (gamepad1.a && gamepad1.left_bumper) {
 					robot.tapeExtend.setPower(.2);
@@ -587,6 +536,7 @@ public class RedTeleOp extends LinearOpMode {
 			telemetry.addData("Lift Power", robot.lifter.getPower());
 
 			telemetry.addData("Duck Extend", robot.duckextend.getCurrentPosition());
+			telemetry.addData("Duck Spin", robot.duckspin.getPower());
 
 			telemetry.addData("Tape Extend Position", robot.tapeEncoder.getCurrentPosition());
 			telemetry.addData("Tape Power", robot.tapeExtend.getPower());
