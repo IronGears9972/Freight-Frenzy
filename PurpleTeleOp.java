@@ -38,13 +38,12 @@ public class PurpleTeleOp extends LinearOpMode {
     boolean Dillon = false;
     boolean Red = true;
 
-    boolean failSafe = false;
-
     boolean down;
 
     int duckTarget;
 
-    double x = .3;
+    double x;
+    boolean xinit = false;
     double x1 = 0;
 
     Carousel cl;
@@ -115,6 +114,11 @@ public class PurpleTeleOp extends LinearOpMode {
                 driver(Dillon);
 
                 if (Red = true) {
+
+                    if (!xinit) {
+                        x = .62;
+                        xinit = true;
+                    }
 
                     if (gamepad2.y) {
                         cl.startWheel(speed);
@@ -207,6 +211,11 @@ public class PurpleTeleOp extends LinearOpMode {
                 }
                 else {
 
+                    if (!xinit) {
+                        x = 0;
+                        xinit = true;
+                    }
+
                     if (gamepad2.y) {
                         cl.startWheel(speed);
                     }
@@ -215,11 +224,11 @@ public class PurpleTeleOp extends LinearOpMode {
                     }
 
                     if (gamepad2.dpad_left && !gamepad2.left_bumper) {
-                        robot.duckextend.setPower(-.95);
+                        robot.duckextend.setPower(.95);
                         duckTarget = -100;
                     }
                     else if (gamepad2.dpad_right && !gamepad2.left_bumper) {
-                        robot.duckextend.setPower(.95);
+                        robot.duckextend.setPower(-.95);
                         duckTarget = -100;
                     }
                     else if (robot.duckextend.getCurrentPosition() < duckTarget) {
@@ -232,11 +241,11 @@ public class PurpleTeleOp extends LinearOpMode {
                     if (robot.duckextend.getCurrentPosition() >= 30) {
                         if (gamepad1.dpad_right && !gamepad1.right_bumper && !gamepad1.left_bumper) {
                             if (x >= 0) {
-                                x -= .008;
+                                x -= .007;
                             }
                         } else if (gamepad1.dpad_left && !gamepad1.right_bumper && !gamepad1.left_bumper) {
                             if (x <= .35) {
-                                x += .008;
+                                x += .007;
                             }
                         } else if (gamepad1.dpad_right && gamepad1.left_bumper) {
                             if (x >= 0) {
@@ -248,11 +257,11 @@ public class PurpleTeleOp extends LinearOpMode {
                             }
                         } else if (gamepad1.dpad_right && gamepad1.right_bumper) {
                             if (x >= .0) {
-                                x -= .015;
+                                x -= .013;
                             }
                         } else if (gamepad1.dpad_left && gamepad1.right_bumper) {
                             if (x <= .35) {
-                                x += .015;
+                                x += .013;
                             }
                         }
 
@@ -276,13 +285,7 @@ public class PurpleTeleOp extends LinearOpMode {
 
 
 
-                        if (gamepad1.right_stick_button) {
-                            x = .08;
-                        }
-                        else if (gamepad1.left_stick_button) {
-                            x = .15;
-                        }
-                        else if (gamepad1.y && !sauce) {
+                        if (gamepad1.y && !sauce) {
                             x1 = x;
                             sauce = true;
                         }
@@ -394,9 +397,9 @@ public class PurpleTeleOp extends LinearOpMode {
                     }
                 }
 
-				/*if((gamepad1.x && gamepad1.left_bumper)){
+				if(gamepad1.x && gamepad1.left_bumper){
 					big = false;
-				}*/
+				}
 
                 if (gamepad1.x && gamepad1.left_bumper) {
                     robot.capper.setPosition(.4);
@@ -417,15 +420,7 @@ public class PurpleTeleOp extends LinearOpMode {
                     robot.lifter.setPower(0);
                 }
 
-
-
-                if (gamepad1.left_bumper && gamepad1.right_bumper && gamepad1.right_trigger == 1 && gamepad1.left_trigger == 1) {
-                    failSafe = true;
-                }
-
             }
-
-            //Fail safe if sensor breaks
 
 
 
@@ -456,6 +451,12 @@ public class PurpleTeleOp extends LinearOpMode {
                 robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
             }
 
+            if (gamepad2.left_stick_button && gamepad2.right_stick_button) {
+
+                Red = false;
+
+            }
+
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
             telemetry.addData("leftWheel", robot.frontRightMotor.getCurrentPosition());
@@ -465,7 +466,6 @@ public class PurpleTeleOp extends LinearOpMode {
             telemetry.addData("BS-ARGB", robot.blocksensor.argb());
             telemetry.addData("Closed", closed);
 
-            telemetry.addData("colorDistance", robot.blocksensor_distance.getDistance(DistanceUnit.INCH));
             telemetry.addData("lifterCP", robot.lifter.getCurrentPosition());
             telemetry.addData("lifterTP", robot.lifter.getTargetPosition());
             telemetry.addData("Lift Power", robot.lifter.getPower());
@@ -478,7 +478,6 @@ public class PurpleTeleOp extends LinearOpMode {
             telemetry.addData("Tape UpDown", robot.tapeUpDown2.getPower());
 
             telemetry.addData("Capper", robot.capper.getPosition());
-
 
             telemetry.addData("Intake Power", robot.intakemotor.getPower());
             telemetry.update();
