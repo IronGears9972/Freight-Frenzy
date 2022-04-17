@@ -128,23 +128,54 @@ public class DEBUG extends LinearOpMode {
 
 		while (opModeIsActive()) {
 
-			robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-			robot.cargolights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
-
 			if(test.equals("Aspect Ratio")){
 				tfod.setZoom(mag, num / denom);
 
+				if(tfod != null){
+
+
+					updatedRecognitions = tfod.getUpdatedRecognitions();
+
+					if (updatedRecognitions != null) {
+						if (updatedRecognitions.size() != 0) {
+
+							telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+							int i = 0;
+
+							for (Recognition recognition : updatedRecognitions) {
+								telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+								telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+										recognition.getLeft(), recognition.getTop());
+								telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+										recognition.getRight(), recognition.getBottom());
+								telemetry.addData(String.format("  width,height (%d)", i), "%.03f , %.03f",
+										recognition.getWidth(), recognition.getHeight());
+								telemetry.addData("Width", recognition.getImageWidth());
+								telemetry.addData("Height", recognition.getImageHeight());
+
+
+								telemetry.update();
+
+
+							}
+
+						}
+
+					}
+				}
+
 				if(gamepad1.left_stick_x != 0){
-					num += 0.005* gamepad1.left_stick_x;
+					num += 0.0005* gamepad1.left_stick_x;
 				}
 				if(gamepad1.right_stick_x != 0){
-					denom += 0.005* gamepad1.right_stick_x;
+					denom += 0.0005* gamepad1.right_stick_x;
 				}
 				if(gamepad1.right_trigger != 0){
-					mag += 0.005* gamepad1.right_trigger;
+					mag += 0.0005* gamepad1.right_trigger;
 				}
 				if(gamepad1.left_trigger != 0 && mag >= 1.01){
-					mag -= 0.005* gamepad1.left_trigger;
+					mag -= 0.0005* gamepad1.left_trigger;
 				}
 
 				if(gamepad1.left_bumper && gamepad1.right_bumper){
@@ -152,10 +183,17 @@ public class DEBUG extends LinearOpMode {
 					denom = 3.0;
 					num = 4.0;
 				}
+
+				if(gamepad1.dpad_down){
+					switchableCamera.setActiveCamera(intake);
+				}
+				if(gamepad1.dpad_up){
+					switchableCamera.setActiveCamera(elevatorCamera);
+				}
+
 				telemetry.addData("mag", mag);
 				telemetry.addData("num", num);
 				telemetry.addData("denom", denom);
-				telemetry.update();
 
 			}
 
@@ -380,7 +418,7 @@ public class DEBUG extends LinearOpMode {
 				telemetry.update();
 
 			}
-			telemetry.update();
+			//telemetry.update();
 
 			if(isStopRequested()){
 				break;
@@ -426,7 +464,7 @@ public class DEBUG extends LinearOpMode {
 		vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
 		switchableCamera = (SwitchableCamera) vuforia.getCamera();
-		switchableCamera.setActiveCamera(elevatorCamera);
+		switchableCamera.setActiveCamera(intake);
 
 		// Loading trackables is not necessary for the TensorFlow Object Detection engine.
 	}

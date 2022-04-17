@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.code;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.SwitchableCamera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -18,6 +20,7 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Autonomous(name = "New Blue Duckside", group = "ABLUE")
 public class newBlueDuckside extends LinearOpMode {
@@ -105,6 +108,13 @@ public class newBlueDuckside extends LinearOpMode {
 		telemetry.addLine("step " + step);
 		telemetry.update();
 
+		Trajectory ParkPath_PickDuck = drive.trajectoryBuilder(ParkPath_Reverse.end())
+				.lineToLinearHeading(new Pose2d(-51,52,Math.toRadians(90)))
+				.build();
+		step++;
+		telemetry.addLine("step " + step);
+		telemetry.update();
+
 		Trajectory ParkPath_Parking = drive.trajectoryBuilder(ParkPath_Reverse.end())
 				.lineToLinearHeading(PoseLibrary.blueParking0)
 				.build();
@@ -114,7 +124,7 @@ public class newBlueDuckside extends LinearOpMode {
 
 		Trajectory WarehousePath_DriveToScore = drive.trajectoryBuilder(duckPose.end())
 				.lineToLinearHeading(PoseLibrary.blueGoalAlliance,
-						SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 						SampleMecanumDrive.getAccelerationConstraint(30))
 				.build();
 		step++;
@@ -158,8 +168,8 @@ public class newBlueDuckside extends LinearOpMode {
 
 		Trajectory WarehousePath_DriveToEntrance2 = drive.trajectoryBuilder(WarehousePath_WaitHere.end())
 				.lineToLinearHeading(PoseLibrary.blueWarehouseOut,
-						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-						SampleMecanumDrive.getAccelerationConstraint(30))
+						SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(40))
 				.build();
 		step++;
 		telemetry.addLine("step " + step);
@@ -260,7 +270,7 @@ public class newBlueDuckside extends LinearOpMode {
 
 
 		String str = "";
-		String str2 = "warehouse";
+		String str2 = "pick up";
 		String str3 = "fastest and farthest";
 		int parking = 0;
 		telemetry.addLine("Everything is initialized!");
@@ -275,9 +285,9 @@ public class newBlueDuckside extends LinearOpMode {
 
 		while(!opModeIsActive()){
 			boolean reading = false;
+			robot.lightsaber.setPosition(robot.lightsaber45);
 
 			if (tfod != null) {
-
 
 				updatedRecognitions = tfod.getUpdatedRecognitions();
 
@@ -285,7 +295,6 @@ public class newBlueDuckside extends LinearOpMode {
 					if (updatedRecognitions.size() != 0) {
 
 						telemetry.addData("# Object Detected", updatedRecognitions.size());
-
 
 						int i = 0;
 
@@ -300,6 +309,11 @@ public class newBlueDuckside extends LinearOpMode {
 							telemetry.addData("Width", recognition.getImageWidth());
 							telemetry.addData("Height", recognition.getImageHeight());
 
+							Pose2d here = findFreight(recognition,drive);
+							telemetry.addData("X", here.getX());
+							telemetry.addData("Y", here.getY());
+
+							telemetry.addData("AWAY", getDisplacement(recognition));
 
 							if (recognition.getLabel().equals("Ball")) {
 								arr = scan();
@@ -323,16 +337,13 @@ public class newBlueDuckside extends LinearOpMode {
 					telemetry.addData("Raw Left 1", arr[0]);
 					telemetry.addData("Raw Right 2", arr[1]);
 
-					telemetry.addData("\nSuper Path", "\n" +
-							"Route: " + str2 +
-							"\nParking: " + str3 +
-							"\nElement: " + str);
+					telemetry.addData("Element: ", str);
 
-					telemetry.addLine("\nUse Buttons on controller 1 to change path" +
-							"\n A  -  Alliance Parking" +
+					telemetry.addLine("Route: " + str2 +
+							"\n A  -  Alliance" +
 							"\n B  -  Warehouse" +
 							"\n X  -  Looping" +
-							"\n\nUse D PAD on controller 1 to change parking styles" +
+								"\nParking Type: " + str3 +
 							"\n LEFT\t-\tLast Second Parking" +
 							"\n RIGHT\t-\tPark Far and Fast");
 					telemetry.update();
@@ -392,39 +403,128 @@ public class newBlueDuckside extends LinearOpMode {
 			int layer = robot.read(false, arr[0],arr[1]);
 			sleep(buffer);
 
-			drive.followTrajectory(duckPose);
-			sleep(buffer);
 
 			extend();
 			sleep(buffer);
 
+			drive.followTrajectory(duckPose);
+			sleep(buffer);
+
+			ElapsedTime spinTime = new ElapsedTime();
+			while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && spinTime.seconds() < 5){
+				robot.duckextend.setPower(0.85);
+				telemetry.addData("CP",robot.duckextend.getCurrentPosition());
+				telemetry.addData("TP",robot.duckTarget);
+				telemetry.update();
+				sleep(1);
+			}
+
+			robot.duckextend.setPower(0);
+
 			spin();
-			sleep(3000);
+			sleep(1000);
 
 			unextend();
 			sleep(buffer);
 
-			if(str2.equals("alliance parking")) {
+			if(str2.equals("alliance parking") || str2.equals("pick up")) {
 				drive.followTrajectory(ParkPath_Step1);
 				sleep(buffer);
 				robot.raiseToLayer(layer);
 				robot.duckextend.setPower(0);
 				drive.followTrajectory(ParkPath_DriveToScore);
 				sleep(buffer);
-				robot.lightsaber.setPosition(robot.open);
+				robot.lightsaber.setPosition(robot.lightsaberKick);
 				sleep(buffer);
 				robot.raiseToLayer(0);
 				drive.followTrajectory(ParkPath_Reverse);
 				sleep(buffer);
-				drive.followTrajectory(ParkPath_Parking);
-				sleep(buffer);
+				tfod.setZoom(1,4.0/3.0);
+				robot.lightsaber.setPosition(robot.lightsaberIntake);
+				if(str2.equals("alliance parking")) {
+					drive.followTrajectory(ParkPath_Parking);
+					sleep(buffer);
+				}
+				else{
+					drive.followTrajectory(ParkPath_PickDuck);
+					sleep(buffer);
+					sleep(500);
+					updatedRecognitions = tfod.getUpdatedRecognitions();
+
+					while(updatedRecognitions.size() == 0){
+						updatedRecognitions = tfod.getUpdatedRecognitions();
+					}
+
+					Pose2d here = findFreight(updatedRecognitions.get(0), drive);
+					Trajectory collectDuck = drive.trajectoryBuilder(drive.getPoseEstimate())
+							.lineToLinearHeading(new Pose2d (here.getX(),drive.getPoseEstimate().getY(), Math.toRadians(90)))
+							.build();
+					drive.followTrajectory(collectDuck);
+
+					robot.intakemotor.setPower(-0.95);
+					ElapsedTime gart = new ElapsedTime();
+					gart.reset();
+					while((robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 1.5 && gart.time(TimeUnit.SECONDS) < 3.5)&& !isStopRequested()){
+						double power = 0.25;
+						robot.frontLeftMotor.setPower(power);
+						robot.frontRightMotor.setPower(power);
+						robot.rearLeftMotor.setPower(power);
+						robot.rearRightMotor.setPower(power);
+					}
+
+					robot.lightsaber.setPosition(0.2);
+					robot.intakemotor.setPower(0);
+					double power = 0;
+					robot.frontLeftMotor.setPower(power);
+					robot.frontRightMotor.setPower(power);
+					robot.rearLeftMotor.setPower(power);
+					robot.rearRightMotor.setPower(power);
+
+					robot.lightsaber.setPosition(robot.lightsaber45);
+
+					Trajectory BackOnTrack = drive.trajectoryBuilder(drive.getPoseEstimate())
+							.lineToLinearHeading(PoseLibrary.blueOutOfWay,
+									SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+									SampleMecanumDrive.getAccelerationConstraint(40))
+							.build();
+
+					Trajectory score = drive.trajectoryBuilder(BackOnTrack.end())
+							.lineToLinearHeading(PoseLibrary.blueGoalParking,
+									SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+									SampleMecanumDrive.getAccelerationConstraint(40))
+							.build();
+
+					Trajectory park = drive.trajectoryBuilder(score.end())
+							.lineToLinearHeading(new Pose2d(PoseLibrary.blueParking0.getX(),PoseLibrary.blueParking0.getY(),Math.toRadians(180)),
+									SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+									SampleMecanumDrive.getAccelerationConstraint(40))
+							.build();
+
+					if(false){
+
+					}
+					else {
+						drive.followTrajectory(BackOnTrack);
+						sleep(buffer);
+						robot.raiseToLayer(3);
+						drive.followTrajectory(score);
+						sleep(1000);
+						robot.lightsaber.setPosition(robot.lightsaberKick);
+						robot.raiseToLayer(0);
+						//drive.followTrajectory(reverse);
+						//sleep(buffer);
+						drive.followTrajectory(park);
+						sleep(1000);
+					}
+
+				}
 			}
 
 			if(str2.equals("warehouse")){
 				robot.raiseToLayer(layer);
 				drive.followTrajectory(WarehousePath_DriveToScore);
 				sleep(buffer);
-				robot.lightsaber.setPosition(robot.open);
+				robot.lightsaber.setPosition(robot.lightsaberKick);
 				sleep(buffer);
 				robot.duckextend.setPower(0);
 				if(str3.equals("fastest and farthest")) {
@@ -483,7 +583,7 @@ public class newBlueDuckside extends LinearOpMode {
 					drive.followTrajectory(loopy0_1c);
 					sleep(buffer);
 				}
-				robot.lightsaber.setPosition(robot.open);
+				robot.lightsaber.setPosition(robot.lightsaberKick);
 				sleep(buffer);
 				drive.followTrajectory(loopy0_2);
 				sleep(buffer);
@@ -548,11 +648,16 @@ public class newBlueDuckside extends LinearOpMode {
 
 		robot.duckspin.setTargetPosition(764);
 		robot.duckspin.setPower(0.90);
-
+		boolean yea = true;
 		while(robot.duckspin.getCurrentPosition() < robot.duckspin.getTargetPosition() && spinTime.seconds() < 5){
+
 			robot.duckspin.setPower(0.90);
 			telemetry.addData("CP2",robot.duckspin.getCurrentPosition());
 			telemetry.addData("TP2",robot.duckspin.getTargetPosition());
+			if(yea) {
+				switchableCamera.setActiveCamera(intake);
+				yea = false;
+			}
 			telemetry.update();
 			sleep(1);
 		}
@@ -567,27 +672,73 @@ public class newBlueDuckside extends LinearOpMode {
 	}
 
 	public void extend(){
-
-		ElapsedTime guy = new ElapsedTime();
-
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.duckextend.setTargetPosition(robot.duckTarget);
 		robot.duckextend.setPower(0.85);
 
-		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 5){
+	}
 
-			robot.duckextend.setPower(0.85);
-			telemetry.addData("CP",robot.duckextend.getCurrentPosition());
-			telemetry.addData("TP",robot.duckTarget);
-			telemetry.update();
-			sleep(1);
-		}
+	private Pose2d findFreight(Recognition recognition, SampleMecanumDrive drive){
 
-		robot.duckextend.setPower(0);
+		double roboX = drive.getPoseEstimate().getX();
+		double roboY = drive.getPoseEstimate().getY();
+		double roboHead = drive.getPoseEstimate().getHeading();
 
+		double camX = roboX + 5.2137*Math.cos(roboHead);
+		double camY = roboY + 0.6685*Math.sin(roboHead);
+		double camHead = roboHead;
+
+		double displacement = getDisplacement(recognition);
+		double midpoint = getMidpoint(recognition);
+		double shift = getLeftRight(displacement,midpoint);
+		double hypotenuse = Math.sqrt(Math.pow(displacement,2) + Math.pow(shift,2));
+
+		//this works because look at the engineering notebook
+		Pose2d recognizedHere = new Pose2d(
+				camX + hypotenuse*Math.cos(camHead - Math.atan(shift/displacement)),
+				camY + hypotenuse*Math.sin(camHead + Math.atan(shift/displacement))
+		);
+
+		return recognizedHere;
+	}
+
+
+	private double getDisplacement(Recognition recognition){
+
+		/*
+		 * we have two methods to figure out distance, distance in pixels from an edge of the top/bottom of screen, and width
+		 * As these move further away from the camera, width decreases, and pixels from top/bottom
+		 *
+		 */
+		double width = recognition.getWidth();
+		double d1 = -0.0938*recognition.getWidth() + 26.41;
+		double displacement2 = 0.02601*(recognition.getImageHeight()-recognition.getTop()) - 1.518;
+		double d2 = 35410*Math.pow(width,-1.593);
+		double d3 = 0.001009*Math.pow(width,2) - 0.4418*width + 55.63;
+
+		return d2;
 
 	}
+
+	private double getMidpoint(Recognition recognition){
+		//returns center y axis of the recognition
+		return recognition.getLeft() + (recognition.getWidth()/2);
+	}
+
+	private double getLeftRight(double displacement, double midpoint){
+		/*
+		 * half range is equal to the half the range that the camera can read based on an input distance. this is because we know FOV is 55deg
+		 * pixelsMaybe(name not finalized) is turning the range in inches into a pixel measurement. We want this because the midpoint is in pixels (640.0 is derived from camera's output range)
+		 * rawResult is an unfinalized number. by dividing midpoint over pixelsMaybe(name not finalized) we will get the midpoint in inches. We subtract the half range FOR SOME REASON
+		 * the return statement gives back a more condensed number (a tolerance of 0.001 inches is not scary)
+		 */
+		double halfRange = displacement*Math.tan(Math.toRadians(27.5));
+		double pixelsmaybe = 640.0/(2*halfRange);
+		double rawResult = (midpoint/pixelsmaybe) - halfRange;
+		return rawResult - (rawResult%0.001);
+	}
+
 
 	private boolean timeLeft(SampleMecanumDrive drive){
 

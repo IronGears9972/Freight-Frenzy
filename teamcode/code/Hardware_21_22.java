@@ -128,7 +128,6 @@ public class Hardware_21_22 {
         //Set Init Position to all servos
         lifter.setTargetPosition(0);
         lightsaber.setPosition(.065);
-        tapeRotate.setPosition(0.62);
         //tapeUpDown.setPosition(0.3);
         capper.setPosition(.02);
 
@@ -165,8 +164,9 @@ public class Hardware_21_22 {
 
     public double down = 0.355;
     public double up = 0;
-    public double closed = 0;
-    public double open = 0.5;
+    public double lightsaberIntake = 0.06;
+    public double lightsaberKick = 0.48;
+    public double lightsaber45 = .2;
     public double reading = 0.99;
     public double retreating = 0.3;
 

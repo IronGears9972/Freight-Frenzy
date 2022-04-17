@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.code;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -39,7 +40,7 @@ public class newRedDuckside extends LinearOpMode {
 	private SwitchableCamera switchableCamera;
 
 	private int route = 0;
-	private int buffer = 1000;
+	private int buffer = 500;
 	int x = 0;
 
 	public void runOpMode() {
@@ -51,7 +52,7 @@ public class newRedDuckside extends LinearOpMode {
 		initTfod();
 		if(tfod != null){
 			tfod.activate();
-			tfod.setZoom(1.65, 4.0 / 3.0);
+			tfod.setZoom(1.5, 4.0 / 2.4);
 		}
 
 		SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -103,6 +104,15 @@ public class newRedDuckside extends LinearOpMode {
 		step++;
 		telemetry.addLine("step " + step);
 		telemetry.update();
+
+
+		Trajectory ParkPath_PickDuck = drive.trajectoryBuilder(ParkPath_Reverse.end())
+				.lineToLinearHeading(new Pose2d(-48,-48,Math.toRadians(270)))
+				.build();
+		step++;
+		telemetry.addLine("step " + step);
+		telemetry.update();
+
 
 		Trajectory ParkPath_Parking = drive.trajectoryBuilder(ParkPath_Reverse.end())
 				.lineToLinearHeading(PoseLibrary.redParking0)
@@ -274,6 +284,7 @@ public class newRedDuckside extends LinearOpMode {
 
 		while(!opModeIsActive()){
 			boolean reading = false;
+			robot.lightsaber.setPosition(robot.lightsaber45);
 
 			if (tfod != null) {
 
@@ -345,6 +356,9 @@ public class newRedDuckside extends LinearOpMode {
 			if(gamepad1.x){
 				str2 = "loopy";
 			}
+			if(gamepad1.y){
+				str2 = "pick up";
+			}
 			if(gamepad1.dpad_left){
 				str3 = "last second";
 			}
@@ -392,32 +406,38 @@ public class newRedDuckside extends LinearOpMode {
 			sleep(buffer);
 
 			spin();
-			sleep(buffer);
+			sleep(buffer+2000);
 
 			unextend();
 			sleep(buffer);
 
-			if(str2.equals("alliance parking")) {
+			if(str2.equals("alliance parking") || str2.equals("pick up")) {
 				drive.followTrajectory(ParkPath_Step1);
 				sleep(buffer);
 				robot.raiseToLayer(layer);
 				robot.duckextend.setPower(0);
 				drive.followTrajectory(ParkPath_DriveToScore);
 				sleep(buffer);
-				robot.lightsaber.setPosition(robot.open);
+				robot.lightsaber.setPosition(robot.lightsaberKick);
 				sleep(buffer);
 				robot.raiseToLayer(0);
 				drive.followTrajectory(ParkPath_Reverse);
 				sleep(buffer);
-				drive.followTrajectory(ParkPath_Parking);
-				sleep(buffer);
+				if(str2.equals("alliance parking")) {
+					drive.followTrajectory(ParkPath_Parking);
+					sleep(buffer);
+				}
+				else{
+					drive.followTrajectory(ParkPath_PickDuck);
+					sleep(buffer);
+				}
 			}
 
 			if(str2.equals("warehouse")){
 				robot.raiseToLayer(layer);
 				drive.followTrajectory(WarehousePath_DriveToScore);
 				sleep(buffer);
-				robot.lightsaber.setPosition(robot.open);
+				robot.lightsaber.setPosition(robot.lightsaberKick);
 				sleep(buffer);
 				robot.duckextend.setPower(0);
 				if(str3.equals("fastest and farthest")) {
@@ -476,7 +496,7 @@ public class newRedDuckside extends LinearOpMode {
 					drive.followTrajectory(loopy0_1c);
 					sleep(buffer);
 				}
-				robot.lightsaber.setPosition(robot.open);
+				robot.lightsaber.setPosition(robot.lightsaberKick);
 				sleep(buffer);
 				drive.followTrajectory(loopy0_2);
 				sleep(buffer);
@@ -505,6 +525,8 @@ public class newRedDuckside extends LinearOpMode {
 			}
 
 
+			telemetry.addLine("Path Followed: " + str2 + " style, " + str3 + " parking, while avoiding " + str);
+			telemetry.update();
 			break;
 		}
 	}
@@ -575,6 +597,71 @@ public class newRedDuckside extends LinearOpMode {
 		robot.duckextend.setPower(0);
 
 
+	}
+
+	private Pose2d findFreight(Recognition recognition, SampleMecanumDrive drive){
+
+		double roboX = drive.getPoseEstimate().getX();
+		double roboY = drive.getPoseEstimate().getY();
+		double roboHead = drive.getPoseEstimate().getHeading();
+
+		double camX = roboX + 5.2137*Math.cos(roboHead);
+		double camY = roboY + 0.6685*Math.sin(roboHead);
+		double camHead = roboHead;
+
+		double displacement = getDisplacement(recognition);
+		double midpoint = getMidpoint(recognition);
+		double shift = getLeftRight(displacement,midpoint);
+		double hypotenuse = Math.sqrt(Math.pow(displacement,2) + Math.pow(shift,2));
+
+		//this works because look at the engineering notebook
+		Pose2d recognizedHere = new Pose2d(
+				camX + hypotenuse*Math.cos(camHead + Math.atan(shift/displacement)),
+				camY + hypotenuse*Math.sin(camHead + Math.atan(shift/displacement))
+		);
+
+		return recognizedHere;
+	}
+
+
+	private double getDisplacement(Recognition recognition){
+
+		/*
+		 * we have two methods to figure out distance, distance in pixels from an edge of the top/bottom of screen, and width
+		 * As these move further away from the camera, width decreases, and pixels from top/bottom
+		 *
+		 */
+		double width = recognition.getWidth();
+		double displacement1 = -0.1121*recognition.getWidth() + 34.58;
+		double displacement2 = 0.02601*(recognition.getImageHeight()-recognition.getTop()) - 1.518;
+		/*
+				y = ax^2 + bx + c
+				a: 1.045
+				b: -33.03
+				c: 394.2
+		*/
+		double d3 = 0.001009*width - 0.4418*width + 55.63;
+
+		return d3;
+
+	}
+
+	private double getMidpoint(Recognition recognition){
+		//returns center y axis of the recognition
+		return recognition.getLeft() + (recognition.getWidth()/2);
+	}
+
+	private double getLeftRight(double displacement, double midpoint){
+		/*
+		 * half range is equal to the half the range that the camera can read based on an input distance. this is because we know FOV is 55deg
+		 * pixelsMaybe(name not finalized) is turning the range in inches into a pixel measurement. We want this because the midpoint is in pixels (640.0 is derived from camera's output range)
+		 * rawResult is an unfinalized number. by dividing midpoint over pixelsMaybe(name not finalized) we will get the midpoint in inches. We subtract the half range FOR SOME REASON
+		 * the return statement gives back a more condensed number (a tolerance of 0.001 inches is not scary)
+		 */
+		double halfRange = displacement*Math.tan(Math.toRadians(27.5));
+		double pixelsmaybe = 640.0/(2*halfRange);
+		double rawResult = (midpoint/pixelsmaybe) - halfRange;
+		return rawResult - (rawResult%0.001);
 	}
 
 	private boolean timeLeft(SampleMecanumDrive drive){
@@ -648,7 +735,7 @@ public class newRedDuckside extends LinearOpMode {
 		int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
 				"tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-		tfodParameters.minResultConfidence = 0.8f;
+		tfodParameters.minResultConfidence = 0.68f;
 		tfodParameters.isModelTensorFlow2 = true;
 		tfodParameters.inputSize = 320;
 		tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);

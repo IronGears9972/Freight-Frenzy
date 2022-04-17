@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.SwitchableCamera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name = "New blue Blandside", group = "ABLUE")
+@Autonomous(name = "New blue Blandside", group = "Ablue   ")
 public class newBlueBland extends LinearOpMode {
 
 	Hardware_21_22 robot = new Hardware_21_22();
@@ -42,10 +43,15 @@ public class newBlueBland extends LinearOpMode {
 	private ArrayList<Pose2d> Readings = new ArrayList<Pose2d>();
 	private int route = 0;
 	private int buffer = 100;
+	private int x = 0;
+	private boolean[] arr = new boolean[2];
+
 
 	public void runOpMode() {
 		telemetry.addLine("step 0");
 		telemetry.update();
+		arr[0] = false;
+		arr[1] = false;
 
 		initVuforia();
 		initTfod();
@@ -80,7 +86,9 @@ public class newBlueBland extends LinearOpMode {
 				.build();
 
 		Trajectory cycling01 = drive.trajectoryBuilder(cycling00.end())
-				.lineToLinearHeading(PoseLibrary.blueGoalAlliance)
+				.lineToLinearHeading(PoseLibrary.blueGoalAlliance,
+						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(35))
 				.build();
 
 		Trajectory cycling02 = drive.trajectoryBuilder(cycling01.end())
@@ -90,6 +98,16 @@ public class newBlueBland extends LinearOpMode {
 		Trajectory cycling03 = drive.trajectoryBuilder(cycling02.end())
 				.lineToLinearHeading(PoseLibrary.blueWarehouseIn)
 				.build();
+
+		Trajectory cycleIn = drive.trajectoryBuilder(PoseLibrary.blueGoalAlliance)
+				.splineToSplineHeading(PoseLibrary.blueWarehouseOut,Math.toRadians(0),
+						SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
+				.splineToConstantHeading(PoseLibrary.blueWarehouseInV, Math.toRadians(180),
+						SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
+				.build();
+
 
 		Trajectory parkIt = drive.trajectoryBuilder(PoseLibrary.blueWarehouseOut)
 				.lineToLinearHeading(PoseLibrary.blueParking1)
@@ -103,74 +121,55 @@ public class newBlueBland extends LinearOpMode {
 
 		while(!opModeIsActive()){
 			boolean reading = false;
+			robot.lightsaber.setPosition(robot.lightsaber45);
 
-			if (tfod != null){
+			if (tfod != null) {
+
 
 				updatedRecognitions = tfod.getUpdatedRecognitions();
 
 				if (updatedRecognitions != null) {
+					if(updatedRecognitions.size() != 0){
 
-					telemetry.addData("# Object Detected", updatedRecognitions.size());
+						telemetry.addData("# Object Detected", updatedRecognitions.size());
 
-					int i = 0;
 
-					for (Recognition recognition : updatedRecognitions) {
-						telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-						telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-								recognition.getLeft(), recognition.getTop());
-						telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-								recognition.getRight(), recognition.getBottom());
-						telemetry.addData(String.format("  width,height (%d)", i), "%.03f , %.03f",
-								recognition.getWidth(), recognition.getHeight());
-						telemetry.addData("Width", recognition.getImageWidth());
-						telemetry.addData("Height", recognition.getImageHeight());
+						int i = 0;
 
-						i++;
+						for (Recognition recognition : updatedRecognitions) {
+							telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+							telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+									recognition.getLeft(), recognition.getTop());
+							telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+									recognition.getRight(), recognition.getBottom());
+							telemetry.addData(String.format("  width,height (%d)", i), "%.03f , %.03f",
+									recognition.getWidth(), recognition.getHeight());
+							telemetry.addData("Width", recognition.getImageWidth());
+							telemetry.addData("Height", recognition.getImageHeight());
 
-						if (recognition.getLabel().equals("Ball")) {
-							if (recognition.getLeft() < 250) {
-								str = "Its on da left";
-								layer = 1;
-							} else {
-								str = "It on the right";
-								layer = 2;
+
+							if (recognition.getLabel().equals("Ball")) {
+								arr = scan();
+								x = i;
+								if (recognition.getLeft() < 250) {
+									str = "left";
+								} else {
+									str = "middle";
+								}
+								i++;
 							}
 						}
-					}
 
-					telemetry.addLine(str);
-					telemetry.addData("route", posToWord(route));
-					telemetry.addLine("A - " + posToWord(1) + "\nB - " + posToWord(2) + "\nX - " + posToWord(3) + "\nY - " + posToWord(0));
-					telemetry.addLine(parking + "");
+
+					} else {
+						str = "right";
+						arr[0] = false;
+						arr[1] = false;
+					}
+					telemetry.addData("Raw Left 1", arr[0]);
+					telemetry.addData("Raw Right 2", arr[1]);
 					telemetry.update();
 				}
-				else{
-					str = "not seen";
-					layer = 3;
-				}
-			}
-
-			if(gamepad1.a){
-				route = 1;
-			}
-			if(gamepad1.b){
-				route = 2;
-			}
-			if(gamepad1.x){
-				route = 3;
-			}
-			if(gamepad1.y){
-				route = 0;
-			}
-
-			if(gamepad1.dpad_up){
-				parking = 1;
-			}
-			if(gamepad1.dpad_right){
-				parking = 2;
-			}
-			if(gamepad1.dpad_down){
-				parking = 3;
 			}
 
 			if(isStopRequested()){
@@ -199,59 +198,114 @@ public class newBlueBland extends LinearOpMode {
 		while (opModeIsActive()) {
 			returnTime.reset();
 
-			boolean[] arr = scan();
-
-			layer = robot.read(false, arr[0],arr[1]);
+			layer = robot.read(true, arr[0],arr[1]);
 
 			robot.raiseToLayer(layer);
+
+			telemetry.update();
 			sleep(buffer);
 			drive.followTrajectory(gart);
 			sleep(buffer+750);
 			robot.lightsaber.setPosition(0.4);
 			sleep(buffer+500);
 
-			drive.followTrajectory(firstTime01);
+			switchableCamera.setActiveCamera(intake);
+
+			//drive.followTrajectory(firstTime01);
 			sleep(buffer);
 			robot.raiseToLayer(0);
-			drive.followTrajectory(firstTime02);
-			robot.lightsaber.setPosition(0);
-			read(drive);
+			drive.followTrajectory(cycleIn); //firstTime02
+			//read(drive);
 
 			while(!timeLeft(drive)){
-				if(Readings != null) {
+				if(true) {
+					/*
 					if (Readings.size() == 0 ) {
 						while (Readings.size() == 0) {
 							read(drive);
 						}
 					}
 
+					 */
+
+
 					robot.intakemotor.setPower(-0.95);
-					drive.followTrajectory(collect(drive));
+					robot.lightsaber.setPosition(0);
+					//drive.followTrajectory(collect(drive));
+
+					if(timeLeft(drive)){
+						break;
+					}
+
+
+					while(robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 1.5 || isStopRequested()){
+						double power = 0.2;
+						robot.frontLeftMotor.setPower(power);
+						robot.frontRightMotor.setPower(power);
+						robot.rearLeftMotor.setPower(power);
+						robot.rearRightMotor.setPower(power);
+						if(timeLeft(drive) || isStopRequested()){
+							break;
+						}
+					}
+
+					robot.lightsaber.setPosition(0.2);
+					robot.intakemotor.setPower(0.95);
+					double power = 0;
+					robot.frontLeftMotor.setPower(power);
+					robot.frontRightMotor.setPower(power);
+					robot.rearLeftMotor.setPower(power);
+					robot.rearRightMotor.setPower(power);
+
+					if(timeLeft(drive)){
+						break;
+					}
+					sleep(buffer);
+
 
 					Trajectory reAlign = drive.trajectoryBuilder(drive.getPoseEstimate())
 							.lineToLinearHeading(PoseLibrary.blueWarehouseIn)
 							.build();
 
 					drive.followTrajectory(reAlign);
-					robot.intakemotor.setPower(0.95);
-					sleep(buffer+500);
 					robot.intakemotor.setPower(0);
-					robot.lightsaber.setPosition(0.15);
+
 					drive.followTrajectory(cycling00);
+					if(timeLeft(drive)){
+						break;
+					}
+
+					//outside below
+
 					sleep(buffer);
 					drive.followTrajectory(cycling01);
+					if(timeLeft(drive)){
+						break;
+					}
 					robot.raiseToLayer(3);
 					while(robot.lifter.getCurrentPosition() < robot.lifter.getTargetPosition()-15){
 						telemetry();
+						if(timeLeft(drive)){
+							break;
+						}
 						sleep(1);
+					}
+					if(timeLeft(drive)){
+						break;
 					}
 					robot.lightsaber.setPosition(0.4);
 					sleep(buffer+500);
 					robot.raiseToLayer(0);
-					drive.followTrajectory(cycling02);
+					//drive.followTrajectory(cycling02);
+					if(timeLeft(drive)){
+						break;
+					}
 					sleep(buffer);
+					drive.followTrajectory(cycleIn);
 					robot.lightsaber.setPosition(0);
-					drive.followTrajectory(cycling03);
+					if(timeLeft(drive)){
+						break;
+					}
 					sleep(buffer);
 				}
 				else{
@@ -287,6 +341,7 @@ public class newBlueBland extends LinearOpMode {
 
 				telemetry.addData("width", recognition.getWidth());
 				telemetry.addData("Distance", getDisplacement(recognition));
+				telemetry.update();
 
 				i++;
 				if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Cube") || recognition.getLabel().equals("Duck")) {
@@ -330,11 +385,11 @@ public class newBlueBland extends LinearOpMode {
 		result[0] = false;
 		result[1] = false;
 
-		updatedRecognitions = tfod.getUpdatedRecognitions();
+		//updatedRecognitions = tfod.getUpdatedRecognitions();
 
-		if (updatedRecognitions != null) {
+		if (updatedRecognitions.size() > 0) {
 
-			if (updatedRecognitions.get(0).getLeft() < 250) {
+			if (updatedRecognitions.get(x).getLeft() < 250) {
 				result[0] = true;
 				result[1] = false;
 			} else {
@@ -342,7 +397,6 @@ public class newBlueBland extends LinearOpMode {
 				result[1] = true;
 			}
 		}
-
 		return result;
 	}
 
@@ -368,8 +422,8 @@ public class newBlueBland extends LinearOpMode {
 			}
 		}
 		result = drive.trajectoryBuilder(drive.getPoseEstimate())
-				.lineToLinearHeading(new Pose2d(closest.getX()-4,closest.getY()),
-						SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+				.lineToLinearHeading(new Pose2d(drive.getPoseEstimate().getX(),closest.getY()),
+						SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 						SampleMecanumDrive.getAccelerationConstraint(10))
 				.build();
 		Readings.remove(closest);

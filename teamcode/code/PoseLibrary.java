@@ -19,6 +19,7 @@ public class PoseLibrary {
     public static Pose2d redE5 =                        new Pose2d(12,      -48,        Math.toRadians(270));
     public static Pose2d redE6 =                        new Pose2d(20.5,    -48,        Math.toRadians(270));
     public static Pose2d redGoalAlliance =              new Pose2d(-10,     -39,        Math.toRadians(270));
+    public static Pose2d redGoalAlliance2 =             new Pose2d(-11,     -40,        Math.toRadians(270));
     public static Pose2d redGoalParking =               new Pose2d(-23,     -26,        Math.toRadians(180));
     public static Pose2d redGoalWarehouse =             new Pose2d(12,      -24,        Math.toRadians(0));
     public static Pose2d redGoalOpposite =              new Pose2d(-12,     -12,        Math.toRadians(90));

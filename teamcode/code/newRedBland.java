@@ -68,7 +68,7 @@ public class newRedBland extends LinearOpMode {
 		telemetry.update();
 
 		Trajectory gart = drive.trajectoryBuilder(PoseLibrary.startRedBland)
-				.lineToLinearHeading(PoseLibrary.redGoalAlliance)
+				.lineToLinearHeading(PoseLibrary.redGoalAlliance2)
 				.build();
 
 		Trajectory firstTime01 = drive.trajectoryBuilder(gart.end())
@@ -77,7 +77,7 @@ public class newRedBland extends LinearOpMode {
 
 		Trajectory firstTime02 = drive.trajectoryBuilder(firstTime01.end())
 				.lineToLinearHeading(PoseLibrary.redReading,
-						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 						SampleMecanumDrive.getAccelerationConstraint(35))
 				.build();
 
@@ -87,8 +87,8 @@ public class newRedBland extends LinearOpMode {
 
 		Trajectory cycling01 = drive.trajectoryBuilder(cycling00.end())
 				.lineToLinearHeading(PoseLibrary.redGoalAlliance,
-						SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-						SampleMecanumDrive.getAccelerationConstraint(25))
+						SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(35))
 				.build();
 
 		Trajectory cycling02 = drive.trajectoryBuilder(cycling01.end())
@@ -101,11 +101,11 @@ public class newRedBland extends LinearOpMode {
 
 		Trajectory cycleIn = drive.trajectoryBuilder(PoseLibrary.redGoalAlliance)
 				.splineToSplineHeading(PoseLibrary.redWarehouseOut,Math.toRadians(0),
-						SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-						SampleMecanumDrive.getAccelerationConstraint(25))
+						SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
 				.splineToConstantHeading(PoseLibrary.redWarehouseInV, Math.toRadians(180),
-						SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-						SampleMecanumDrive.getAccelerationConstraint(25))
+						SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+						SampleMecanumDrive.getAccelerationConstraint(30))
 				.build();
 
 
@@ -121,78 +121,55 @@ public class newRedBland extends LinearOpMode {
 
 		while(!opModeIsActive()){
 			boolean reading = false;
+			robot.lightsaber.setPosition(robot.lightsaber45);
 
-			if (tfod != null){
+			if (tfod != null) {
+
 
 				updatedRecognitions = tfod.getUpdatedRecognitions();
 
 				if (updatedRecognitions != null) {
+					if(updatedRecognitions.size() != 0){
 
-					telemetry.addData("# Object Detected", updatedRecognitions.size());
-
-					int i = 0;
-
-					for (Recognition recognition : updatedRecognitions) {
-						telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-						telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-								recognition.getLeft(), recognition.getTop());
-						telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-								recognition.getRight(), recognition.getBottom());
-						telemetry.addData(String.format("  width,height (%d)", i), "%.03f , %.03f",
-								recognition.getWidth(), recognition.getHeight());
-						telemetry.addData("Width", recognition.getImageWidth());
-						telemetry.addData("Height", recognition.getImageHeight());
+						telemetry.addData("# Object Detected", updatedRecognitions.size());
 
 
+						int i = 0;
 
-						if (recognition.getLabel().equals("Ball") ) {
-							arr = scan();
-							x = i;
-							if (recognition.getLeft() < 250) {
-								str = "left";
-							} else {
-								str = "middle";
+						for (Recognition recognition : updatedRecognitions) {
+							telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+							telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+									recognition.getLeft(), recognition.getTop());
+							telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+									recognition.getRight(), recognition.getBottom());
+							telemetry.addData(String.format("  width,height (%d)", i), "%.03f , %.03f",
+									recognition.getWidth(), recognition.getHeight());
+							telemetry.addData("Width", recognition.getImageWidth());
+							telemetry.addData("Height", recognition.getImageHeight());
+
+
+							if (recognition.getLabel().equals("Ball")) {
+								arr = scan();
+								x = i;
+								if (recognition.getLeft() < 250) {
+									str = "left";
+								} else {
+									str = "middle";
+								}
+								i++;
 							}
-							i++;
 						}
-					}
 
-					telemetry.addLine(str);
-					telemetry.addData("route", posToWord(route));
-					telemetry.addLine("A - " + posToWord(1) + "\nB - " + posToWord(2) + "\nX - " + posToWord(3) + "\nY - " + posToWord(0));
-					telemetry.addLine(parking + "");
-					arr = scan();
-					telemetry.addData("Index 1", arr[0]);
-					telemetry.addData("Index 2", arr[1]);
+
+					} else {
+						str = "right";
+						arr[0] = false;
+						arr[1] = false;
+					}
+					telemetry.addData("Raw Left 1", arr[0]);
+					telemetry.addData("Raw Right 2", arr[1]);
 					telemetry.update();
 				}
-				else{
-					str = "not seen";
-					layer = 3;
-				}
-			}
-
-			if(gamepad1.a){
-				route = 1;
-			}
-			if(gamepad1.b){
-				route = 2;
-			}
-			if(gamepad1.x){
-				route = 3;
-			}
-			if(gamepad1.y){
-				route = 0;
-			}
-
-			if(gamepad1.dpad_up){
-				parking = 1;
-			}
-			if(gamepad1.dpad_right){
-				parking = 2;
-			}
-			if(gamepad1.dpad_down){
-				parking = 3;
 			}
 
 			if(isStopRequested()){
@@ -238,8 +215,6 @@ public class newRedBland extends LinearOpMode {
 			sleep(buffer);
 			robot.raiseToLayer(0);
 			drive.followTrajectory(cycleIn); //firstTime02
-			robot.lightsaber.setPosition(0);
-			sleep(750);
 			//read(drive);
 
 			while(!timeLeft(drive)){
@@ -255,6 +230,7 @@ public class newRedBland extends LinearOpMode {
 
 
 					robot.intakemotor.setPower(-0.95);
+					robot.lightsaber.setPosition(0);
 					//drive.followTrajectory(collect(drive));
 
 					if(timeLeft(drive)){
@@ -262,7 +238,7 @@ public class newRedBland extends LinearOpMode {
 					}
 
 
-					while(robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 1.5){
+					while(robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 1.5 || isStopRequested()){
 						double power = 0.2;
 						robot.frontLeftMotor.setPower(power);
 						robot.frontRightMotor.setPower(power);
@@ -273,7 +249,7 @@ public class newRedBland extends LinearOpMode {
 						}
 					}
 
-					robot.lightsaber.setPosition(0.15);
+					robot.lightsaber.setPosition(0.2);
 					robot.intakemotor.setPower(0.95);
 					double power = 0;
 					robot.frontLeftMotor.setPower(power);
@@ -325,8 +301,8 @@ public class newRedBland extends LinearOpMode {
 						break;
 					}
 					sleep(buffer);
-					robot.lightsaber.setPosition(0);
 					drive.followTrajectory(cycleIn);
+					robot.lightsaber.setPosition(0);
 					if(timeLeft(drive)){
 						break;
 					}
