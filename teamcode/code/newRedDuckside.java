@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.SwitchableCamera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Autonomous(name = "New Red Duckside", group = "ARED")
 public class newRedDuckside extends LinearOpMode {
@@ -107,7 +109,7 @@ public class newRedDuckside extends LinearOpMode {
 
 
 		Trajectory ParkPath_PickDuck = drive.trajectoryBuilder(ParkPath_Reverse.end())
-				.lineToLinearHeading(new Pose2d(-48,-48,Math.toRadians(270)))
+				.lineToLinearHeading(new Pose2d(-48,48,Math.toRadians(90)))
 				.build();
 		step++;
 		telemetry.addLine("step " + step);
@@ -427,9 +429,78 @@ public class newRedDuckside extends LinearOpMode {
 					drive.followTrajectory(ParkPath_Parking);
 					sleep(buffer);
 				}
+
 				else{
 					drive.followTrajectory(ParkPath_PickDuck);
 					sleep(buffer);
+					sleep(500);
+					updatedRecognitions = tfod.getUpdatedRecognitions();
+
+					while(updatedRecognitions == null && updatedRecognitions.size() == 0){
+						updatedRecognitions = tfod.getUpdatedRecognitions();
+					}
+
+					Pose2d here = findFreight(updatedRecognitions.get(0), drive);
+					Trajectory collectDuck = drive.trajectoryBuilder(drive.getPoseEstimate())
+							.lineToLinearHeading(new Pose2d (here.getX(),drive.getPoseEstimate().getY(), Math.toRadians(90)))
+							.build();
+					drive.followTrajectory(collectDuck);
+
+					robot.intakemotor.setPower(-0.95);
+					ElapsedTime gart = new ElapsedTime();
+					gart.reset();
+					while((robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 1.5 && gart.time(TimeUnit.SECONDS) < 3.5)&& !isStopRequested()){
+						double power = 0.25;
+						robot.frontLeftMotor.setPower(power);
+						robot.frontRightMotor.setPower(power);
+						robot.rearLeftMotor.setPower(power);
+						robot.rearRightMotor.setPower(power);
+					}
+
+					robot.lightsaber.setPosition(0.2);
+					robot.intakemotor.setPower(0);
+					double power = 0;
+					robot.frontLeftMotor.setPower(power);
+					robot.frontRightMotor.setPower(power);
+					robot.rearLeftMotor.setPower(power);
+					robot.rearRightMotor.setPower(power);
+
+					robot.lightsaber.setPosition(robot.lightsaber45);
+
+					Trajectory BackOnTrack = drive.trajectoryBuilder(drive.getPoseEstimate())
+							.lineToLinearHeading(PoseLibrary.redOutOfWay,
+									SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+									SampleMecanumDrive.getAccelerationConstraint(40))
+							.build();
+
+					Trajectory score = drive.trajectoryBuilder(BackOnTrack.end())
+							.lineToLinearHeading(PoseLibrary.redGoalParking,
+									SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+									SampleMecanumDrive.getAccelerationConstraint(40))
+							.build();
+
+					Trajectory park = drive.trajectoryBuilder(score.end())
+							.lineToLinearHeading(new Pose2d(PoseLibrary.redParking0.getX(),PoseLibrary.redParking0.getY(),Math.toRadians(180)),
+									SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+									SampleMecanumDrive.getAccelerationConstraint(40))
+							.build();
+
+					if(false){
+
+					}
+					else {
+						drive.followTrajectory(BackOnTrack);
+						sleep(buffer);
+						robot.raiseToLayer(3);
+						drive.followTrajectory(score);
+						sleep(1000);
+						robot.lightsaber.setPosition(robot.lightsaberKick);
+						robot.raiseToLayer(0);
+						//drive.followTrajectory(reverse);
+						//sleep(buffer);
+						drive.followTrajectory(park);
+						sleep(1000);
+					}
 				}
 			}
 

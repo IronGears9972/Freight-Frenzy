@@ -360,8 +360,8 @@ public class newBlueDuckside extends LinearOpMode {
 			if(gamepad1.x){
 				str2 = "loopy";
 			}
-			if(gamepad1.left_bumper && gamepad1.right_bumper){
-				str2 = "Yay Ryan finally finished!";
+			if(gamepad1.y) {
+				str2 = "pick up";
 			}
 			if(gamepad1.dpad_left){
 				str3 = "last second";
@@ -451,7 +451,7 @@ public class newBlueDuckside extends LinearOpMode {
 					sleep(500);
 					updatedRecognitions = tfod.getUpdatedRecognitions();
 
-					while(updatedRecognitions.size() == 0){
+					while(updatedRecognitions == null && updatedRecognitions.size() == 0){
 						updatedRecognitions = tfod.getUpdatedRecognitions();
 					}
 
