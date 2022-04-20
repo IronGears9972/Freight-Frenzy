@@ -573,6 +573,13 @@ public class RedTeleOp extends LinearOpMode {
 			rearleft = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor;
 			rearright = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor;
 			frontright = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor;
+
+			if (gamepad1.right_stick_x >= .05 || gamepad1.right_stick_x <= -.05) {
+				frontleft = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor * 1.4;
+				rearleft = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor * 1.4;
+				rearright = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor * 1.4;
+				frontright = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor * 1.4;
+			}
 		}
 
 		robot.frontLeftMotor.setPower(frontleft);

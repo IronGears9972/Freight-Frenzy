@@ -57,7 +57,7 @@ public class BlueTeleOp extends LinearOpMode {
         drive.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
 
         cl = new Carousel(this);
-        double speed = 40 ;//23
+        double speed = -40 ;//23
 
         while (!opModeIsActive()) {
 
@@ -137,7 +137,7 @@ public class BlueTeleOp extends LinearOpMode {
 
 
                 if (gamepad2.y) {
-                    cl.startWheel(speed);
+                    cl.startWheel(-speed);
                 }
                 else {
                     cl.stopWheel(-6.5);
@@ -251,11 +251,11 @@ public class BlueTeleOp extends LinearOpMode {
                         }
                     } else if (gamepad1.dpad_right && gamepad1.left_bumper) {
                         if (x >= 0) {
-                            x -= .002;
+                            x -= .0082;
                         }
                     } else if (gamepad1.dpad_left && gamepad1.left_bumper) {
                         if (x <= .35) {
-                            x += .002;
+                            x += .0082;
                         }
                     } else if (gamepad1.dpad_right && gamepad1.right_bumper) {
                         if (x >= .0) {
@@ -572,6 +572,13 @@ public class BlueTeleOp extends LinearOpMode {
             rearleft = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor;
             rearright = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor;
             frontright = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor;
+
+            if (gamepad1.right_stick_x >= .05 || gamepad1.right_stick_x <= -.05) {
+                frontleft = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor * 1.4;
+                rearleft = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x) * powermotor * 1.4;
+                rearright = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor * 1.4;
+                frontright = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x) * powermotor * 1.4;
+            }
         }
 
         robot.frontLeftMotor.setPower(frontleft);
