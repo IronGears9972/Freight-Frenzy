@@ -403,7 +403,6 @@ public class newBlueDuckside extends LinearOpMode {
 			int layer = robot.read(false, arr[0],arr[1]);
 			sleep(buffer);
 
-
 			extend();
 			sleep(buffer);
 

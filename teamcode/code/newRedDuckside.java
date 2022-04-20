@@ -109,7 +109,7 @@ public class newRedDuckside extends LinearOpMode {
 
 
 		Trajectory ParkPath_PickDuck = drive.trajectoryBuilder(ParkPath_Reverse.end())
-				.lineToLinearHeading(new Pose2d(-48,48,Math.toRadians(90)))
+				.lineToLinearHeading(new Pose2d(-48,-48,Math.toRadians(270)))
 				.build();
 		step++;
 		telemetry.addLine("step " + step);
@@ -271,7 +271,7 @@ public class newRedDuckside extends LinearOpMode {
 
 
 		String str = "";
-		String str2 = "alliance parking";
+		String str2 = "pick up";
 		String str3 = "fastest and farthest";
 		int parking = 0;
 		telemetry.addLine("Everything is initialized!");
@@ -401,10 +401,10 @@ public class newRedDuckside extends LinearOpMode {
 			int layer = robot.read(true, arr[0],arr[1]);
 			sleep(buffer);
 
-			drive.followTrajectory(duckPose);
+			extend();
 			sleep(buffer);
 
-			extend();
+			drive.followTrajectory(duckPose);
 			sleep(buffer);
 
 			spin();
@@ -436,20 +436,22 @@ public class newRedDuckside extends LinearOpMode {
 					sleep(500);
 					updatedRecognitions = tfod.getUpdatedRecognitions();
 
-					while(updatedRecognitions == null && updatedRecognitions.size() == 0){
+					ElapsedTime gart = new ElapsedTime();
+					gart.reset();
+					while(updatedRecognitions == null || updatedRecognitions.size() == 0 && gart.seconds() < 0.5){
 						updatedRecognitions = tfod.getUpdatedRecognitions();
 					}
-
+/*
 					Pose2d here = findFreight(updatedRecognitions.get(0), drive);
 					Trajectory collectDuck = drive.trajectoryBuilder(drive.getPoseEstimate())
 							.lineToLinearHeading(new Pose2d (here.getX(),drive.getPoseEstimate().getY(), Math.toRadians(90)))
 							.build();
 					drive.followTrajectory(collectDuck);
 
+ */
 					robot.intakemotor.setPower(-0.95);
-					ElapsedTime gart = new ElapsedTime();
 					gart.reset();
-					while((robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 1.5 && gart.time(TimeUnit.SECONDS) < 3.5)&& !isStopRequested()){
+					while((robot.blocksensor_distance.getDistance(DistanceUnit.INCH) > 1.5 && gart.time(TimeUnit.SECONDS) < 1)&& !isStopRequested()){
 						double power = 0.25;
 						robot.frontLeftMotor.setPower(power);
 						robot.frontRightMotor.setPower(power);
@@ -646,29 +648,14 @@ public class newRedDuckside extends LinearOpMode {
 		robot.duckextend.setPower(0.95);
 
 	}
-
 	public void extend(){
-
-		ElapsedTime guy = new ElapsedTime();
-
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		robot.duckextend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.duckextend.setTargetPosition(robot.duckTarget);
 		robot.duckextend.setPower(0.85);
 
-		while(robot.duckextend.getCurrentPosition() < robot.duckextend.getTargetPosition() && guy.seconds() < 15){
-
-			robot.duckextend.setPower(0.85);
-			telemetry.addData("CP",robot.duckextend.getCurrentPosition());
-			telemetry.addData("TP",robot.duckTarget);
-			telemetry.update();
-			sleep(1);
-		}
-
-		robot.duckextend.setPower(0);
-
-
 	}
+
 
 	private Pose2d findFreight(Recognition recognition, SampleMecanumDrive drive){
 
